@@ -1,0 +1,42 @@
+sudo apt update
+sudo apt install mosquitto mosquitto-clients -y
+
+sudo systemctl enable mosquitto
+sudo systemctl start mosquitto
+
+sudo mosquitto_passwd -c /etc/mosquitto/passwd manager
+sudo mosquitto_passwd /etc/mosquitto/passwd 9962264503
+sudo mosquitto_passwd /etc/mosquitto/passwd 8220002081
+
+sudo nano /etc/mosquitto/conf.d/mosquitto.conf
+
+allow_anonymous false
+password_file /etc/mosquitto/passwd
+acl_file /etc/mosquitto/acls
+
+user manager
+topic read  upstream/9962264503
+topic write downstream/9962264503
+topic read  upstream/8220002081
+topic write downstream/8220002081
+
+user 9962264503
+topic write upstream/9962264503
+topic read  downstream/9962264503
+
+user 8220002081
+topic write upstream/8220002081
+topic read  downstream/8220002081
+
+sudo systemctl restart mosquitto
+
+mosquitto_pub -h 103.235.106.130 -t "upstream/9962264503" -m "Hello Manager from 9962264503" -u 9962264503 -P 9962264503
+mosquitto_sub -h 103.235.106.130 -t "downstream/9962264503" -u 9962264503 -P 9962264503
+
+mosquitto_pub -h 103.235.106.130 -t "upstream/8220002081" -m "Hello Manager from 8220002081" -u 8220002081 -P 8220002081
+mosquitto_sub -h 103.235.106.130 -t "downstream/8220002081" -u 8220002081 -P 8220002081
+
+mosquitto_sub -h 103.235.106.130 -t "upstream/9962264503" -u manager -P manager
+mosquitto_sub -h 103.235.106.130 -t "upstream/8220002081" -u manager -P manager
+mosquitto_pub -h 103.235.106.130 -t "downstream/9962264503" -m "Hello 9962264503 from Manager" -u manager -P manager
+mosquitto_pub -h 103.235.106.130 -t "downstream/9962264503" -m "Hello 8220002081 from Manager" -u manager -P manager
