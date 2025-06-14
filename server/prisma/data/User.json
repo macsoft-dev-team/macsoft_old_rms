@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "name": "Admin",
+    "email": "admin@rms.com",
+    "phone": "987654321",
+    "password": "$2b$10$ciCnDbfaxQMfE0RGdoho6O7rmIXB0tJzFuymfcKNYpTn9rF6wtC3K",
+    "createdAt": "2023-01-01T00:00:00Z",
+    "updatedAt": "2023-01-01T00:00:00Z"
+  }
+]
