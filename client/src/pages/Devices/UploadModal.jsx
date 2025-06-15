@@ -5,13 +5,13 @@ import { toast } from "react-toastify";
 import Pagination from "../../components/pagination";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { readExcelAsJSON } from "../../components/common-components";
+import { paginateSlicer, readExcelAsJSON, usePagination } from "../../components/common-components";
 import * as yup from "yup";
 import { uploadDevices } from "../../lib/reducer/deviceSlice";
 export default function UploadModal(props) {
     const listSize = 10;
     const [file, setFile] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
+    const { currentPage, onPageChange } = usePagination(1);
     const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const dispatch = useDispatch();
@@ -28,13 +28,12 @@ export default function UploadModal(props) {
         },
     });
 
-    const { fields, append, replace } = useFieldArray({
+    const { fields,} = useFieldArray({
         control,
         name: "items",
     });
 
-    // Handle file upload
-    const handleUpload = async (e) => {
+     const handleUpload = async (e) => {
 
         e.preventDefault();
         setLoading(true);
@@ -55,8 +54,8 @@ export default function UploadModal(props) {
                     return formattedOrder;
                 });
 
-                setFile(formattedJson); // For pagination UI
-                reset({ items: formattedJson }); // Register all for validation
+                setFile(formattedJson); 
+                reset({ items: formattedJson }); 
             }
         } catch (error) {
             toast.error("Failed to read the file");
@@ -64,8 +63,6 @@ export default function UploadModal(props) {
             setLoading(false);
         }
     };
-
-    // Handle modal close
     const handleClose = () => {
         setShow(false);
         setFile(null);
@@ -73,10 +70,7 @@ export default function UploadModal(props) {
         reset();
     };
 
-    // Handle form submission
     const onSubmit = (data) => {
-        // Dispatch the upload action
-
         if (!data.items || data.items.length === 0) {
             toast.error("No data to submit");
             return;
@@ -123,9 +117,7 @@ export default function UploadModal(props) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {fields
-                                        .slice((currentPage - 1) * listSize, currentPage * listSize)
-                                        .map((row, index) => {
+                                    {paginateSlicer(fields,listSize,currentPage).map((row, index) => {
                                             const globalIndex = (currentPage - 1) * listSize + index;
                                             return (
                                                 <tr key={globalIndex} className={errors?.items?.[globalIndex] ? "table-danger" : ""}>
@@ -173,7 +165,7 @@ export default function UploadModal(props) {
                         <Pagination
                             currentPage={currentPage}
                             totalPages={Math.ceil(file?.length / listSize)}
-                            onPageChange={(page) => setCurrentPage(page)}
+                            onPageChange={(page) => onPageChange(page)}
                         />
                     )}
                     <ButtonGroup>

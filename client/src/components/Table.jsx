@@ -3,9 +3,10 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import './Table.css';
+import { Col, Spinner } from 'react-bootstrap';
 
 
-const ReusableTable = ({ columns, data, headerColor, headerTextColor, size, onRowClick, onEdit, onDelete, onView, }) => {
+const ReusableTable = ({ columns, data, headerColor, headerTextColor, size, onRowClick, onEdit, onDelete, onView,loading }) => {
   // Helper to get class for alignment
   const getAlignClass = (align) => {
     if (align === 'right' || align === 'end') return 'text-end';
@@ -67,6 +68,24 @@ const ReusableTable = ({ columns, data, headerColor, headerTextColor, size, onRo
             </tr>
           ))}
         </tbody>
+        {data.length === 0 && !loading && (
+          <tbody>
+            <tr>
+              <td colSpan={columns.length + (showActions ? 1 : 0)} className="text-center text-muted">
+                No data available
+              </td>
+            </tr>
+          </tbody>
+        )} 
+        {loading && (
+          <tbody>
+            <tr>
+              <td colSpan={columns.length + (showActions ? 1 : 0)} className="text-center">
+                <Col className="d-flex h-100 align-items-center justify-content-center">Loading <Spinner size="sm" className="mx-2" animation="border" variant="primary" /></Col>
+              </td>
+            </tr>
+          </tbody>
+        )}
       </Table>
     </div>
   );

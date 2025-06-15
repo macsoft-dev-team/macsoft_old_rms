@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { OverlayTrigger, Tooltip, Button } from "react-bootstrap";
 import { FaFileUpload, FaPlus, FaFileDownload, FaCheck } from "react-icons/fa";
 import { RiFileExcel2Line } from "react-icons/ri";
@@ -91,23 +92,20 @@ export const TemplateBtn = (props) => {
     </ToolText>
   );
 };
+export const paginateSlicer = (arr, page_size, page_number) => {
+  return arr.slice((page_number - 1) * page_size, page_number * page_size);
+};
 
-export const ApprovalBtn = (props) => {
-  const { onClick, title } = props;
-  return (
-    <ToolText title="Approve" id="tooltip-2">
-      <Button
-        onClick={onClick}
-        className="rounded-0 flex gap-2"
-        type="button"
-        variant="success"
-      >
-        {title}   <FaCheck />
-      </Button>
-    </ToolText>
-  );
-}
+export const usePagination = (initialPage) => {
+  const [currentPage, setCurrentPage] = useState(initialPage);
 
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  return { currentPage, onPageChange };
+};
+ 
 export const DataNotFound = (props) => {
   const { message } = props;
   return (

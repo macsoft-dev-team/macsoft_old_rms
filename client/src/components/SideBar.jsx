@@ -23,10 +23,11 @@ export default function Sidebar({ show, onHide }) {
           <FaTachometerAlt />
           <span style={{ marginLeft: 8 }}>Devices</span>
         </Nav.Link>
-       {/*  <Nav.Link as={NavLink} to="/profile" className='nav-link'>
+        <Nav.Link as={NavLink} to="/device-log" className='nav-link'>
           <FaUser />
-          <span style={{ marginLeft: 8 }}>Profile</span>
+          <span style={{ marginLeft: 8 }}>Device Log</span>
         </Nav.Link>
+        {/*
         <Nav.Link as={NavLink} to="/settings" className='nav-link'>
           <FaCog />
           <span style={{ marginLeft: 8 }}>Settings</span>

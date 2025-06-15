@@ -35,6 +35,8 @@ export default function Devices() {
                 </div>
             </header>
             <ReusableTable    
+                loading={loading}
+                error={error}
                 headerColor="#007bff"        
                 headerTextColor="#fff"   
                 onRowClick={(row) => console.log(row)}

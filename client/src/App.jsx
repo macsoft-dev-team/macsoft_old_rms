@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import axios from 'axios';
 import Layout from './components/Layout';
 import Devices from './pages/Devices/Devices';
+import DeviceLog from './pages/DeviceLog/DeviceLog';
  const router = createBrowserRouter([
   {
     path: '/login',
@@ -17,6 +18,10 @@ import Devices from './pages/Devices/Devices';
         path: 'devices',
         element: <Devices />,
       },
+      {
+        path: 'device-log',
+        element: <DeviceLog />,
+      }
     ],
   },
 ]);
