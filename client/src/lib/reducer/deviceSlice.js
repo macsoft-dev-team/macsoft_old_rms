@@ -26,7 +26,18 @@ export const fetchDevices = createAsyncThunk(
     }
   }
 );
-
+export const uploadDevices = createAsyncThunk(
+  "devices/uploadDevices",
+  async ({ data }, { rejectWithValue,dispatch }) => {
+    try {
+      const response = await axios.post("/devices/upload", data);
+      dispatch(fetchDevices({ page: 0, size: 10, filter: "" }));  
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || "Failed to upload devices");
+    }
+  }
+);
 const deviceSlice = createSlice({
   name: "devices",
   initialState,
@@ -54,6 +65,18 @@ const deviceSlice = createSlice({
         state.totalPages = action.payload.totalPages || 0;
       })
       .addCase(fetchDevices.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(uploadDevices.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uploadDevices.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(uploadDevices.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

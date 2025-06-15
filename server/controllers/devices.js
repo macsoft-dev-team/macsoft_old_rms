@@ -35,7 +35,19 @@ const getDeviceByImei = async (req, res) => {
   }
 };
 
+const uploadDevices = async (req, res) => {
+  const  data  = req.body;
+  try {
+    const result = await deviceService.uploadDevices(data);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error uploading devices:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   getDevices,
   getDeviceByImei,
+  uploadDevices,
 };

@@ -3,8 +3,8 @@ import LoginPage from './pages/LoginPage';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import axios from 'axios';
 import Layout from './components/Layout';
-import Devices from './pages/Devices';
-const router = createBrowserRouter([
+import Devices from './pages/Devices/Devices';
+ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,

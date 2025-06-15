@@ -3,7 +3,8 @@ import { Outlet } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import TopBar from "./TopBar";
 import Sidebar from "./Sidebar";
- 
+import { ToastContainer } from "react-toastify";
+
 
 const Layout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
@@ -17,11 +18,11 @@ const Layout = () => {
             onHide={() => setSidebarCollapsed(!sidebarCollapsed)}
           />
           <div className="p-3 flex-grow-1 bg-light overflow-x-hidden">
-
-          <Outlet />
+            <Outlet />
           </div>
-         </section>
+        </section>
       </main>
+      <ToastContainer />
     </ProtectedRoute>
   );
 };

@@ -1,41 +1,44 @@
-import SearchForm from "../components/SearchForm";
-import ReusableTable from "../components/Table";
-import { useEffect } from "react";
+import SearchForm from "../../components/SearchForm";
+import ReusableTable from "../../components/Table";
+import { useEffect,useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { clearSearchQuery, fetchDevices, setSearchQuery } from "../lib/reducer/deviceSlice";
-import Pagination from "../components/pagination";
+import { clearSearchQuery, fetchDevices, setSearchQuery } from "../../lib/reducer/deviceSlice";
+import Pagination from "../../components/pagination";
+import { ExportExcelBtn, UploadBtn } from "../../components/common-components";
+import { ButtonGroup } from "react-bootstrap";
+import UploadModal from "./UploadModal";
 export default function Devices() {
+    const [show, setShow] = useState(false);
     const dispatch = useDispatch();
     const { devices, loading, error, currentPage, totalPages, searchQuery } = useSelector((state) => state.device);
     const handleClear = () => {
-        // Clear search filter logic here
-        dispatch(clearSearchQuery());
+         dispatch(clearSearchQuery());
     }
     const handleSearch = (data) => {
-        // Search logic here, e.g., dispatch an action to filter devices
-        dispatch(setSearchQuery(data.filter));
+         dispatch(setSearchQuery(data.filter));
     }
 
     useEffect(() => {
-        // Fetch devices when the component mounts
-        dispatch(fetchDevices({ page: currentPage, size: 10, filter: searchQuery }));
+         dispatch(fetchDevices({ page: currentPage, size: 10, filter: searchQuery }));
     }, [ searchQuery]);
 
     return (
         <section className="d-flex flex-column">
             <header className="d-lg-flex align-items-center justify-content-between mb-1">
                 <h5 className="text-uppercase">Devices</h5>
-                <SearchForm onSubmit={handleSearch} onClear={handleClear} />
+                <div className="d-flex gap-2">
+                    <SearchForm onSubmit={handleSearch} onClear={handleClear} />
+                    <ButtonGroup>
+                        <UploadBtn onClick={() => setShow(true)} />
+                       {/*  <ExportExcelBtn /> */}
+                    </ButtonGroup>
+                </div>
             </header>
-            <ReusableTable   
+            <ReusableTable    
                 headerColor="#007bff"        
                 headerTextColor="#fff"   
                 onRowClick={(row) => console.log(row)}
-                onEdit
-                onDelete
-                onView={(row) => console.log("View device:", row)}
                 columns={[
-                    { key: 'id', label: 'ID', width: 10, align: 'start', textWrap: 'nowrap' },
                     { key: 'host', label: 'Host', width: 150, align: 'start', textWrap: 'nowrap' },
                     { key: 'imeinumber', label: 'IMEI Number', width: 150, align: 'start', textWrap: 'nowrap' },
                     { key: 'password', label: 'Password', width: 100, align: 'center', textWrap: 'nowrap' },
@@ -53,6 +56,8 @@ export default function Devices() {
                 onPageChange={(page) => console.log("Change to page:", page)}
             />
         </div>
+            <UploadModal show={show} setShow={setShow} />
         </section>
      );
 }
+
