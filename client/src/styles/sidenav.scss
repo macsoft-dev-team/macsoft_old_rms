@@ -31,7 +31,6 @@
     }
   }
 }
-
 // Collapsed sidebar styles
 .sidebar.collapsed {
   min-width: 60px;
@@ -74,7 +73,7 @@
   .sidebar.collapsed{
     display: none !important;
   }
-  .sidebar.show {
+  .sidebar{
     display: flex !important;
     position: absolute;
     top: 0;
@@ -83,7 +82,7 @@
     min-width: 100vw;
     max-width: 100vw;
     transition: min-width 0.3s, width 0.3s, max-width 0.3s, background 0.2s;
-    height: 100vh;
+    height: 100%;
     z-index: 1050;
     background: $body-bg;
     box-shadow: 2px 0 8px rgba(0,0,0,0.15);

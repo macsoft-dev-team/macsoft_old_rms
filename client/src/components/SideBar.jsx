@@ -1,11 +1,14 @@
 import { Button, Nav } from 'react-bootstrap';
 import { FaTachometerAlt, FaUser, FaCog } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
-
+import { MdLogout } from "react-icons/md";
+import { logout } from '../lib/reducer/authSlice';
+import { useDispatch } from 'react-redux';
 export default function Sidebar({ show, onHide }) {
-
+  const dispatch = useDispatch();
   return (
-    <aside className={`sidebar${show ? ' collapsed' : ''} position-relative`}>
+    <div className=' position-relative d-flex h-100' >
+    <aside className={`sidebar ${show ? ' collapsed' : ''}`}>
       {!show && (
       <Button
         size='sm'
@@ -32,8 +35,14 @@ export default function Sidebar({ show, onHide }) {
           <FaCog />
           <span style={{ marginLeft: 8 }}>Settings</span>
         </Nav.Link> */}
-      </Nav>
+       </Nav>
+        <Button className='m-2 mt-auto d-flex align-items-center justify-content-center gap-2' size='sm' variant="outline-danger" onClick={() => dispatch(logout())}>
+          <MdLogout/>
+          <span className={`${show ? 'd-block d-lg-none' : ''}`}>Logout</span>
+        </Button>
     </aside>
+      
+    </div>
   );
 }
 
