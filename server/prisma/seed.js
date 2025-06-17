@@ -48,7 +48,7 @@ function csvToJson(csvFilePath, jsonFilePath) {
 }
 
 async function main() {
-  const files = ["MqttCredentials","User"]; // Add other model names as needed
+  const files = ["MqttCredentials","User","DeviceLog"]; // Add other model names as needed
 
   for (const file of files) {
     const csvpath = path.join(__dirname, `./data/${file}.csv`);

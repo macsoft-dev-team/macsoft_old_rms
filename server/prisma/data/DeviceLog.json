@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "imeinumber": "987654321098765",
+    "receivedAt": "2025-06-17T10:00:00Z",
+    "messageType": "INFO",
+    "payload": "\"{\"\"temperature\"\":25"
+  },
+  {
+    "id": 2,
+    "imeinumber": "987654321098766",
+    "receivedAt": "2025-06-17T10:05:00Z",
+    "messageType": "ERROR",
+    "payload": "\"{\"\"errorCode\"\":101"
+  },
+  {
+    "id": 3,
+    "imeinumber": "987654321098767",
+    "receivedAt": "2025-06-17T10:10:00Z",
+    "messageType": "WARNING",
+    "payload": "\"{\"\"battery\"\":20"
+  },
+  {
+    "id": 4,
+    "imeinumber": "987654321098768",
+    "receivedAt": "2025-06-17T10:15:00Z",
+    "messageType": "INFO",
+    "payload": "\"{\"\"temperature\"\":22"
+  },
+  {
+    "id": 5,
+    "imeinumber": "987654321098769",
+    "receivedAt": "2025-06-17T10:20:00Z",
+    "messageType": "ALERT",
+    "payload": "\"{\"\"alertType\"\":\"\"intrusion\"\""
+  }
+]
