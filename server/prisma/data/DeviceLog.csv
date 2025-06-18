@@ -1,6 +1,6 @@
 id,imeinumber,receivedAt,messageType,payload
-1,987654321098765,2025-06-17T10:00:00Z,INFO,"{""temperature"":25,""status"":""ok""}"
-2,987654321098766,2025-06-17T10:05:00Z,ERROR,"{""errorCode"":101,""message"":""Sensor failure""}"
-3,987654321098767,2025-06-17T10:10:00Z,WARNING,"{""battery"":20,""warning"":""Low battery""}"
-4,987654321098768,2025-06-17T10:15:00Z,INFO,"{""temperature"":22,""status"":""ok""}"
-5,987654321098769,2025-06-17T10:20:00Z,ALERT,"{""alertType"":""intrusion"",""location"":""Zone 3""}"
+1,987654321098765,2025-06-17T10:00:00Z,RESTARTREQUIRED,"{""temperature"":25,""status"":""ok""}"
+2,987654321098766,2025-06-17T10:05:00Z,MOTORDEFECT,"{""errorCode"":101,""message"":""Sensor failure""}"
+3,987654321098767,2025-06-17T10:10:00Z,MOTORRUNNING,"{""battery"":20,""warning"":""Low battery""}"
+4,987654321098768,2025-06-17T10:15:00Z,RESTARTSUCESS,"{""temperature"":22,""status"":""ok""}"
+5,987654321098769,2025-06-17T10:20:00Z,INITIALIZATION,"{""alertType"":""intrusion"",""location"":""Zone 3""}"

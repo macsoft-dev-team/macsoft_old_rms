@@ -7,7 +7,9 @@ import Pagination from "../../components/pagination";
 import { ExportExcelBtn, UploadBtn } from "../../components/common-components";
 import { ButtonGroup } from "react-bootstrap";
 import UploadModal from "./UploadModal";
+import { useNavigate } from "react-router-dom";
 export default function Devices() {
+    const navigate = useNavigate();
     const [show, setShow] = useState(false);
     const dispatch = useDispatch();
     const { devices, loading, error, currentPage, totalPages, searchQuery } = useSelector((state) => state.device);
@@ -29,7 +31,7 @@ export default function Devices() {
                 <div className="d-flex gap-2">
                     <SearchForm onSubmit={handleSearch} onClear={handleClear} />
                     <ButtonGroup>
-                        <UploadBtn onClick={() => setShow(true)} />
+                        <UploadBtn onClick={() => navigate('/devices/upload')} />
                        {/*  <ExportExcelBtn /> */}
                     </ButtonGroup>
                 </div>
@@ -58,8 +60,7 @@ export default function Devices() {
                 onPageChange={(page) => console.log("Change to page:", page)}
             />
         </div>
-            <UploadModal show={show} setShow={setShow} />
-        </section>
+         </section>
      );
 }
 

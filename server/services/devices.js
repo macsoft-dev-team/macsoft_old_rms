@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 const getDevices = async (skip, take, filter) => {
   try {
     const params = {};
-    if (skip) params.skip = (parseInt(skip) - 1) * parseInt(take || 10);
+    if (skip) params.skip = (parseInt(skip) - 1) * parseInt(take);
     if (take) params.take = parseInt(take);
     if (filter) {
       params.where = {

@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 
 
 const Layout = () => {
-  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(true);
   return (
     <ProtectedRoute>
       <main>
