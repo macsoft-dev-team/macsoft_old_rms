@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
   phone     String   @unique
@@ -24,7 +24,7 @@ model User {
 }
 
 model MqttCredentials {
-  id         Int    @id @default(autoincrement())
+  id        String   @id @default(uuid())
   imeinumber String @unique
   host       String
   port       Int
@@ -35,7 +35,7 @@ model MqttCredentials {
 }
 
 model DeviceLog {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   imeinumber  String
   receivedAt  DateTime @default(now())
   messageType String

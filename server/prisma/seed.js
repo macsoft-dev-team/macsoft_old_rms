@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 const fs = require("fs");
 const path = require("path");
 
-const transform = { id: "int", port: "int" };
+const transform = { id: "string", port: "int" };
 
 function csvToJson(csvFilePath, jsonFilePath) {
   // Read CSV file
@@ -18,13 +18,15 @@ function csvToJson(csvFilePath, jsonFilePath) {
 
   // Extract headers
   const headers = rows[0].split(",");
-
-  // Convert rows to JSON
+  console.log("Headers:", headers);
+  
+  // Convert rows to JSON 
   const jsonArray = rows.slice(1).map((row) => {
     const values = row.split(",");
     let obj = {};
     headers.forEach((header, index) => {
       console.log(header);
+        console.log("transform:", transform[header]);
       //transform based on header
       switch (transform[header]) {
         case "int":
