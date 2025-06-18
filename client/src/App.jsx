@@ -5,6 +5,7 @@ import axios from 'axios';
 import Layout from './components/Layout';
 import Devices from './pages/Devices/Devices';
 import DeviceLog from './pages/DeviceLog/DeviceLog';
+import UploadModal from './pages/Devices/UploadModal';
  const router = createBrowserRouter([
   {
     path: '/login',
@@ -17,6 +18,10 @@ import DeviceLog from './pages/DeviceLog/DeviceLog';
       {
         path: 'devices',
         element: <Devices />,
+      },
+      {
+        path: 'devices/upload',
+        element: <UploadModal />,
       },
       {
         path: 'device-log',
