@@ -89,7 +89,7 @@ const ReusableTable = ({ columns, data, headerColor, headerTextColor, size, onRo
             </tr>
           </tbody>
         )} 
-        {loading && (
+        {data.length === 0 && loading && (
           <tbody>
             <tr>
               <td colSpan={columns.length + (showActions ? 1 : 0) + (SNo ? 1 : 0)} className="text-center">

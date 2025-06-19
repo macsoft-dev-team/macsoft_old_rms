@@ -41,7 +41,7 @@ import Template from './pages/Template/Template';
       {
         path: 'templates',
         element: <Template />,
-      }
+      }, 
     ],
   },
 ]);

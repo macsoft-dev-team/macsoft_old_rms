@@ -29,11 +29,12 @@ export const fetchTemplateById = createAsyncThunk(
   }
 );
 
-export const uploadTemplate = createAsyncThunk(
-  "template/uploadTemplate",
-  async (data, { rejectWithValue }) => {
+export const uploadTemplateFile = createAsyncThunk(
+  "template/uploadTemplateFile",
+  async (data, { rejectWithValue,dispatch }) => {
     try {
       const response = await axios.post(`/templates/upload`, data);
+      dispatch(fetchTemplates({ page: 1, size: 10, filter: "" }));  
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -87,6 +88,8 @@ const templateSlice = createSlice({
     totalPages: 1,
     searchQuery: "",
     template: {},
+    isModalOpen: false,
+    isUploadModalOpen: false,
   },
   reducers: {
     setSearchQuery: (state, action) => {
@@ -97,6 +100,12 @@ const templateSlice = createSlice({
     },
     setTemplate: (state, action) => {
       state.template = action.payload;
+    },
+    toggleModal: (state,action) => {
+      state.isModalOpen =  action.payload
+    },
+    toggleUploadModal: (state, action) => {
+      state.isUploadModalOpen = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -127,14 +136,14 @@ const templateSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(uploadTemplate.pending, (state) => {
+      .addCase(uploadTemplateFile.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(uploadTemplate.fulfilled, (state, action) => {
+      .addCase(uploadTemplateFile.fulfilled, (state, action) => {
         state.loading = false;
        })
-      .addCase(uploadTemplate.rejected, (state, action) => {
+      .addCase(uploadTemplateFile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
@@ -180,6 +189,6 @@ const templateSlice = createSlice({
   },
 });
 
-export const { setSearchQuery, clearSearchQuery, setTemplate } = templateSlice.actions;
+export const { setSearchQuery, clearSearchQuery, setTemplate ,toggleModal, toggleUploadModal} = templateSlice.actions;
 
 export default templateSlice.reducer;

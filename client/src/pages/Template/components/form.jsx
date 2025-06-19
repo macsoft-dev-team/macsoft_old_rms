@@ -1,44 +1,176 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import { useEffect } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { Form, Button, Modal, Alert, Table } from 'react-bootstrap';
+import useTemplates from '../../../lib/hooks/template';
+import { FaPlus, FaTrash } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
-export default function TemplateForm() {
-    const { register, handleSubmit, formState: { errors, isSubmitSuccessful } } = useForm();
+export default function TemplateFormModal() {
+    const { isOpen, template, handleModal, createTemplate, updateTemplate, setTemplate } = useTemplates();
+    const { register, handleSubmit, reset, setValue, control, watch, formState: { errors, isSubmitSuccessful } } = useForm({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            name: '',
+            address: '',
+            value: '',
+            items: []  
+        }
+    });
+    const { fields, append, remove } = useFieldArray({
+        name: "items", 
+        control
+    });
 
     const onSubmit = (data) => {
-        // Handle form submission (e.g., send data to API)
-        console.log(data);
+         console.log(data);
+        if(!data.items || data.items.length === 0) {
+            toast.error('At least one address,value config is required');
+            return;
+        }
+        if (template) {
+            // Update existing template
+            updateTemplate(template.id, data);
+        }
+        else {
+            // Create new template
+            createTemplate(data);
+        }
     };
+    const handleAppend = () => {
+        if (!watch('address') || !watch('value')) {
+            toast.error('Address and Value are required');
+            return;
+        }  
+        watch('address') && watch('value') && append({ address: watch('address'), value: watch('value') });
+       //only reset address and value 
+        setValue('address', '');
+        setValue('value', '');
+     };
+
+     useEffect(() => {
+        console.log('TemplateFormModal useEffect', template);
+        
+        if (template) {
+            reset({
+                name: template.name || '',
+                items: template.items || [],
+            });
+            setValue('address', '');
+            setValue('value', '');
+        } else {
+            reset({
+                name: '',
+                items: [],
+            });
+        }
+     },[template])
+
+     const handleClose = () => {
+        handleModal(false);
+        reset({
+            name: '',
+            items: [],
+        });
+     }
 
     return (
-        <Container>
-            <Row className="justify-content-md-center">
-                <Col md={6}>
-                    <h2 className="mb-4">Create Template</h2>
-                    {isSubmitSuccessful && <Alert variant="success">Template created successfully!</Alert>}
-                    <Form onSubmit={handleSubmit(onSubmit)}>
-                        <Form.Group className="mb-3" controlId="name">
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Enter template name"
-                                {...register('name', { required: 'Name is required' })}
-                                isInvalid={!!errors.name}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.name?.message}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                      
-                        <Button variant="primary" type="submit">
-                            Submit 
-                        </Button>
-                         <Button variant="secondary" className="ms-2" onClick={() => console.log('Cancel')}>
+        <Modal size='lg' show={isOpen} onHide={handleClose} centered>
+            <Modal.Header className='py-2' closeButton>
+                <Modal.Title>
+                    {template ? 'Edit Template' : 'Create Template'}
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body className='fs-6'>                
+                <Form onSubmit={handleSubmit(onSubmit)} className='d-flex flex-wrap gap-1'>
+                    <Form.Group controlId="name">
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter template name"
+                            {...register('name', { required: 'Name is required' })}
+                            isInvalid={!!errors.name}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.name?.message}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+
+                    <Table bordered className="mt-3 align-middle">
+                        <thead>
+                            <tr className="table-light text-uppercase">
+                                <th>Address</th>
+                                <th>Value</th>
+                                <th className='text-center' width="50">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {fields.map((item, index) => (
+                                <tr key={item.id}>
+                                    <td>
+                                        {item.address || ''}
+                                    </td>
+                                    <td>
+                                        {item.value || ''}
+                                    </td>
+                                    <td className='text-center'>
+                                        <Button size='sm' variant="danger" onClick={() => remove(index)}><FaTrash /></Button>
+                                    </td>
+                                </tr>
+                            ))}
+                            <tr>
+                                <td>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter address"
+                                        defaultValue={watch('address') || ''}
+                                        {...register('address', { required: 'Address is required' })}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.address?.message}
+                                    </Form.Control.Feedback>
+                                </td>
+                                <td>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter value"
+                                        defaultValue={watch('value') || ''}
+                                        {...register('value', { required: 'Value is required' })}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                        {errors.value?.message}
+                                    </Form.Control.Feedback>
+                                </td>
+                                <td className='text-center'>
+                                    <Button size='sm' variant="success" onClick={handleAppend}>
+                                        <FaPlus />
+                                    </Button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </Table>
+                    <div className="d-flex flex-fill w-100 justify-content-end">
+                        <Button variant="secondary" className="me-2" onClick={handleClose}>
                             Cancel
                         </Button>
-                    </Form>
-                </Col>
-            </Row>
-        </Container>
+                        <Button variant="primary" type="submit">
+                            Submit
+                        </Button>
+                    </div>
+                </Form>
+            </Modal.Body>
+        </Modal>
     );
 }
+
+const schema = yup.object().shape({
+    name: yup.string().required('Name is required'),
+    items: yup.array().of(
+        yup.object().shape({
+            address: yup.string().required('Address is required'),
+            value: yup.string().required('Value is required'),
+        })
+    ),
+});

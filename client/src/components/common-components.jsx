@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { OverlayTrigger, Tooltip, Button } from "react-bootstrap";
-import { FaFileUpload, FaPlus, FaFileDownload, FaCheck } from "react-icons/fa";
+import { FaFileUpload, FaPlus, FaFileDownload, FaCheck, FaEdit } from "react-icons/fa";
 import { RiFileExcel2Line } from "react-icons/ri";
 import * as XLSX from "xlsx";
 
 export const ToolText = ({ id, children, title }) => (
   <OverlayTrigger
-    overlay={<Tooltip id={id}>{title}</Tooltip>}
+    overlay={<Tooltip
+      id={id}>{title}</Tooltip>}
   >
     {children}
   </OverlayTrigger>
@@ -20,7 +21,7 @@ export const UploadBtn = (props) => {
         onClick={onClick}
         className="rounded-0"
         type="button"
-        variant="primary"
+        variant="secondary"
       >
         <FaFileUpload />
       </Button>
@@ -36,7 +37,7 @@ export const ExportExcelBtn = (props) => {
         onClick={onClick}
         className="rounded-0"
         type="button"
-        variant="success"
+        variant="success-emphasis"
       >
         <RiFileExcel2Line />
       </Button>
@@ -45,14 +46,15 @@ export const ExportExcelBtn = (props) => {
 };
 
 export const AddBtn = (props) => {
-  const { onClick } = props;
+  const { onClick, disabled } = props;
   return (
     <ToolText title="Add new" id="tooltip-2">
       <Button
         onClick={onClick}
         className="rounded-0"
         type="button"
-        variant="secondary"
+        variant="success"
+        disabled={disabled}
       >
         <FaPlus />
       </Button>
@@ -105,7 +107,7 @@ export const usePagination = (initialPage) => {
 
   return { currentPage, onPageChange };
 };
- 
+
 export const DataNotFound = (props) => {
   const { message } = props;
   return (
@@ -113,7 +115,7 @@ export const DataNotFound = (props) => {
       <h5 className="text-center tracking-widest">{message}!</h5>
     </div>
   );
-}; 
+};
 
 export const readExcelAsJSON = (file) => {
   return new Promise((resolve, reject) => {
@@ -155,3 +157,19 @@ export const serialNo = (page, index) => {
   return Math.max(index + 1 + (page - 1) * 10, 1 + index);
 };
 
+
+export const EditBtn = (props) => {
+  const { onClick, name } = props;
+  return (
+    <ToolText title="Edit" id="tooltip-2">
+      <Button
+        onClick={onClick}
+        className="rounded-0"
+        type="button"
+        variant="primary"
+      >
+        <FaEdit />
+      </Button>
+    </ToolText>
+  );
+}
