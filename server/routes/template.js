@@ -3,6 +3,7 @@ const router = express.Router();
 const templateController = require('../controllers/template');
 
 router.get('/', templateController.getTemplates);
+router.get('/:id', templateController.getTemplateById);
 router.post('/upload', templateController.uploadTemplate);
 router.post('/', templateController.createTemplate);
 router.put('/:id', templateController.updateTemplate);

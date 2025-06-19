@@ -1,57 +1,71 @@
-const {PrismaClient} = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-const getTemplates = async () => {
+const getTemplates = async (skip, take, filter) => {
   try {
-    const templates = await prisma.template.findMany({
+    const params = {
+      include: {
+        items: true,
+      },
+    };
+    if (skip) params.skip = (parseInt(skip) - 1) * parseInt(take) || 0;
+    if (take) params.take = parseInt(take);
+    if (filter)
+      params.where = {
+        OR: [
+          { name: { contains: filter, mode: "insensitive" } },
+          { items: { some: { address: { contains: filter } } } },
+        ],
+      };
+
+    const count = await prisma.template.count({ where: params.where || {} });
+    const templates = await prisma.template.findMany(params);
+
+    return { templates, count };
+  } catch (error) {
+    console.error("Error fetching templates:", error);
+    throw error;
+  }
+};
+
+const getTemplateById = async (id) => {
+  try {
+    const template = await prisma.template.findUnique({
+      where: { id },
       include: {
         items: true,
       },
     });
-    return templates;
+    if (!template) {
+      throw new Error("Template not found");
+    }
+    return template;
   } catch (error) {
-    console.error('Error fetching templates:', error);
+    console.error("Error fetching template by ID:", error);
     throw error;
   }
 }
 
 const uploadTemplate = async (templateData) => {
   try {
-   //template data is a array having name,templateId(unique) ,address and value
-    const newTemplates=[]   ;
-    for(const template of templateData) {
-      const {name, templateId, address, value} = template;
-      const newTemplate = await prisma.template.upsert({
-        where: { templateId },
-        update: {
-          name,
-          items: {
-            upsert: {
-              where: { address },
-              update: { value },
-              create: { address, value },
-            },
-          },
+    const { name, items } = templateData;
+    const newTemplates = await prisma.template.create({
+      data: {
+        name,
+        items: {
+          create: items.map((item) => ({
+            address: item.address,
+            value:String(item.value), // Ensure value is stored as a string
+          })),
         },
-        create: {
-          name,
-          templateId,
-          items: {
-            create: {
-              address,
-              value,
-            },
-          },
-        },
-      });
-      newTemplates.push(newTemplate);
-    }
+      },
+    });
     return newTemplates;
   } catch (error) {
-    console.error('Error uploading template:', error);
+    console.error("Error uploading template:", error);
     throw error;
   }
-}
+};
 
 const createTemplate = async (data) => {
   try {
@@ -59,9 +73,8 @@ const createTemplate = async (data) => {
     const newTemplate = await prisma.template.create({
       data: {
         name,
-        templateId,
         items: {
-          create: items.map(item => ({
+          create: items.map((item) => ({
             address: item.address,
             value: item.value,
           })),
@@ -73,21 +86,21 @@ const createTemplate = async (data) => {
     });
     return newTemplate;
   } catch (error) {
-    console.error('Error creating template:', error);
+    console.error("Error creating template:", error);
     throw error;
   }
-}
+};
 
 const updateTemplate = async (id, data) => {
   try {
-    const { name, templateId, items } = data;
+    const { name, items } = data.data;
     const updatedTemplate = await prisma.template.update({
       where: { id },
       data: {
         name,
-        templateId,
         items: {
-          create: items.map(item => ({
+          deleteMany: {},
+          create: items.map((item) => ({
             address: item.address,
             value: item.value,
           })),
@@ -99,10 +112,10 @@ const updateTemplate = async (id, data) => {
     });
     return updatedTemplate;
   } catch (error) {
-    console.error('Error updating template:', error);
+    console.error("Error updating template:", error);
     throw error;
   }
-}
+};
 
 const deleteTemplate = async (id) => {
   try {
@@ -114,15 +127,16 @@ const deleteTemplate = async (id) => {
       where: { id },
     });
   } catch (error) {
-    console.error('Error deleting template:', error);
+    console.error("Error deleting template:", error);
     throw error;
   }
-}
+};
 
 module.exports = {
   getTemplates,
+  getTemplateById,
   uploadTemplate,
   createTemplate,
   updateTemplate,
   deleteTemplate,
-}
+};

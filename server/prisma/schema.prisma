@@ -51,11 +51,10 @@ model DeviceLog {
 }
 
 model Template {
-  id         String   @id @default(cuid())
-  name       String
-  templateId String   @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   items TemplateItem[]
@@ -64,7 +63,7 @@ model Template {
 model TemplateItem {
   id         String @id @default(cuid())
   templateId String
-  address    String @unique
+  address    String
   value      String
 
   // Relations
