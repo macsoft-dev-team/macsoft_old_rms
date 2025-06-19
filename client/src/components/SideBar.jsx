@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { MdLogout } from "react-icons/md";
 import { logout } from '../lib/reducer/authSlice';
 import { useDispatch } from 'react-redux';
+import {navData} from '../lib/constants/navData';
 export default function Sidebar({ show, onHide }) {
   const dispatch = useDispatch();
   return (
@@ -22,19 +23,9 @@ export default function Sidebar({ show, onHide }) {
       </Button>
       )}
       <Nav className="nav">
-        <Nav.Link as={NavLink} to="/devices" className='nav-link'>
-          <FaTachometerAlt />
-          <span style={{ marginLeft: 8 }}>Devices</span>
-        </Nav.Link>
-        <Nav.Link as={NavLink} to="/device-log" className='nav-link'>
-          <FaUser />
-          <span style={{ marginLeft: 8 }}>Device Log</span>
-        </Nav.Link>
-        {/*
-        <Nav.Link as={NavLink} to="/settings" className='nav-link'>
-          <FaCog />
-          <span style={{ marginLeft: 8 }}>Settings</span>
-        </Nav.Link> */}
+        {navData.map(item => (
+          <LinkNav key={item.title} {...item} />
+        ))}
        </Nav>
         <Button className='m-2 mt-auto d-flex align-items-center justify-content-center gap-2' size='sm' variant="outline-danger" onClick={() => dispatch(logout())}>
           <MdLogout/>
@@ -43,6 +34,16 @@ export default function Sidebar({ show, onHide }) {
     </aside>
       
     </div>
+  );
+}
+
+const LinkNav=(props)=>{
+  const{title,icon,url} =props;
+  return (
+    <Nav.Link as={NavLink} to={url} className='nav-link'>
+      {icon}
+      <span style={{ marginLeft: 8 }}>{title}</span>
+    </Nav.Link>
   );
 }
 

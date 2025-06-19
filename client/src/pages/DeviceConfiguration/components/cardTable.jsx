@@ -1,12 +1,11 @@
 import React from 'react';
-import { Table } from 'react-bootstrap';
+import { Spinner, Table } from 'react-bootstrap';
 
 function CardTable(props) {
-    const { title, detailPairs, data } = props;
+    const { title, detailPairs, data, loading } = props;
     return (
-        <section className="flex-lg-fill" key={title}>
-            <section className="w-100" >
-                <h6 className="text-uppercase">{title}</h6>
+        <section className="flex-fill card-table" key={title}>
+                  <h6 className="text-uppercase">{title}</h6>
                 <Table responsive bordered className="table-sm shadow-sm align-middle text-nowrap">
                     <tbody>
                         {(detailPairs.length > 4 // more than 4 items = 4-column layout
@@ -26,7 +25,7 @@ function CardTable(props) {
                                         >
                                             {detail.label}
                                         </th>
-                                        <td className="text-end px-2" style={{ height: "30px" }}>{data?.[detail.key] ? data[detail.key] : '-'} {detail.unit ? detail.unit : ''}</td>
+                                        <td className="text-end px-2" style={{ height: "30px" }}>{data?.[detail.key] ? data[detail.key] : loading ? <Spinner animation="border" size="sm" /> : '-'} {detail.unit ? detail.unit : ''}</td>
                                     </React.Fragment>
                                 ))}
                                 {pair.length < (detailPairs.length > 4 ? 2 : 1) && (
@@ -38,8 +37,7 @@ function CardTable(props) {
                             </tr>
                         ))}
                     </tbody>
-                </Table>
-            </section>
+                </Table> 
         </section>
     );
 }

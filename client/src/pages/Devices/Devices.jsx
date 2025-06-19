@@ -32,6 +32,9 @@ export default function Devices() {
                 headerColor="#007bff"
                 headerTextColor="#fff"
                 onRowClick={(row) => handleRowClick(row)}
+                SNo={true}
+                currentPage={currentPage}
+                pageSize={totalPages}
                 columns={[
                     { key: 'host', label: 'Host', width: 150, align: 'start', textWrap: 'nowrap' },
                     { key: 'imeinumber', label: 'IMEI Number', width: 150, align: 'start', textWrap: 'nowrap' },

@@ -6,7 +6,7 @@ import './Table.css';
 import { Col, Spinner } from 'react-bootstrap';
 
 
-const ReusableTable = ({ columns, data, headerColor, headerTextColor, size, onRowClick, onEdit, onDelete, onView,loading }) => {
+const ReusableTable = ({ columns, data, headerColor, headerTextColor, size, onRowClick, onEdit, onDelete, onView, loading, SNo, currentPage, pageSize }) => {
   // Helper to get class for alignment
   const getAlignClass = (align) => {
     if (align === 'right' || align === 'end') return 'text-end';
@@ -28,6 +28,15 @@ const ReusableTable = ({ columns, data, headerColor, headerTextColor, size, onRo
       <Table size={size} bordered hover responsive>
         <thead>
           <tr>
+            {SNo && (
+              <th
+              width={50}
+                style={{ backgroundColor: headerColor, color: headerTextColor, minWidth: 50 }}
+                className="text-center text-uppercase fw-medium"
+              >
+                SNo
+              </th>
+            )}
             {columns.map((col) => (
               <th
                 key={col.key}
@@ -47,6 +56,9 @@ const ReusableTable = ({ columns, data, headerColor, headerTextColor, size, onRo
         <tbody>
           {data.map((row, i) => (
             <tr key={i} onClick={() => onRowClick && onRowClick(row)} style={onRowClick ? { cursor: 'pointer' } : {}}>
+              {SNo && (
+                <td className="text-center">{((currentPage - 1) * pageSize) + i + 1}</td>
+              )}
               {columns.map((col) => (
                 <td
                   key={col.key}
@@ -71,7 +83,7 @@ const ReusableTable = ({ columns, data, headerColor, headerTextColor, size, onRo
         {data.length === 0 && !loading && (
           <tbody>
             <tr>
-              <td colSpan={columns.length + (showActions ? 1 : 0)} className="text-center text-muted">
+              <td colSpan={columns.length + (showActions ? 1 : 0) + (SNo ? 1 : 0)} className="text-center text-muted">
                 No data available
               </td>
             </tr>
@@ -80,7 +92,7 @@ const ReusableTable = ({ columns, data, headerColor, headerTextColor, size, onRo
         {loading && (
           <tbody>
             <tr>
-              <td colSpan={columns.length + (showActions ? 1 : 0)} className="text-center">
+              <td colSpan={columns.length + (showActions ? 1 : 0) + (SNo ? 1 : 0)} className="text-center">
                 <Col className="d-flex h-100 align-items-center justify-content-center">Loading <Spinner size="sm" className="mx-2" animation="border" variant="primary" /></Col>
               </td>
             </tr>
