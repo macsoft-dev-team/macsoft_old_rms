@@ -8,4 +8,11 @@
         min-width: 300px !important;
         max-width: 330px !important;
       }   
+      
+}
+@media screen and (max-width: 767px) {
+  .card-table {
+    width: 100% !important;
+  } 
+  
 }

@@ -16,9 +16,6 @@ export default function DeviceConfiguration() {
             fetchDeviceById(deviceId);
         }
     }, [deviceId]);
-
-    console.log("Device Configuration Data:", device);
-
     return (
         <>
 

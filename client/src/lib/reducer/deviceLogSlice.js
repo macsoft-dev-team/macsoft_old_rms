@@ -1,11 +1,13 @@
-import { createAsyncThunk,createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const initialState = {
   deviceLogs: [],
   loading: false,
-    currentPage: null,
-    totalPages: 0,
+  currentPage: null,
+  totalPages: 0,
   error: null,
+  searchQuery: "",
+  deviceLog: {},
 };
 
 export const fetchDeviceLogs = createAsyncThunk(
@@ -27,7 +29,17 @@ export const fetchDeviceLogs = createAsyncThunk(
 const deviceLogSlice = createSlice({
   name: "deviceLogs",
   initialState,
-  reducers: {},
+  reducers: {
+    setSearchQuery: (state, action) => {
+      state.searchQuery = action.payload;
+    },
+    clearSearchQuery: (state) => {
+      state.searchQuery = "";
+    },
+    setDeviceLog: (state, action) => {
+      state.deviceLog = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchDeviceLogs.pending, (state) => {
@@ -47,4 +59,6 @@ const deviceLogSlice = createSlice({
   },
 });
 
- export default deviceLogSlice.reducer; 
+export const { setSearchQuery, clearSearchQuery, setDeviceLog } = deviceLogSlice.actions;
+
+export default deviceLogSlice.reducer;

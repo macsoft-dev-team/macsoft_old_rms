@@ -18,16 +18,13 @@ function csvToJson(csvFilePath, jsonFilePath) {
 
   // Extract headers
   const headers = rows[0].split(",");
-  console.log("Headers:", headers);
-  
+   
   // Convert rows to JSON 
   const jsonArray = rows.slice(1).map((row) => {
     const values = row.split(",");
     let obj = {};
     headers.forEach((header, index) => {
-      console.log(header);
-        console.log("transform:", transform[header]);
-      //transform based on header
+        //transform based on header
       switch (transform[header]) {
         case "int":
           obj[header] = parseInt(values[index]?.trim());

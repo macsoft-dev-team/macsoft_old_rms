@@ -8,6 +8,7 @@ import DeviceLog from './pages/DeviceLog/DeviceLog';
 import UploadModal from './pages/Devices/UploadModal';
 import DeviceConfiguration from './pages/DeviceConfiguration/DeviceConfiguration';
 import ConfigurationRequest from './pages/ConfigurationRequest/ConfigurationRequest';
+import Template from './pages/Template/Template';
   const router = createBrowserRouter([
   {
     path: '/login',
@@ -36,6 +37,10 @@ import ConfigurationRequest from './pages/ConfigurationRequest/ConfigurationRequ
       {
         path: 'device-log',
         element: <DeviceLog />,
+      },
+      {
+        path: 'templates',
+        element: <Template />,
       }
     ],
   },
