@@ -5,10 +5,11 @@ const initialState = {
   devices: [],
   device: {},
   currentPage: null,
-    totalPages: 0,
+  totalPages: 0,
   error: null,
   loading: false,
   searchQuery: "",
+  configModal:false,
 };
 
 export const fetchDevices = createAsyncThunk(
@@ -38,6 +39,18 @@ export const uploadDevices = createAsyncThunk(
     }
   }
 );
+export const fetchDevice = createAsyncThunk(
+  "devices/fetchDevice",
+  async (deviceId, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/devices/${deviceId}`);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || "Failed to fetch device");
+    }
+  }
+);  
+
 const deviceSlice = createSlice({
   name: "devices",
   initialState,
@@ -50,6 +63,9 @@ const deviceSlice = createSlice({
     },
     setDevice: (state, action) => {
       state.device = action.payload;
+    },
+    setConfigModal: (state, action) => {
+      state.configModal = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -79,10 +95,22 @@ const deviceSlice = createSlice({
       .addCase(uploadDevices.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(fetchDevice.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchDevice.fulfilled, (state, action) => {
+        state.loading = false;
+        state.device = action.payload;
+      })
+      .addCase(fetchDevice.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
 
-export const { setSearchQuery, clearSearchQuery, setDevice } = deviceSlice.actions;
+export const { setSearchQuery, clearSearchQuery, setDevice ,setConfigModal} = deviceSlice.actions;
 
 export default deviceSlice.reducer;

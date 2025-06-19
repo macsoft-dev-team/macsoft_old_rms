@@ -1,0 +1,38 @@
+[
+  {
+     "title": "Energy Card",
+    "cardType": "NORMAL",
+    "items": [
+      { "keyLabel": "Last Update", "dataKey": "lastUpdate", "unit": "", "sortOrder": 1 },
+      { "keyLabel": "Status", "dataKey": "status", "unit": "", "sortOrder": 2 },
+      { "keyLabel": "Today Energy", "dataKey": "todayEnergy", "unit": "kWh", "sortOrder": 3 },
+      { "keyLabel": "Total Energy", "dataKey": "totalEnergy", "unit": "kWh", "sortOrder": 4 },
+      { "keyLabel": "PV Voltage", "dataKey": "pvVoltage", "unit": "V", "sortOrder": 5 },
+      { "keyLabel": "PV Current", "dataKey": "pvCurrent", "unit": "A", "sortOrder": 6 }
+    ]
+  },
+  {
+     "title": "Water Card",
+    "cardType": "NORMAL",
+    "items": [
+      { "keyLabel": "SSP-ID", "dataKey": "sspId", "unit": "", "sortOrder": 1 },
+      { "keyLabel": "Device-ID", "dataKey": "deviceId", "unit": "", "sortOrder": 2 },
+      { "keyLabel": "Today Water Output", "dataKey": "todayWaterOutput", "unit": "kL", "sortOrder": 3 },
+      { "keyLabel": "Total Water Output", "dataKey": "totalWaterOutput", "unit": "kL", "sortOrder": 4 },
+      { "keyLabel": "Motor Run Hours", "dataKey": "motorRunHours", "unit": "Hrs", "sortOrder": 5 },
+      { "keyLabel": "LPM", "dataKey": "lpm", "unit": "Litre", "sortOrder": 6 }
+    ]
+  },
+  {
+     "title": "Device Info Card",
+    "cardType": "NORMAL",
+    "items": [
+      { "keyLabel": "IMEI", "dataKey": "imei", "unit": "", "sortOrder": 1 },
+      { "keyLabel": "Signal Strength", "dataKey": "signalStrength", "unit": "%", "sortOrder": 2 },
+      { "keyLabel": "Co2 Emission Saved", "dataKey": "co2EmissionSaved", "unit": "kg", "sortOrder": 3 },
+      { "keyLabel": "Tree Planted Equivalent", "dataKey": "treePlantedEquivalent", "unit": "", "sortOrder": 4 },
+      { "keyLabel": "Fault", "dataKey": "fault", "unit": "", "sortOrder": 5 },
+      { "keyLabel": "Temperature", "dataKey": "temperature", "unit": "", "sortOrder": 6 }
+    ]
+  }
+]

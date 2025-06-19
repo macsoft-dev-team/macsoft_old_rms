@@ -46,8 +46,23 @@ const uploadDevices = async (req, res) => {
   }
 };
 
+const getDeviceById = async (req, res) => {
+  const { deviceId } = req.params;
+  try {
+    const device = await deviceService.getDeviceById(deviceId);
+    if (!device) {
+      return res.status(404).json({ error: "Device not found" });
+    }
+    res.status(200).json(device);
+  } catch (error) {
+    console.error("Error fetching device by ID:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   getDevices,
   getDeviceByImei,
   uploadDevices,
+  getDeviceById,
 };

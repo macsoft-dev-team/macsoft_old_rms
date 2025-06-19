@@ -10,14 +10,14 @@ const Layout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(true);
   return (
     <ProtectedRoute>
-      <main>
+      <main style={{ height: '100vh', overflow: 'hidden' }}>
         <TopBar onSidebarToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
-        <section className="d-flex">
+        <section className="d-flex" style={{ height: 'calc(100vh - 56px)', overflow: 'hidden' }}>
           <Sidebar
             show={sidebarCollapsed}
             onHide={() => setSidebarCollapsed(!sidebarCollapsed)}
           />
-          <div className="p-3 flex-grow-1 bg-light overflow-x-hidden">
+          <div className="p-3 flex-grow-1 bg-light overflow-x-hidden" style={{ height: '100%', overflowY: 'auto' }}>
             <Outlet />
           </div>
         </section>

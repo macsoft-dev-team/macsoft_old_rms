@@ -13,6 +13,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UICardType {
+  NORMAL
+  TWOCOLUMN
+  FOURCOLUMN
+  FAULTS
+  CHART
+}
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -24,7 +32,7 @@ model User {
 }
 
 model MqttCredentials {
-  id        String   @id @default(uuid())
+  id         String @id @default(uuid())
   imeinumber String @unique
   host       String
   port       Int
@@ -40,4 +48,23 @@ model DeviceLog {
   receivedAt  DateTime @default(now())
   messageType String
   payload     Json
+}
+
+model Uicardtemplate {
+  id            String       @id @default(cuid())
+  title         String
+  cardType      UICardType   @default(NORMAL)
+  items         Uicarditem[]
+  deviceClassId String
+}
+
+model Uicarditem {
+  id        String  @id @default(cuid())
+  cardId    String
+  keyLabel  String
+  dataKey   String
+  unit      String?
+  sortOrder Int
+
+  card Uicardtemplate @relation(fields: [cardId], references: [id])
 }

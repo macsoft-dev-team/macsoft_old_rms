@@ -1,0 +1,11 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/bootstrap";
+
+@media screen and (min-width: 768px) {
+    .device-card {
+        min-width: 300px !important;
+        max-width: 330px !important;
+      }   
+}

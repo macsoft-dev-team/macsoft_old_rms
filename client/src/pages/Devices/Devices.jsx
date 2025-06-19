@@ -1,28 +1,18 @@
 import SearchForm from "../../components/SearchForm";
 import ReusableTable from "../../components/Table";
-import { useEffect,useState } from "react";
-import { useDispatch,useSelector } from "react-redux";
-import { clearSearchQuery, fetchDevices, setSearchQuery } from "../../lib/reducer/deviceSlice";
 import Pagination from "../../components/pagination";
 import { ExportExcelBtn, UploadBtn } from "../../components/common-components";
 import { ButtonGroup } from "react-bootstrap";
-import UploadModal from "./UploadModal";
 import { useNavigate } from "react-router-dom";
+import useDevices from "../../lib/hooks/device";
 export default function Devices() {
     const navigate = useNavigate();
-    const [show, setShow] = useState(false);
-    const dispatch = useDispatch();
-    const { devices, loading, error, currentPage, totalPages, searchQuery } = useSelector((state) => state.device);
-    const handleClear = () => {
-         dispatch(clearSearchQuery());
-    }
-    const handleSearch = (data) => {
-         dispatch(setSearchQuery(data.filter));
+    const { devices, loading, error, currentPage, totalPages, searchQuery, handleClear, handleSearch } = useDevices();
+
+    const handleRowClick = (row) => {
+        navigate(`/device/device-configuration/${row.id}`);
     }
 
-    useEffect(() => {
-         dispatch(fetchDevices({ page: currentPage, size: 10, filter: searchQuery }));
-    }, [ searchQuery]);
 
     return (
         <section className="d-flex flex-column">
@@ -32,16 +22,16 @@ export default function Devices() {
                     <SearchForm onSubmit={handleSearch} onClear={handleClear} />
                     <ButtonGroup>
                         <UploadBtn onClick={() => navigate('/devices/upload')} />
-                       {/*  <ExportExcelBtn /> */}
+                        {/*  <ExportExcelBtn /> */}
                     </ButtonGroup>
                 </div>
             </header>
-            <ReusableTable    
+            <ReusableTable
                 loading={loading}
                 error={error}
-                headerColor="#007bff"        
-                headerTextColor="#fff"   
-                onRowClick={(row) => console.log(row)}
+                headerColor="#007bff"
+                headerTextColor="#fff"
+                onRowClick={(row) => handleRowClick(row)}
                 columns={[
                     { key: 'host', label: 'Host', width: 150, align: 'start', textWrap: 'nowrap' },
                     { key: 'imeinumber', label: 'IMEI Number', width: 150, align: 'start', textWrap: 'nowrap' },
@@ -53,14 +43,14 @@ export default function Devices() {
                 ]}
                 data={devices}
             />
-        <div className="ms-auto">
-            <Pagination
-                currentPage={currentPage || 0}
-                totalPages={totalPages || 0}
-                onPageChange={(page) => console.log("Change to page:", page)}
-            />
-        </div>
-         </section>
-     );
+            <div className="ms-auto">
+                <Pagination
+                    currentPage={currentPage || 0}
+                    totalPages={totalPages || 0}
+                    onPageChange={(page) => console.log("Change to page:", page)}
+                />
+            </div>
+        </section>
+    );
 }
 
