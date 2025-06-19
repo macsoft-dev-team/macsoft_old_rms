@@ -1,8 +1,9 @@
+import React from "react";
 import { Form, Button, InputGroup } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { FaSearch } from "react-icons/fa";
 
-export default function SearchForm(props) {
+function SearchForm(props) {
   const { register, handleSubmit, watch, reset } = useForm();
   const { onSubmit, onClear } = props;
 
@@ -38,3 +39,5 @@ export default function SearchForm(props) {
     </Form>
   );
 }
+
+export default React.memo(SearchForm);

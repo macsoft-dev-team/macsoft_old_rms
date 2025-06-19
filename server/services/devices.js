@@ -61,8 +61,21 @@ const uploadDevices = async (data) => {
   }
 };
 
+const getDeviceById = async (id) => {
+  try {
+    const device = await prisma.mqttCredentials.findUnique({
+      where: { id: id },
+    });
+    return device;
+  } catch (error) {
+    console.error("Error fetching device by ID:", error);
+    throw new Error("Internal server error");
+  }
+};
+
 module.exports = {
   getDevices,
   getDeviceByImei,
   uploadDevices,
+  getDeviceById,
 };

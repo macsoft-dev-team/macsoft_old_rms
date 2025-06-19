@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Form, Button, Spinner, Alert, Container, Row, Col, Card } from 'react-bootstrap';
 import { login } from '../lib/reducer/authSlice';
@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 const LoginPage = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const dispatch = useDispatch();
-
+  const { loading, isAuthenticated } = useSelector((state) => state.auth);
   const onSubmit = async (data) => {
     dispatch(login(data))
       .unwrap()
@@ -54,8 +54,8 @@ const LoginPage = () => {
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Button variant="primary" type="submit" className="w-100" /* disabled={isLoading} */>
-                  {/*                   {isLoading ? <><Spinner animation="border" size="sm" /> Logging in...</> : 'Login'}
- */}               Login </Button>
+                  {loading || isAuthenticated ? <><Spinner animation="border" size="sm" /> Logging in...</> : 'Login'}
+                 </Button>
               </Form>
             </Card.Body>
           </Card>
