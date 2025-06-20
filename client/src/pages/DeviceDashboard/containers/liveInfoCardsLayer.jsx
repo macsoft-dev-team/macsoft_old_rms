@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import { deviceConfigData } from '../../../lib/constants/metadata';
+import LineChart from './lineChart';
     
 
 function LiveInfoCard() {
@@ -34,8 +35,14 @@ function LiveInfoCard() {
                     </Card.Body>
                 </Card>
             ))}
+            <div className="flex-fill w-100">
+            <LineChart />
+            </div>
         </section>
     );
 }
 
 export default React.memo(LiveInfoCard);
+
+
+

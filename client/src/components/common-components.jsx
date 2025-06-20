@@ -159,7 +159,7 @@ export const serialNo = (page, index) => {
 
 
 export const EditBtn = (props) => {
-  const { onClick, name } = props;
+  const { onClick, name, children } = props;
   return (
     <ToolText title="Edit" id="tooltip-2">
       <Button

@@ -10,7 +10,7 @@ export default function Devices() {
     const { devices, loading, error, currentPage, totalPages, searchQuery, handleClear, handleSearch } = useDevices();
 
     const handleRowClick = (row) => {
-        navigate(`/device/device-configuration/${row.id}`);
+        navigate(`/device/device-dashboard/${row.id}`);
     }
 
 

@@ -1,18 +1,34 @@
- import { FaTachometerAlt, FaUser, FaCog } from 'react-icons/fa'
+import { FaTachometerAlt, FaMicrochip, FaExclamationTriangle, FaClipboardList, FaFileAlt, FaUsers } from 'react-icons/fa'
 export const navData = [
   {
-    title: 'SSP Devices',
+    title: 'Dashboard',
     icon: <FaTachometerAlt />,
+    url: '/dashboard',
+  },
+  {
+    title: 'SSP Devices',
+    icon: <FaMicrochip />,
     url: '/devices',
   },
   {
+    title: 'Faults',
+    icon: <FaExclamationTriangle />,
+    url: '/faults',
+  },
+  {
     title: 'Device Log',
-    icon: <FaUser />,
+    icon: <FaClipboardList />,
     url: '/device-log',
   },
   {
     title: 'Templates',
-    icon: <FaCog />,
+    icon: <FaFileAlt />,
     url: '/templates',
   },
+  {
+    title: 'Customers',
+    icon: <FaUsers />,
+    url: '/customers',
+  },
 ];
+

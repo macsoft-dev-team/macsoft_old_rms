@@ -8,7 +8,6 @@ export default function InfoLayer() {
     return (
         <section className="mb-2 d-flex flex-wrap gap-2 ">
             <CardTable
-
                 key={"title-device-info"}
                 title="Device Information"
                 detailPairs={deviceInfoMeta}
