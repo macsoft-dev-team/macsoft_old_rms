@@ -10,7 +10,8 @@ import {
   setTemplate as setCurrentTemplate,
   clearSearchQuery,
   setSearchQuery,
-  toggleModal,
+  setEdit as setEditTemplate,
+  setCreate as setCreateTemplate,
   toggleUploadModal,
 } from "../reducer/templateSlice";
 import { toast } from "react-toastify";
@@ -25,7 +26,8 @@ function useTemplates() {
     currentPage,
     totalPages,
     searchQuery,
-    isModalOpen,
+    isEdit,
+    isCreate,
     isUploadModalOpen,
   } = useSelector((state) => state.template);
 
@@ -60,6 +62,7 @@ function useTemplates() {
         if (res.error) {
           toast.error("Error creating template:", res.error);
         } else {
+          dispatch(setCreateTemplate(false));
           toast.success("Template created successfully!");
         }
       });
@@ -68,14 +71,14 @@ function useTemplates() {
   );
   const updateTemplate = React.useCallback(
     (id, data) => {
-      dispatch(updateExistingTemplate({ id, data })).then((res)=>{
+      dispatch(updateExistingTemplate({ id, data })).then((res) => {
         if (res.error) {
           toast.error("Error updating template:", res.error);
         } else {
           toast.success("Template updated successfully!");
-          dispatch(toggleModal(false));  
+          dispatch(setEditTemplate(false));
         }
-      })
+      });
     },
     [dispatch]
   );
@@ -101,15 +104,18 @@ function useTemplates() {
   const handleSearch = (data) => {
     dispatch(setSearchQuery(data.filter));
   };
-  const handleModal = (action) => {
-    dispatch(toggleModal(action));
-  };
   const handleUploadModal = (action) => {
     dispatch(toggleUploadModal(action));
   };
 
   const setTemplate = (data) => {
     dispatch(setCurrentTemplate(data));
+  };
+  const setEdit = (action) => {
+    dispatch(setEditTemplate(action));
+  };
+  const setCreate = (action) => {
+    dispatch(setCreateTemplate(action));
   };
 
   return {
@@ -120,8 +126,9 @@ function useTemplates() {
     error,
     currentPage,
     totalPages,
-    isOpen : isModalOpen,
     isUpload: isUploadModalOpen,
+    isEdit,
+    isCreate,
     fetchTemplate,
     uploadTemplate,
     createTemplate,
@@ -131,8 +138,9 @@ function useTemplates() {
     handlePageChange,
     handleClear,
     handleSearch,
-    handleModal,
     handleUploadModal,
+    setEdit,
+    setCreate,
   };
 }
 

@@ -44,9 +44,10 @@ export const uploadTemplateFile = createAsyncThunk(
 
 export const createTemplate = createAsyncThunk(
   "template/createTemplate",
-  async (data, { rejectWithValue }) => {
+  async (data, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.post(`/templates`, data);
+      dispatch(fetchTemplates({ page: 1, size: 10, filter: "" }));
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -56,9 +57,10 @@ export const createTemplate = createAsyncThunk(
 
 export const updateTemplate = createAsyncThunk(
   "template/updateTemplate",
-  async (data, { rejectWithValue }) => {
+  async (data, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.put(`/templates/${data.id}`, data);
+      dispatch(fetchTemplates({ page: 1, size: 10, filter: "" }));
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -88,7 +90,8 @@ const templateSlice = createSlice({
     totalPages: 1,
     searchQuery: "",
     template: {},
-    isModalOpen: false,
+    isEdit: false,
+    isCreate: false,
     isUploadModalOpen: false,
   },
   reducers: {
@@ -101,8 +104,11 @@ const templateSlice = createSlice({
     setTemplate: (state, action) => {
       state.template = action.payload;
     },
-    toggleModal: (state,action) => {
-      state.isModalOpen =  action.payload
+   setEdit: (state, action) => {
+      state.isEdit = action.payload;
+    },
+    setCreate: (state, action) => {
+      state.isCreate = action.payload;
     },
     toggleUploadModal: (state, action) => {
       state.isUploadModalOpen = action.payload;
@@ -165,9 +171,12 @@ const templateSlice = createSlice({
       })
       .addCase(updateTemplate.fulfilled, (state, action) => {
         state.loading = false;
+        state.template = action.payload;
         const index = state.templates.findIndex((template) => template.id === action.payload.id);
         if (index !== -1) {
           state.templates[index] = action.payload;
+        } else {
+          state.templates.push(action.payload);
         }
       })
       .addCase(updateTemplate.rejected, (state, action) => {
@@ -189,6 +198,6 @@ const templateSlice = createSlice({
   },
 });
 
-export const { setSearchQuery, clearSearchQuery, setTemplate ,toggleModal, toggleUploadModal} = templateSlice.actions;
+export const { setSearchQuery, clearSearchQuery, setTemplate ,toggleModal, toggleUploadModal,setCreate,setEdit} = templateSlice.actions;
 
 export default templateSlice.reducer;

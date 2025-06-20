@@ -7,8 +7,8 @@ import { toast } from 'react-toastify';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-export default function TemplateFormModal() {
-    const { isOpen, template, handleModal, createTemplate, updateTemplate, setTemplate } = useTemplates();
+export default function TemplateEditModal() {
+    const { isEdit, template, setEdit, createTemplate, updateTemplate } = useTemplates();
     const { register, handleSubmit, reset, setValue, control, watch, formState: { errors, isSubmitSuccessful } } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
@@ -68,15 +68,15 @@ export default function TemplateFormModal() {
      },[template])
 
      const handleClose = () => {
-        handleModal(false);
+        setEdit(false);
         reset({
             name: '',
             items: [],
         });
-     }
+     };
 
     return (
-        <Modal size='lg' show={isOpen} onHide={handleClose} centered>
+        <Modal size='lg' show={isEdit} onHide={handleClose} centered>
             <Modal.Header className='py-2' closeButton>
                 <Modal.Title>
                     {template ? 'Edit Template' : 'Create Template'}

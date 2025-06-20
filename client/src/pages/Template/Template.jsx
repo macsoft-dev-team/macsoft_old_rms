@@ -6,12 +6,14 @@ import useTemplates from "../../lib/hooks/template";
 import { AddBtn, EditBtn, UploadBtn } from "../../components/common-components";
 import { ButtonGroup, Card, Col, Row, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import TemplateFormModal from "./components/form";
+import TemplateEditModal from "./components/editForm";
 import UploadForm from "./components/uploadForm";
+import TemplateCreateModal from "./components/createForm";
 
 export default function Template() {
     const {
-        isUpload,
+        isEdit,
+        isCreate,
         templates,
         template,
         loading,
@@ -19,7 +21,8 @@ export default function Template() {
         totalPages,
         handleSearch,
         handleClear,
-        handleModal,
+        setEdit,
+        setCreate,
         fetchTemplate,
         handleUploadModal,
         setTemplate
@@ -27,7 +30,7 @@ export default function Template() {
 
 
     const handleEdit = (row) => {
-        handleModal(true);
+        setEdit(true);
     };
 
     const handleSelect = (row) => {
@@ -35,15 +38,14 @@ export default function Template() {
     };
 
     const handleCreate = () => {
-        handleModal(true);
-        setTemplate(null);
-    };
+        setCreate(true);
+     };
 
     const handleUpload = () => {
         handleUploadModal(true);
     };
 
-    console.log(isUpload, "isUpload");
+    console.log(isCreate, "isCreate");
 
 
     return (
@@ -78,7 +80,8 @@ export default function Template() {
                             onPageChange={(page) => console.log("Change to page:", page)}
                         />
                     </div>
-                    <TemplateFormModal />
+                    <TemplateEditModal />
+                    <TemplateCreateModal />
                     <UploadForm />
                 </section>
             </Col>
