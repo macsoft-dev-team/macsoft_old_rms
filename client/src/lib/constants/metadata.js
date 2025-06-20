@@ -115,15 +115,13 @@ const groupedDeviceStats = {
 };
 
 const deviceInfoMeta = [
-  { label: "Device ID", key: "deviceId" },
   { label: "Host", key: "host" },
   { label: "IMEI Number", key: "imeinumber" },
-  { label: "Password", key: "password" },
+  { label: "Password", key: "password" }, 
   { label: "Port", key: "port" },
   { label: "Pub Topic", key: "pubTopic" },
   { label: "Sub Topic", key: "subTopic" },
-  { label: "Username", key: "username" },
-];
+ ];
 const customerInfoMeta = [
   { label: "SSP-ID", key: "sspId" },
   { label: "Customer Name", key: "customerName" },

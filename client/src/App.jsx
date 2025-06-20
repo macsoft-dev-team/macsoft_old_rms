@@ -6,9 +6,12 @@ import Layout from './components/Layout';
 import Devices from './pages/Devices/Devices';
 import DeviceLog from './pages/DeviceLog/DeviceLog';
 import UploadModal from './pages/Devices/UploadModal';
-import DeviceConfiguration from './pages/DeviceConfiguration/DeviceConfiguration';
+import DeviceDashboard from './pages/DeviceDashboard/DeviceDashboard';
 import ConfigurationRequest from './pages/ConfigurationRequest/ConfigurationRequest';
 import Template from './pages/Template/Template';
+import Faults from './pages/Faults/Faults';
+import Customers from './pages/Customers/Customers';
+import Dashboard from './pages/Dashboard/Dashboard';
   const router = createBrowserRouter([
   {
     path: '/login',
@@ -27,8 +30,8 @@ import Template from './pages/Template/Template';
         element: <UploadModal />,
       },
       {
-        path: 'device/device-configuration/:deviceId',
-        element: <DeviceConfiguration />,
+        path: 'device/device-dashboard/:deviceId',
+        element: <DeviceDashboard />,
       },
       {
         path: 'device/device-configuration/:deviceId/configuration-request',
@@ -42,6 +45,18 @@ import Template from './pages/Template/Template';
         path: 'templates',
         element: <Template />,
       }, 
+      {
+        path: 'faults',
+        element: <Faults />,
+      },
+      {
+        path: 'customers',
+        element: <Customers />,
+      },
+      {
+        path: 'dashboard',
+        element: <Dashboard />,
+      }
     ],
   },
 ]);

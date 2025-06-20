@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Form, Button, Modal, Table, Row, Col } from 'react-bootstrap';
 import useTemplates from '../../../lib/hooks/template';
