@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UICardType {
+  NORMAL
+  TWOCOLUMN
+  FOURCOLUMN
+  FAULTS
+  CHART
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MqttCredentials {
+  id         String @id @default(uuid())
+  imeinumber String @unique
+  host       String
+  port       Int
+  username   String
+  password   String
+  pubTopic   String
+  subTopic   String
+}
+
+model DeviceLog {
+  id          String   @id @default(uuid())
+  imeinumber  String
+  receivedAt  DateTime @default(now())
+  messageType String
+  payload     Json
+}
+
+model Template {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  items TemplateItem[]
+}
+
+model TemplateItem {
+  id         String @id @default(cuid())
+  templateId String
+  address    String
+  value      String
+
+  // Relations
+  template Template @relation(fields: [templateId], references: [id])
+}
+
+model Uicardtemplate {
+  id            String       @id @default(cuid())
+  title         String
+  cardType      UICardType   @default(NORMAL)
+  items         Uicarditem[]
+  deviceClassId String
+}
+
+model Uicarditem {
+  id        String  @id @default(cuid())
+  cardId    String
+  keyLabel  String
+  dataKey   String
+  unit      String?
+  sortOrder Int
+
+  card Uicardtemplate @relation(fields: [cardId], references: [id])
+}

@@ -22,7 +22,8 @@ const getDevices = async (req, res) => {
 };
 
 const getDeviceByImei = async (req, res) => {
-  const { imeinumber } = req.params;
+  // Extract imeinumber from query parameters
+  const { imeinumber } = req.query;
   try {
     const device = await deviceService.getDeviceByImei(imeinumber);
     if (!device) {

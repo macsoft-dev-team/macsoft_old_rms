@@ -2,7 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import TopBar from "./TopBar";
-import Sidebar from "./Sidebar";
+import Sidebar from "./SideBar";
 import { ToastContainer } from "react-toastify";
 
 

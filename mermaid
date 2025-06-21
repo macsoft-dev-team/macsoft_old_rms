@@ -1,0 +1,41 @@
+graph TD
+  subgraph UI
+    A1[RMS Web App React]
+  end
+
+  subgraph Backend
+    B1[ExpressJS API]
+    B2[MySQL Database]
+    B3[MQTT Credential API]
+  end
+
+  subgraph MQTT_Broker
+    C1[EMQX Broker]
+  end
+
+  subgraph Background_Jobs
+    D1[MQTT Data Listener]
+    D2[Command Response Handler]
+  end
+
+  subgraph Devices
+    E1[RMS Hardware Device]
+  end
+
+  %% Connections
+  A1 -->|REST API| B1
+  B1 --> B2
+  E1 -->|Boot: Get MQTT Creds| B3
+  B3 --> C1
+
+  E1 -->|Publish every 15 min| C1
+  C1 --> D1
+  D1 -->|Log to DB| B2
+
+  A1 -->|Send command| C1
+  C1 -->|device/imei/commands| E1
+  E1 -->|device/imei/response| C1
+  C1 --> D2
+  D2 -->|Update result| B2
+
+  A1 -->|WebSocket or Poll| B1
