@@ -16,11 +16,6 @@ export const navData = [
     url: '/faults',
   },
   {
-    title: 'Device Log',
-    icon: <FaClipboardList />,
-    url: '/device-log',
-  },
-  {
     title: 'Templates',
     icon: <FaFileAlt />,
     url: '/templates',

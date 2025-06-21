@@ -36,8 +36,7 @@ export const ExportExcelBtn = (props) => {
       <Button
         onClick={onClick}
         className="rounded-0"
-        type="button"
-        variant="success-emphasis"
+        variant="success"
       >
         <RiFileExcel2Line />
       </Button>

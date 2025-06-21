@@ -38,10 +38,6 @@ import Dashboard from './pages/Dashboard/Dashboard';
         element: <ConfigurationRequest />,
       },
       {
-        path: 'device-log',
-        element: <DeviceLog />,
-      },
-      {
         path: 'templates',
         element: <Template />,
       }, 

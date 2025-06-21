@@ -36,14 +36,15 @@ export default function Devices() {
                 currentPage={currentPage}
                 pageSize={totalPages}
                 columns={[
-                    { key: 'host', label: 'Host', width: 150, align: 'start', textWrap: 'nowrap' },
                     { key: 'imeinumber', label: 'IMEI Number', width: 150, align: 'start', textWrap: 'nowrap' },
-                    { key: 'password', label: 'Password', width: 100, align: 'center', textWrap: 'nowrap' },
-                    { key: 'port', label: 'Port', width: 80, align: 'center', textWrap: 'nowrap' },
-                    { key: 'pubTopic', label: 'Pub Topic', width: 200, align: 'start', textWrap: 'nowrap' },
-                    { key: 'subTopic', label: 'Sub Topic', width: 200, align: 'start', textWrap: 'nowrap' },
-                    { key: 'username', label: 'Username', width: 120, align: 'start', textWrap: 'nowrap' }
-                ]}
+                    { ket: "latitude", label: "Latitude", width: 100, align: "start" },
+                    { key: 'longitude', label: 'Longitude', width: 100, align: 'start' },
+                    { key: "simNumber", label: "SIM Number", width: 150, align: "start", textWrap: "nowrap" },
+                    { key: "pcbSerialNumber", label: "PCB Serial Number", width: 150, align: "start", textWrap: "nowrap" },
+                    { key: "customerName", label: "Customer Name", width: 150, align: "start", textWrap: "nowrap" },
+                    { key: "registrationDate", label: "Registration Date", width: 150, align: "start", textWrap: "nowrap" },
+                    { key: 'status', label: 'Status', width: 100, align: 'start', textWrap: "nowrap" },
+                    { key: 'lastUpdated', label: 'Last Updated', width: 150, align: 'start', textWrap: "nowrap" },]}
                 data={devices}
             />
             <div className="ms-auto">
