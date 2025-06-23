@@ -65,7 +65,10 @@ const ReusableTable = ({ columns, data, headerColor, headerTextColor, size, onRo
                   style={col.width ? { width: col.width, minWidth: 50 } : { minWidth: 50 }}
                   className={getAlignClass(col.align) + ' ' + getWrapClass(col.textWrap, col.truncate)}
                 >
-                  {row[col.key]}
+                  {col.dataType === 'date'
+                    ? (row[col.key] ? new Date(row[col.key]).toLocaleString() : "")
+                    : row[col.key]
+                  }
                 </td>
               ))}
               {showActions && (

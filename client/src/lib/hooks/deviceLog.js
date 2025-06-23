@@ -6,16 +6,24 @@ import {
   setSearchQuery,
 } from "../reducer/deviceLogSlice";
 
-function useDeviceLogs() {
+function useDeviceLogs({ fromDate, toDate, page } = {}) {
   const dispatch = useDispatch();
   const { deviceLogs, loading, error, currentPage, totalPages, searchQuery } =
     useSelector((state) => state.deviceLog);
 
   useEffect(() => {
     dispatch(
-      fetchDeviceLogs({ page: currentPage, take: 10, filter: searchQuery })
+      fetchDeviceLogs({
+        skip: page || currentPage || 1,
+        take: 10,
+        filter: {
+          text: searchQuery,
+          startDate: fromDate,
+          endDate: toDate,
+        },
+      })
     );
-  }, [currentPage, searchQuery, dispatch]);
+  }, [page, currentPage, searchQuery, fromDate, toDate, dispatch]);
 
   const handleClear = () => {
     dispatch(clearSearchQuery());

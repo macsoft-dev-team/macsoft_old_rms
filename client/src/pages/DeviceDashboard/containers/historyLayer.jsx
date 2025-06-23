@@ -3,11 +3,29 @@ import Pagination from "../../../components/pagination";
 import SearchForm from "../../../components/SearchForm";
 import ReusableTable from "../../../components/Table";
 import { ExportExcelBtn } from "../../../components/common-components";
+import React, { useState } from "react";
+import useDeviceLogs from "../../../lib/hooks/deviceLog";
 
 export default function HistoryLog() {
-    const loading = false; // Replace with actual loading state
-    const currentPage = 1; // Replace with actual current page state
-    const totalPages = 1; // Replace with actual total pages state
+    // Get current date in YYYY-MM-DD format
+    const today = new Date().toISOString().slice(0, 10);
+
+    // State for date filters
+    const [fromDate, setFromDate] = useState(today);
+    const [toDate, setToDate] = useState(today);
+
+    // Add state for pagination
+    const [page, setPage] = useState(1);
+
+    // Use the hook with date filters and page
+    const {
+        deviceLogs,
+        loading,
+        currentPage,
+        totalPages,
+        handleClear,
+        handleSearch,
+    } = useDeviceLogs({ fromDate, toDate, page });
 
     return (
         <section className="d-flex flex-column">
@@ -19,9 +37,23 @@ export default function HistoryLog() {
                 <div className="w-lg-auto d-flex flex-column flex-lg-row gap-2 align-items-stretch align-items-lg-center">
                     <InputGroup className="flex-nowrap">
                         <InputGroup.Text className="fw-semibold bg-primary text-white border-0">From</InputGroup.Text>
-                        <Form.Control type="date" name="fromDate" size="sm" style={{ minWidth: 100 }} />
+                        <Form.Control
+                            type="date"
+                            name="fromDate"
+                            size="sm"
+                            style={{ minWidth: 100 }}
+                            value={fromDate}
+                            onChange={e => setFromDate(e.target.value)}
+                        />
                         <InputGroup.Text className="fw-semibold bg-primary text-white border-0">To</InputGroup.Text>
-                        <Form.Control type="date" name="toDate" size="sm" style={{ minWidth: 100 }} />
+                        <Form.Control
+                            type="date"
+                            name="toDate"
+                            size="sm"
+                            style={{ minWidth: 100 }}
+                            value={toDate}
+                            onChange={e => setToDate(e.target.value)}
+                        />
                     </InputGroup>
                     <div className="d-flex flex-row gap-2 align-items-center mt-2 mt-lg-0 ms-lg-2 w-100 w-lg-auto">
                         <SearchForm />
@@ -35,17 +67,35 @@ export default function HistoryLog() {
                 loading={loading}
                 onRowClick={(row) => console.log(row)}
                 columns={[
-                    { key: 'receivedAt', label: 'Received At', width: 150, align: 'start', textWrap: 'nowrap' },
+                    { key: 'serial', label: 'S.No', width: 70, align: 'center', textWrap: 'nowrap' },
                     { key: 'messageType', label: 'Message Type', width: 150, align: 'start', textWrap: 'nowrap' },
-                    { key: 'payload', label: 'Payload', width: 400, align: 'start', textWrap: 'nowrap' },
+                    { 
+                        key: 'receivedAt', 
+                        label: 'Timestamp', 
+                        width: 180, 
+                        align: 'start', 
+                        textWrap: 'nowrap',
+                        dataType: 'date'
+                    },
+                    { key: 'lpm', label: 'LPM', width: 100, align: 'start', textWrap: 'nowrap' },
+                    { key: 'dcAmps', label: 'DC Amps', width: 100, align: 'start', textWrap: 'nowrap' },
+                    { key: 'dcVolts', label: 'DC Volts', width: 100, align: 'start', textWrap: 'nowrap' },
+                    { key: 'pvVolts', label: 'PV Volts', width: 100, align: 'start', textWrap: 'nowrap' },
+                    { key: 'pvCurrent', label: 'PV Current', width: 100, align: 'start', textWrap: 'nowrap' },
+                    { key: 'totalDischarge', label: 'Total Discharge', width: 130, align: 'start', textWrap: 'nowrap' },
                 ]}
-                data={[]}
+                data={
+                    (deviceLogs || []).map((row, idx) => ({
+                        serial: ((currentPage || page) - 1) * 10 + idx + 1,
+                        ...row,
+                    }))
+                }
             />
             <div className="ms-auto">
                 <Pagination
-                    currentPage={currentPage}
+                    currentPage={currentPage || page}
                     totalPages={totalPages}
-                    onPageChange={(page) => console.log("Change to page:", page)}
+                    onPageChange={(newPage) => setPage(newPage)}
                 />
             </div>
         </section>

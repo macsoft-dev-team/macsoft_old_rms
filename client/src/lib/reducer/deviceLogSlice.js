@@ -17,7 +17,12 @@ export const fetchDeviceLogs = createAsyncThunk(
       const params = {};
       if (skip) params.skip = skip;
       if (take) params.take = take;
-      if (filter) params.filter = filter;
+      if (filter) {
+        // Flatten filter for query params
+        if (filter.text) params.filter = filter.text;
+        if (filter.startDate) params.startDate = filter.startDate;
+        if (filter.endDate) params.endDate = filter.endDate;
+      }
       const response = await axios.get("/device-logs", { params });
       return response.data;
     } catch (err) {

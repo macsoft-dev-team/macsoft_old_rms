@@ -32,14 +32,23 @@ model User {
 }
 
 model MqttCredentials {
-  id         String @id @default(uuid())
-  imeinumber String @unique
-  host       String
-  port       Int
-  username   String
-  password   String
-  pubTopic   String
-  subTopic   String
+  id           String    @id @default(uuid())
+  imeinumber   String    @unique
+  host         String?
+  port         Int?
+  username     String?
+  password     String?
+  pubTopicData String?
+  subTopicCmd  String?
+  pubTopicCmd  String?
+  lattitude    String?
+  longitude    String?
+  simnumber    String?
+  pcbsn        String?
+  status       String    @default("active")
+  lastupdated  DateTime  @updatedAt
+  // Relations
+  customer     customer?
 }
 
 model DeviceLog {
@@ -68,6 +77,20 @@ model TemplateItem {
 
   // Relations
   template Template @relation(fields: [templateId], references: [id])
+}
+
+model customer {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String   @unique
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  deviceId String?          @unique
+  device   MqttCredentials? @relation(fields: [deviceId], references: [id])
 }
 
 model Uicardtemplate {

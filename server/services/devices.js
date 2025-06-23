@@ -43,15 +43,7 @@ const getDeviceByImei = async (imeinumber) => {
 const uploadDevices = async (data) => {
   try {
     const devices = await prisma.mqttCredentials.createMany({
-      data: data.map((device) => ({
-        imeinumber: device.imeinumber,
-        host: device.host,
-        username: device.username,
-        password: device.password,
-        port: device.port,
-        pubTopic: device.pubtopic,
-        subTopic: device.subtopic,
-      })),
+      data,
       skipDuplicates: true,  
     });
     return { message: "Devices uploaded successfully", devices };

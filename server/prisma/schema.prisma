@@ -34,17 +34,17 @@ model User {
 model MqttCredentials {
   id           String    @id @default(uuid())
   imeinumber   String    @unique
-  host         String
-  port         Int
-  username     String
-  password     String
-  pubTopic     String
-  subTopic     String
-  lattitude    String
-  longitude    String
-  simnumber    String
-  pcbsn        String
-  registeredAt String
+  host         String?
+  port         Int?
+  username     String?
+  password     String?
+  pubTopicData String?
+  subTopicCmd  String?
+  pubTopicCmd  String?
+  lattitude    String?
+  longitude    String?
+  simnumber    String?
+  pcbsn        String?
   status       String    @default("active")
   lastupdated  DateTime  @updatedAt
   // Relations

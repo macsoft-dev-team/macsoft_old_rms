@@ -2,10 +2,10 @@ const mqtt = require('mqtt');
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
-const client = mqtt.connect(process.env.MQTT_URL,{
-    username: process.env.MQTT_USERNAME,
-    password: process.env.MQTT_PASSWORD,
-    clientId: `mqtt-logger-${Date.now()}`, // Unique client ID
+const client = mqtt.connect(`${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`, {
+  username: process.env.MQTT_USERNAME,
+  password: process.env.MQTT_PASSWORD,
+  clientId: `mqtt-logger-${Date.now()}`, // Unique client ID
 });
 
 client.on('connect', async () => {
@@ -30,17 +30,19 @@ client.on('message', async (topic, message) => {
     let payload;
     let imeinumber = '';
     let messageType = '';
+    let timestamp = null;
     try {
       payload = JSON.parse(message.toString());
       imeinumber = payload.imeinumber || '';
       messageType = payload.messageType || '';
+      timestamp = payload.timestamp  || new Date();
     } catch (e) {
       payload = { raw: message.toString() };
     }
     await prisma.deviceLog.create({
       data: {
         imeinumber,
-        receivedAt: new Date(),
+        receivedAt: timestamp,
         messageType,
         payload,
       },

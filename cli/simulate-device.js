@@ -2,9 +2,11 @@
 // Simulates an MQTT device for solar irrigation pumps
 const axios = require('axios');
 const mqtt = require('mqtt');
+const CronJob = require('cron').CronJob;
 
 const IMEINUMBER = process.env.IMEINUMBER;
 const HTTP_SERVER = process.env.HTTP_SERVER;
+const CRON_EXPRESSION = process.env.CRON_EXPRESSION || '0 */15 * * * *';
 
 async function fetchMqttCredentials(imeinumber) {
   const url = `${HTTP_SERVER}/api/devices/mqtt-credentials?imeinumber=${imeinumber}`;
@@ -48,12 +50,14 @@ function generateSensorData() {
           console.log('Subscribed to command topic:', cmdTopic);
         }
       });
-      setInterval(() => {
+      // Replace setInterval with CronJob (every 15 minutes)
+      const job = new CronJob(CRON_EXPRESSION, () => {
         const data = generateSensorData();
         const dataTopic = `device/${IMEINUMBER}/data`;
         client.publish(dataTopic, JSON.stringify(data));
         console.log('Published data:', data);
-      }, 5000);
+      });
+      job.start();
     });
     client.on('message', (topic, message) => {
       console.log(`Received command on ${topic}:`, message.toString());

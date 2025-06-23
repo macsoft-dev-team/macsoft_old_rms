@@ -224,12 +224,6 @@ export default function UploadModal() {
 
 const itemSchema = yup.object().shape({
     imeinumber: yup.string().required("IMEI Number is required"),
-    host: yup.string().required("Host is required"),
-    port: yup.number().required("Port is required").positive().integer(),
-    username: yup.string().required("Username is required"),
-    password: yup.string().required("Password is required"),
-    pubtopic: yup.string().required("Pub Topic is required"),
-    subtopic: yup.string().required("Sub Topic is required"),
 });
 
 export const uploadSchema = yup.object().shape({

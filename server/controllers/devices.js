@@ -1,4 +1,5 @@
 const deviceService = require("../services/devices");
+const bcrypt = require('bcrypt');
 
 const getDevices = async (req, res) => {
   const { skip, take, filter } = req.query;
@@ -37,8 +38,18 @@ const getDeviceByImei = async (req, res) => {
 };
 
 const uploadDevices = async (req, res) => {
-  const  data  = req.body;
+  let data = req.body;
   try {
+    data = data.map((device) => ({
+      imeinumber: device.imeinumber,
+      host: process.env.MQTT_HOST,
+      port: parseInt(process.env.MQTT_PORT),
+      username: `device_${device.imeinumber}`,
+      password: bcrypt.hashSync(device.imeinumber, 10), // Hash the password
+      pubTopicData: `device/${device.imeinumber}/data`,
+      subTopicCmd: `device/${device.imeinumber}/cmd`,
+      pubTopicCmd: `device/${device.imeinumber}/cmd/response`,
+    }));
     const result = await deviceService.uploadDevices(data);
     res.status(200).json(result);
   } catch (error) {
