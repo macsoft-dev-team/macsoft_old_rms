@@ -2,7 +2,7 @@ module.exports = {
   apps : [
     {
       name: 'main-app',
-      script: 'index.js',
+      script: './bin/www',
       watch: '.',
       env: {
         NODE_ENV: 'development',
