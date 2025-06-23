@@ -14,8 +14,9 @@
     "@reduxjs/toolkit": "^2.8.2",
     "ace-builds": "^1.42.0",
     "axios": "^1.9.0",
-    "bootstrap": "^5.3.6",
+    "bootstrap": "^5.3.7",
     "chart.js": "^4.5.0",
+    "mqtt": "^5.13.1",
     "react": "^19.1.0",
     "react-ace": "^14.0.1",
     "react-bootstrap": "^2.10.10",
@@ -26,7 +27,6 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.2",
     "react-toastify": "^11.0.5",
-    "sass": "^1.89.2",
     "xlsx": "^0.18.5",
     "yup": "^1.6.1"
   },
