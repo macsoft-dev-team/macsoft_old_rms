@@ -1,7 +1,7 @@
 module.exports = {
   apps : [
     {
-      name: 'main-app',
+      name: 'Macsoft RMS API',
       script: './bin/www',
       watch: '.',
       env: {
