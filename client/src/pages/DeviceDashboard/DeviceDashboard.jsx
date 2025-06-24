@@ -86,6 +86,8 @@ function MQTTConfiguration() {
 }
 
 function CustomerDetails() {
+    const [isEditing, setIsEditing] = useState(false);
+
     const { device, loading } = useDevices();
     return (
         <div className="text-secondary">
@@ -94,6 +96,13 @@ function CustomerDetails() {
                 detailPairs={customerInfoMeta}
                 data={device}
                 loading={loading}
+                isEditing={isEditing}
+                setIsEditing={setIsEditing}
+                onSubmit={(formData) => {
+                    // Handle form submission
+                    console.log("Form submitted with data:", formData);
+
+                }}
             />
         </div>
     );

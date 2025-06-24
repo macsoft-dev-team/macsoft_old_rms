@@ -25,7 +25,12 @@ const deviceConfigData = {
       unit: "V",
       className: "text-primary-emphasis",
     },
-    { label: "PV Current", key: "0 A", unit: "A", className: "text-primary-emphasis" },
+    {
+      label: "PV Current",
+      key: "0 A",
+      unit: "A",
+      className: "text-primary-emphasis",
+    },
   ],
   2: [
     {
@@ -58,7 +63,12 @@ const deviceConfigData = {
       unit: "Hrs",
       className: "text-primary-emphasis",
     },
-    { label: "LPM", key: "0 Litre", unit: "Litre", className: "text-primary-emphasis" },
+    {
+      label: "LPM",
+      key: "0 Litre",
+      unit: "Litre",
+      className: "text-primary-emphasis",
+    },
   ],
   3: [
     {
@@ -85,8 +95,18 @@ const deviceConfigData = {
       unit: "",
       className: "text-primary-emphasis",
     },
-    { label: "Fault", key: "No Fault", unit: "", className: "text-primary-emphasis" },
-    { label: "Temperature", key: "--", unit: "°C", className: "text-primary-emphasis" },
+    {
+      label: "Fault",
+      key: "No Fault",
+      unit: "",
+      className: "text-primary-emphasis",
+    },
+    {
+      label: "Temperature",
+      key: "--",
+      unit: "°C",
+      className: "text-primary-emphasis",
+    },
   ],
 };
 const groupedDeviceStats = {
@@ -118,15 +138,13 @@ const deviceInfoMeta = [
   { label: "Host", key: "host" },
   { label: "IMEI Number", key: "imeinumber" },
   { label: "Username", key: "username" },
-  { label: "Password", key: "password" }, 
+  { label: "Password", key: "password" },
   { label: "Port", key: "port" },
   { label: "Pub Topic - Data", key: "pubTopicData" },
   { label: "Sub Topic - Cmd", key: "subTopicCmd" },
   { label: "Pub Topic - Cmd", key: "pubTopicCmd" },
-  
- ];
+];
 const customerInfoMeta = [
-  { label: "SSP-ID", key: "sspId" },
   { label: "Customer Name", key: "customerName" },
   { label: "Customer Address", key: "customerAddress" },
   { label: "Customer Phone", key: "customerPhone" },
@@ -137,4 +155,10 @@ const motorInfoMeta = [
   { label: "Motor", key: "motor" },
   { label: "Motor", key: "motor" },
 ];
-export { deviceConfigData, groupedDeviceStats, deviceInfoMeta, customerInfoMeta, motorInfoMeta };
+export {
+  deviceConfigData,
+  groupedDeviceStats,
+  deviceInfoMeta,
+  customerInfoMeta,
+  motorInfoMeta,
+};

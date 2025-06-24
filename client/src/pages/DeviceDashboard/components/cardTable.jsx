@@ -10,11 +10,10 @@ function CardTable(props) {
         if (isEditing) {
             return (
                 <Form.Control
-                    size="sm"
-                    type="text"
+                     type="text"
                     {...register(stat.key)}
                     defaultValue={data?.[stat.key] || ''}
-                    className="text-end px-2"
+                    className="text-start px-2 w-lg-auto"
                     style={{ height: "30px" }}
                 />
             );
@@ -46,21 +45,19 @@ function CardTable(props) {
                     </header>
                 )}  
                 <Form onSubmit={isEditing ? handleSubmit(onSubmit) : undefined}>
-                    <table className="table table-responsive table-borderless fw-medium">
-                        <tbody>
+                         <figure>
                             {stats.map((stat, idx) => (
-                                <tr key={idx}>
-                                    <td className="fw-light text-muted">
+                                <figcaption key={idx} className='d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between py-lg-2'>
+                                    <div className="fw-light text-muted flex-fill py-1 py-lg-0">
                                         {stat.label}
-                                    </td>
-                                    <td className={`text-end ${stat.className || ''}`}>
+                                    </div>
+                                    <div className={`text-wrap flex-fill ${stat.className || ''}`}  style={{ maxWidth: '550px',minWidth:'250px' }}>
                                         {renderCell(stat)}
-                                    </td>
-                                </tr>
+                                    </div>
+                                </figcaption>
                             ))}
-                        </tbody>
-                    </table>
-                    {isEditing && (
+                        </figure>
+                     {isEditing && (
                         <ButtonGroup className="text-end">
                             <Form.Control
                                 type="button"
