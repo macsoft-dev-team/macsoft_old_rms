@@ -1,4 +1,4 @@
-import { FaTachometerAlt, FaMicrochip, FaExclamationTriangle, FaClipboardList, FaFileAlt, FaUsers } from 'react-icons/fa'
+import { FaTachometerAlt, FaMicrochip, FaExclamationTriangle, FaClipboardList, FaFileAlt, FaUsers ,FaUser} from 'react-icons/fa'
 export const navData = [
   {
     title: 'Dashboard',
@@ -24,6 +24,11 @@ export const navData = [
     title: 'Customers',
     icon: <FaUsers />,
     url: '/customers',
+  },
+  {
+    title: 'Users',
+    icon: <FaUser />,
+    url: '/users',
   },
 ];
 

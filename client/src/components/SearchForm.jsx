@@ -16,7 +16,7 @@ function SearchForm(props) {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <InputGroup style={{ minWidth: "300px" }}  >
+      <InputGroup className="search-form">
         <Form.Group className="flex-grow-1 position-relative" controlId="formBasicEmail">
           <Form.Control
             type="text"
