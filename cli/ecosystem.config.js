@@ -53,7 +53,7 @@ module.exports = {
         IMEINUMBER:"9962264503",
         MQTT_USERNAME:"admin",
         MQTT_PASSWORD:"admin",
-        CRON_EXPRESSION: '0 */1 * * * *'
+        CRON_EXPRESSION: '0 */10 * * * *'
       }
     }
   ]
