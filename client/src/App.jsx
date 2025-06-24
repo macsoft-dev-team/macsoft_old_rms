@@ -12,6 +12,7 @@ import Template from './pages/Template/Template';
 import Faults from './pages/Faults/Faults';
 import Customers from './pages/Customers/Customers';
 import Dashboard from './pages/Dashboard/Dashboard';
+import Users from './pages/Users/Users';
   const router = createBrowserRouter([
   {
     path: '/login',
@@ -52,6 +53,10 @@ import Dashboard from './pages/Dashboard/Dashboard';
       {
         path: 'dashboard',
         element: <Dashboard />,
+      },
+      {
+        path:"users",
+        element: <Users/>,
       }
     ],
   },
