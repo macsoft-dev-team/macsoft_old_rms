@@ -1,7 +1,7 @@
 module.exports = {
   apps : [
     {
-      name: 'main-app',
+      name: 'Macsoft RMS Background Service',
       script: 'index.js',
       watch: '.',
       env: {
@@ -30,7 +30,7 @@ module.exports = {
       }
     },
     {
-      name: 'simulate-device',
+      name: 'Macsoft RMS Device Simulator',
       script: 'simulate-device.js',
       watch: false,
       env: {
