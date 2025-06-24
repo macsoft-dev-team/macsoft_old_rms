@@ -23,7 +23,7 @@ module.exports = {
         JWT_SECRET_KEY:"mqtt-secret",
         HTTP_SERVER:"https://rms.macsoftautomations.in",
         IMEINUMBER:"9962264503",
-        MQTT_HOST: "mqtt://localhost",
+        MQTT_HOST: "mqtt://mqtt.macsoftautomations.in",
         MQTT_PORT: 1883,        
         MQTT_USERNAME:"admin",
         MQTT_PASSWORD:"admin"
