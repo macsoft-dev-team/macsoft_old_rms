@@ -10,6 +10,7 @@ import CardTable from "./components/cardTable";
 import { customerInfoMeta, deviceInfoMeta } from "../../lib/constants/metadata";
 import { EditBtn } from "../../components/common-components";
 import useTemplates from "../../lib/hooks/template";
+import useCustomers from "../../lib/hooks/customer";
 
 export default function DeviceDashboard() {
     const { deviceId } = useParams();
@@ -89,21 +90,37 @@ function CustomerDetails() {
     const [isEditing, setIsEditing] = useState(false);
 
     const { device, loading } = useDevices();
+    const { createCustomer, updateCustomer } = useCustomers();
     return (
         <div className="text-secondary">
-            <CardTable
-                key={"title-customer-info"}
-                detailPairs={customerInfoMeta}
-                data={device}
-                loading={loading}
-                isEditing={isEditing}
-                setIsEditing={setIsEditing}
-                onSubmit={(formData) => {
-                    // Handle form submission
-                    console.log("Form submitted with data:", formData);
-
-                }}
-            />
+            {device?.customer || isEditing && (
+                <CardTable
+                    key={"title-customer-info"}
+                    detailPairs={customerInfoMeta}
+                    data={device?.customer || {}}
+                    loading={loading}
+                    isEditing={isEditing}
+                    setIsEditing={setIsEditing}
+                    onSubmit={(formData) => {
+                        // Handle form submission
+                        console.log("Form submitted with data:", formData);
+                        if (device?.customer) {
+                            updateCustomer({ id: device.customer.id, ...formData });
+                        } else {
+                            createCustomer({ deviceId: device.id, ...formData });
+                        }
+                    }}
+                />
+            )}
+            {!device?.customer && !isEditing && (
+                <div className="text-center p-3">
+                    <p className="text-muted">No customer details available</p>
+                    <Button size="sm" variant="primary" onClick={() => setIsEditing(true)}>
+                        <EditBtn />
+                        Add Customer Details
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }
@@ -140,8 +157,8 @@ function CommandConsole() {
 }
 
 function VFDConfiguration() {
-    const { templates, template ,fetchTemplate,loading} = useTemplates();
-    const handleSelect =(e) => {
+    const { templates, template, fetchTemplate, loading } = useTemplates();
+    const handleSelect = (e) => {
         const selectedTemplateId = e.target.value;
         fetchTemplate(selectedTemplateId);
     }
@@ -154,7 +171,7 @@ function VFDConfiguration() {
                             <Form.Label>Select Template</Form.Label>
                             <Form.Select onChange={handleSelect}>
                                 <option value="">--</option>
-                                 {templates.map((template) => (
+                                {templates.map((template) => (
                                     <option key={template.id} value={template.id}>
                                         {template.name}
                                     </option>
@@ -197,6 +214,6 @@ function VFDConfiguration() {
                     </Col>
                 </Row>
             </Form>
-         </div>
+        </div>
     );
 }
