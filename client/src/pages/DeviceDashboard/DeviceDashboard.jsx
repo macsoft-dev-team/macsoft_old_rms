@@ -11,6 +11,8 @@ import { customerInfoMeta, deviceInfoMeta } from "../../lib/constants/metadata";
 import { EditBtn } from "../../components/common-components";
 import useTemplates from "../../lib/hooks/template";
 import useCustomers from "../../lib/hooks/customer";
+import { toast } from "react-toastify";
+import * as yup from "yup";
 
 export default function DeviceDashboard() {
     const { deviceId } = useParams();
@@ -88,12 +90,18 @@ function MQTTConfiguration() {
 
 function CustomerDetails() {
     const [isEditing, setIsEditing] = useState(false);
-
     const { device, loading } = useDevices();
     const { createCustomer, updateCustomer } = useCustomers();
+    const validationSchema = yup.object().shape({
+        name: yup.string().max(50, "Max 50 characters").required("Name is required"),
+        email: yup.string().email("Invalid email").max(50, "Max 50 characters").required("Email is required"),
+        phone: yup.string().max(10, "Max 10 characters").required("Phone number is required"),
+        address: yup.string().max(100, "Max 100 characters").required("Address is required"),
+    });
+    
     return (
         <div className="text-secondary">
-            {device?.customer || isEditing && (
+            {(device?.customer || isEditing) && (
                 <CardTable
                     key={"title-customer-info"}
                     detailPairs={customerInfoMeta}
@@ -101,13 +109,22 @@ function CustomerDetails() {
                     loading={loading}
                     isEditing={isEditing}
                     setIsEditing={setIsEditing}
+                    validationSchema={validationSchema}
                     onSubmit={(formData) => {
-                        // Handle form submission
-                        console.log("Form submitted with data:", formData);
-                        if (device?.customer) {
-                            updateCustomer({ id: device.customer.id, ...formData });
+                        if (!formData.name || !formData.email || !formData.phone || !formData.address) {
+                            toast.error("Please fill all required fields");
                         } else {
-                            createCustomer({ deviceId: device.id, ...formData });
+                            const _data = {
+                                deviceId: device.id,
+                                ...formData,
+                            };
+                            if (device?.customer) {
+                                updateCustomer(device.customer.id, _data);
+                                setIsEditing(false);   
+                            } else {
+                                createCustomer(_data);
+                                setIsEditing(false);   
+                            }
                         }
                     }}
                 />
