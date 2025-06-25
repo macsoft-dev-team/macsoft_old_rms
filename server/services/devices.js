@@ -3,7 +3,11 @@ const prisma = new PrismaClient();
 
 const getDevices = async (skip, take, filter) => {
   try {
-    const params = {};
+    const params = {
+      include: {
+        customer: true,
+      },
+    };
     if (skip) params.skip = (parseInt(skip) - 1) * parseInt(take);
     if (take) params.take = parseInt(take);
     if (filter) {
@@ -32,6 +36,9 @@ const getDeviceByImei = async (imeinumber) => {
   try {
     const device = await prisma.mqttCredentials.findUnique({
       where: { imeinumber },
+      include: {
+        customer: true,
+      },
     });
     return device;
   } catch (error) {
@@ -57,6 +64,9 @@ const getDeviceById = async (id) => {
   try {
     const device = await prisma.mqttCredentials.findUnique({
       where: { id: id },
+      include: {
+        customer: true,
+      },
     });
     return device;
   } catch (error) {

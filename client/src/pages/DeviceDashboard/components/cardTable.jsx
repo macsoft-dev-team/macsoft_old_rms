@@ -12,6 +12,7 @@ function CardTable(props) {
                 <Form.Control
                      type="text"
                     {...register(stat.key)}
+                    disabled={stat.disabled}
                     defaultValue={data?.[stat.key] || ''}
                     className="text-start px-2 w-lg-auto"
                     style={{ height: "30px" }}

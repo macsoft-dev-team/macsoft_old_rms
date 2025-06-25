@@ -145,9 +145,10 @@ const deviceInfoMeta = [
   { label: "Pub Topic - Cmd", key: "pubTopicCmd" },
 ];
 const customerInfoMeta = [
-  { label: "Customer Name", key: "customerName" },
-  { label: "Customer Address", key: "customerAddress" },
-  { label: "Customer Phone", key: "customerPhone" },
+  { label: "Customer Name", key: "name" },
+  { label: "Customer Email", key: "email" },
+  { label: "Customer Address", key: "address" },
+  { label: "Customer Phone", key: "phone" },
 ];
 const motorInfoMeta = [
   { label: "Motor", key: "motor" },

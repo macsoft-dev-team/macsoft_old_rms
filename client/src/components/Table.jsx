@@ -67,7 +67,7 @@ const ReusableTable = ({ columns, data, headerColor, headerTextColor, size, onRo
                 >
                   {col.dataType === 'date'
                     ? (row[col.key] ? new Date(row[col.key]).toLocaleString() : "")
-                    : row[col.key]
+                    : row[col.key] ? row[col.key] : <div className='text-center'>--</div>
                   }
                 </td>
               ))}
