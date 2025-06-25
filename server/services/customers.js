@@ -59,7 +59,7 @@ const createCustomer = async (data) => {
 
 const updateCustomer = async (id, data) => {
   try {
-    const { name, email, phone, status } = data;
+    const { name, email, phone, address, deviceId } = data;
     const updatedCustomer = await prisma.customer.update({
       where: { id },
       data: {

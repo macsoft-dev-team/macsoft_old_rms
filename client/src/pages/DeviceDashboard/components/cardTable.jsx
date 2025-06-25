@@ -1,28 +1,35 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import React from 'react';
 import { Spinner, Card, Form, ButtonGroup, Row, Col, Button } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 
 function CardTable(props) {
-    const { title: groupName, detailPairs: stats, data, loading, isEditing, onSubmit, setIsEditing } = props;
-    const { register, handleSubmit } = useForm({ defaultValues: data });
+    const { title: groupName, detailPairs: stats, data, loading, isEditing, onSubmit, setIsEditing, validationSchema } = props;
+    const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: data ,resolver:yupResolver(validationSchema)});
+    
 
     const renderCell = (stat) => {
         if (isEditing) {
             return (
-                <Form.Control
-                     type="text"
-                    {...register(stat.key)}
-                    disabled={stat.disabled}
-                    defaultValue={data?.[stat.key] || ''}
-                    className="text-start px-2 w-lg-auto"
-                    style={{ height: "30px" }}
-                />
+                <Form.Group>
+                    <Form.Control
+                        type="text"
+                        {...register(stat.key)}
+                        disabled={stat.disabled}
+                        defaultValue={data?.[stat.key] || ''}
+                        className="text-start px-2 w-lg-auto"
+                        style={{ height: "30px" }}
+                    />
+                    {errors[stat.key] && <span className="text-danger">{errors[stat.key].message}</span>}
+                </Form.Group>
             );
         }
         return (
             <span>
                 {data?.[stat.key]
-                    ? data[stat.key]
+                    ? (typeof data[stat.key] === "object"
+                        ? JSON.stringify(data[stat.key])
+                        : data[stat.key])
                     : loading
                         ? <Spinner animation="border" size="sm" />
                         : '-'} {stat.unit ? stat.unit : ''}

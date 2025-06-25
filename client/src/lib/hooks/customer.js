@@ -14,6 +14,7 @@ import {
   toggleModal,
 } from "../reducer/customerSlice";
 import { toast } from "react-toastify";
+import { fetchDevice } from "../reducer/deviceSlice";
 
 function useCustomers() {
   const dispatch = useDispatch();
@@ -49,8 +50,9 @@ function useCustomers() {
         if (res.error) {
           toast.error("Error creating customer:", res.error);
         } else {
-          dispatch(setCreateCustomer(false));
           toast.success("Customer created successfully!");
+          dispatch(setCreateCustomer(false));
+          dispatch(fetchDevice(data.deviceId));
         }
       });
     },
@@ -63,6 +65,7 @@ function useCustomers() {
         if (res.error) {
           toast.error("Error updating customer:", res.error);
         } else {
+          dispatch(fetchDevice(data.deviceId));
           toast.success("Customer updated successfully!");
           dispatch(setEditCustomer(false));
         }
