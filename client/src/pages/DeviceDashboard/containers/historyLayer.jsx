@@ -1,4 +1,4 @@
-import { Form, InputGroup } from "react-bootstrap";
+import { Form, InputGroup, Modal, Button } from "react-bootstrap";
 import Pagination from "../../../components/pagination";
 import SearchForm from "../../../components/SearchForm";
 import ReusableTable from "../../../components/Table";
@@ -16,6 +16,10 @@ export default function HistoryLog() {
 
     // Add state for pagination
     const [page, setPage] = useState(1);
+
+    // State for modal and selected row
+    const [showModal, setShowModal] = useState(false);
+    const [selectedRow, setSelectedRow] = useState(null);
 
     // Use the hook with date filters and page
     const {
@@ -65,7 +69,10 @@ export default function HistoryLog() {
                 headerColor="#007bff"
                 headerTextColor="#fff"
                 loading={loading}
-                onRowClick={(row) => console.log(row)}
+                onRowClick={(row) => {
+                    setSelectedRow(row);
+                    setShowModal(true);
+                }}
                 columns={[
                     { key: 'serial', label: 'S.No', width: 70, align: 'center', textWrap: 'nowrap' },
                     { key: 'messageType', label: 'Message Type', width: 150, align: 'start', textWrap: 'nowrap' },
@@ -98,6 +105,21 @@ export default function HistoryLog() {
                     onPageChange={(newPage) => setPage(newPage)}
                 />
             </div>
+            <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Raw Data</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+                        {selectedRow ? JSON.stringify(selectedRow, null, 2) : ""}
+                    </pre>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </section>
     );
 }
