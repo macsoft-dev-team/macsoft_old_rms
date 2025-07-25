@@ -26,7 +26,11 @@ TabsList.displayName = "TabsList";
 
 const TabsTrigger = ({ value, children, active, setActive, className = "" }) => (
   <button
-    className={`px-4 py-2 font-medium border-b-2 transition-colors ${active === value ? "border-blue-500 text-blue-700" : "border-transparent text-gray-500"} ${className}`}
+    className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+      active === value
+        ? "border-blue-500 text-blue-700 dark:border-blue-400 dark:text-blue-300"
+        : "border-transparent text-gray-500 dark:text-gray-400"
+    } ${className}`}
     onClick={() => setActive(value)}
     type="button"
   >

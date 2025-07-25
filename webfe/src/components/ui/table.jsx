@@ -1,7 +1,6 @@
- 
 export function Table({ children, ...props }) {
   return (
-    <table className="min-w-full divide-y divide-gray-200" {...props}>
+    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900" {...props}>
       {children}
     </table>
   );
@@ -9,7 +8,7 @@ export function Table({ children, ...props }) {
 
 export function TableHeader({ children, ...props }) {
   return (
-    <thead className="bg-gray-50" {...props}>
+    <thead className="bg-gray-50 dark:bg-gradient-to-r dark:from-blue-900 dark:to-blue-800 dark:text-blue-100" {...props}>
       {children}
     </thead>
   );
@@ -17,7 +16,7 @@ export function TableHeader({ children, ...props }) {
 
 export function TableRow({ children, ...props }) {
   return (
-    <tr className="hover:bg-gray-100" {...props}>
+    <tr className="hover:bg-gray-100 dark:hover:bg-blue-900 transition-colors" {...props}>
       {children}
     </tr>
   );
@@ -25,7 +24,7 @@ export function TableRow({ children, ...props }) {
 
 export function TableHead({ children, ...props }) {
   return (
-    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" {...props}>
+    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-blue-100 uppercase tracking-wider bg-gray-50 dark:bg-blue-900" {...props}>
       {children}
     </th>
   );
@@ -33,7 +32,7 @@ export function TableHead({ children, ...props }) {
 
 export function TableBody({ children, ...props }) {
   return (
-    <tbody className="bg-white divide-y divide-gray-200" {...props}>
+    <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700" {...props}>
       {children}
     </tbody>
   );
@@ -41,7 +40,7 @@ export function TableBody({ children, ...props }) {
 
 export function TableCell({ children, ...props }) {
   return (
-    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" {...props}>
+    <td className="px-6 py-4 whitespace-nowrap text-base text-gray-900 dark:text-blue-100 dark:bg-gray-900" {...props}>
       {children}
     </td>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Edit, Trash2, Server, Save, Eye, EyeOff } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -14,7 +14,9 @@ import {
 } from '../components/ui/dialog';
 import { mockServerTemplates } from '../data/mockData';
 import TitleHead from '../components/TitleHead';
-
+import ConfirmDialog from '../components/ui/ConfirmDialog';
+import { useToast } from '../hooks/use-toast';
+ 
 const ServerTemplates = () => {
   const [templates, setTemplates] = useState(mockServerTemplates);
   const [isCreating, setIsCreating] = useState(false);
@@ -31,7 +33,13 @@ const ServerTemplates = () => {
       commandPublish: ''
     }
   });
-
+  const [editingTemplate, setEditingTemplate] = useState(null);
+  const [editValues, setEditValues] = useState(null);
+  const [editPasswordVisible, setEditPasswordVisible] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState(null);
+  const { toast } = useToast();
+ 
   const handleCreateTemplate = () => {
     const template = {
       id: `srv${Date.now()}`,
@@ -51,10 +59,12 @@ const ServerTemplates = () => {
       }
     });
     setIsCreating(false);
+    toast({ title: "Template created", description: "Server template has been created." });
   };
 
   const handleDeleteTemplate = (id) => {
     setTemplates(prev => prev.filter(t => t.id !== id));
+    toast({ title: "Template deleted", description: "Server template has been deleted." });
   };
 
   const togglePasswordVisibility = (templateId) => {
@@ -62,6 +72,55 @@ const ServerTemplates = () => {
       ...prev,
       [templateId]: !prev[templateId]
     }));
+  };
+
+  const handleOpenEdit = (template) => {
+    setEditingTemplate(template);
+    setEditValues({
+      name: template.name,
+      mqttBroker: template.mqttBroker,
+      port: template.port,
+      username: template.username,
+      password: template.password,
+      topics: {
+        dataPublish: template.topics?.dataPublish || '',
+        commandSubscribe: template.topics?.commandSubscribe || '',
+        commandPublish: template.topics?.commandPublish || ''
+      }
+    });
+  };
+
+  const handleCloseEdit = () => {
+    setEditingTemplate(null);
+    setEditValues(null);
+  };
+
+  const handleEditTemplate = () => {
+    setTemplates(prev =>
+      prev.map(t =>
+        t.id === editingTemplate.id
+          ? { ...t, ...editValues }
+          : t
+      )
+    );
+    handleCloseEdit();
+    toast({ title: "Template updated", description: "Server template has been updated." });
+  };
+
+  const handleAskDelete = (id) => {
+    setPendingDeleteId(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    handleDeleteTemplate(pendingDeleteId);
+    setDeleteDialogOpen(false);
+    setPendingDeleteId(null);
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteDialogOpen(false);
+    setPendingDeleteId(null);
   };
 
   return (
@@ -81,7 +140,7 @@ const ServerTemplates = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                     Template Name
                   </label>
                   <Input
@@ -91,7 +150,7 @@ const ServerTemplates = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                     MQTT Broker
                   </label>
                   <Input
@@ -104,7 +163,7 @@ const ServerTemplates = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                     Port
                   </label>
                   <Input
@@ -115,7 +174,7 @@ const ServerTemplates = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                     Username
                   </label>
                   <Input
@@ -127,7 +186,7 @@ const ServerTemplates = () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                   Password
                 </label>
                 <Input
@@ -138,11 +197,11 @@ const ServerTemplates = () => {
                 />
               </div>
 
-              <div className="border-t pt-4">
-                <h3 className="font-semibold text-gray-900 mb-3">MQTT Topics</h3>
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">MQTT Topics</h3>
                 <div className="space-y-3">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
                       Data Publish Topic
                     </label>
                     <Input
@@ -155,7 +214,7 @@ const ServerTemplates = () => {
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
                       Command Subscribe Topic
                     </label>
                     <Input
@@ -168,7 +227,7 @@ const ServerTemplates = () => {
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
                       Command Publish Topic
                     </label>
                     <Input
@@ -198,6 +257,160 @@ const ServerTemplates = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        <Dialog open={!!editingTemplate} onOpenChange={open => !open ? handleCloseEdit() : null}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Edit Server Template</DialogTitle>
+            </DialogHeader>
+            {editValues && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                      Template Name
+                    </label>
+                    <Input
+                      value={editValues.name}
+                      onChange={e => setEditValues(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="Enter template name..."
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                      MQTT Broker
+                    </label>
+                    <Input
+                      value={editValues.mqttBroker}
+                      onChange={e => setEditValues(prev => ({ ...prev, mqttBroker: e.target.value }))}
+                      placeholder="mqtt.example.com"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                      Port
+                    </label>
+                    <Input
+                      type="number"
+                      value={editValues.port}
+                      onChange={e => setEditValues(prev => ({ ...prev, port: parseInt(e.target.value) }))}
+                      placeholder="1883"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                      Username
+                    </label>
+                    <Input
+                      value={editValues.username}
+                      onChange={e => setEditValues(prev => ({ ...prev, username: e.target.value }))}
+                      placeholder="Enter username..."
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                    Password
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      type={editPasswordVisible ? "text" : "password"}
+                      value={editValues.password}
+                      onChange={e => setEditValues(prev => ({ ...prev, password: e.target.value }))}
+                      placeholder="Enter password..."
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      type="button"
+                      onClick={() => setEditPasswordVisible(v => !v)}
+                    >
+                      {editPasswordVisible ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">MQTT Topics</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+                        Data Publish Topic
+                      </label>
+                      <Input
+                        value={editValues.topics.dataPublish}
+                        onChange={e =>
+                          setEditValues(prev => ({
+                            ...prev,
+                            topics: { ...prev.topics, dataPublish: e.target.value }
+                          }))
+                        }
+                        placeholder="data/pub"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+                        Command Subscribe Topic
+                      </label>
+                      <Input
+                        value={editValues.topics.commandSubscribe}
+                        onChange={e =>
+                          setEditValues(prev => ({
+                            ...prev,
+                            topics: { ...prev.topics, commandSubscribe: e.target.value }
+                          }))
+                        }
+                        placeholder="cmd/sub"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+                        Command Publish Topic
+                      </label>
+                      <Input
+                        value={editValues.topics.commandPublish}
+                        onChange={e =>
+                          setEditValues(prev => ({
+                            ...prev,
+                            topics: { ...prev.topics, commandPublish: e.target.value }
+                          }))
+                        }
+                        placeholder="cmd/pub"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <Button variant="outline" onClick={handleCloseEdit}>
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleEditTemplate}
+                    disabled={!editValues.name || !editValues.mqttBroker}
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Changes
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        <ConfirmDialog
+          open={deleteDialogOpen}
+          title="Delete Template"
+          description="Are you sure you want to delete this server template? This action cannot be undone."
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+          confirmText="Delete"
+          danger
+        />
       </TitleHead> 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {templates.map((template, index) => {
@@ -217,13 +430,16 @@ const ServerTemplates = () => {
                       <span>{template.name}</span>
                     </CardTitle>
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="dark:border-gray-400 dark:bg-gray-800 dark:text-gray-100"
+                        onClick={() => handleOpenEdit(template)}
+                      >
                         <Edit className="w-4 h-4" />
                       </Button>
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={() => handleDeleteTemplate(template.id)}
+                        onClick={() => handleAskDelete(template.id)}
+                        className="dark:border-gray-400 dark:bg-gray-800 dark:text-gray-100"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -233,29 +449,31 @@ const ServerTemplates = () => {
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-sm font-medium text-gray-600">Broker:</span>
-                      <span className="text-sm text-gray-900">{template.mqttBroker}</span>
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Broker:</span>
+                      <span className="text-sm text-gray-900 dark:text-gray-100">{template.mqttBroker}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm font-medium text-gray-600">Port:</span>
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Port:</span>
                       <Badge variant="outline">{template.port}</Badge>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm font-medium text-gray-600">Username:</span>
-                      <span className="text-sm text-gray-900">{template.username}</span>
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Username:</span>
+                      <span className="text-sm text-gray-900 dark:text-gray-100">{template.username}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm font-medium text-gray-600">Password:</span>
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Password:</span>
                       <div className="flex items-center space-x-2">
-                        <span className="text-sm text-gray-900">
-                          {showPasswords[template.id] 
-                            ? template.password 
+                        <span className="text-sm text-gray-900 dark:text-gray-100">
+                          {showPasswords[template.id]
+                            ? template.password
                             : '••••••••'
                           }
                         </span>
                         <Button
                           variant="ghost"
                           size="sm"
+                          type="button"
+                          className="dark:text-gray-100"
                           onClick={() => togglePasswordVisibility(template.id)}
                         >
                           {showPasswords[template.id] ? (
@@ -268,20 +486,20 @@ const ServerTemplates = () => {
                     </div>
                   </div>
 
-                  <div className="border-t pt-3">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Topics</h4>
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Topics</h4>
                     <div className="space-y-1 text-xs">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Data:</span>
-                        <code className="bg-gray-100 px-1 rounded">{topics.dataPublish || ''}</code>
+                        <span className="text-gray-600 dark:text-gray-400">Data:</span>
+                        <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">{topics.dataPublish || ''}</code>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Cmd Sub:</span>
-                        <code className="bg-gray-100 px-1 rounded">{topics.commandSubscribe || ''}</code>
+                        <span className="text-gray-600 dark:text-gray-400">Cmd Sub:</span>
+                        <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">{topics.commandSubscribe || ''}</code>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Cmd Pub:</span>
-                        <code className="bg-gray-100 px-1 rounded">{topics.commandPublish || ''}</code>
+                        <span className="text-gray-600 dark:text-gray-400">Cmd Pub:</span>
+                        <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">{topics.commandPublish || ''}</code>
                       </div>
                     </div>
                   </div>
@@ -291,7 +509,7 @@ const ServerTemplates = () => {
           );
         })}
       </div>
-    </div>
+     </div>
   );
 };
 

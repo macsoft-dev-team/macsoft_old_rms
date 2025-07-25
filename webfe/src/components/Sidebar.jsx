@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import { toggleSidebar, setSidebarCollapsed } from '../store/slices/uiSlice';
 import { logout } from '../store/slices/authSlice';
 import { menuItems } from '../lib/constants/navData';
+import logo from '../assets/macsoft-logo.png';
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -111,18 +112,24 @@ const Sidebar = () => {
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
           {!sidebarCollapsed && (
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center dark:bg-blue-500">
-                <span className="text-white font-bold text-sm">M</span>
+              <div className="w-7 h-8  rounded-lg flex items-center justify-center dark:bg-blue-500">
+                <img src={logo} alt="MacSoft Logo" />
               </div>
               <h1 className="text-xl font-bold text-gray-900 dark:text-white">MacSoft RMS</h1>
             </div>
           )}
           <button
             onClick={handleToggle}
-            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 active:scale-95"
+            className="p-1 min-w-5 min-h-8 max-h-8 rounded-lg group/logo hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 active:scale-95"
           >
             {sidebarCollapsed ? (
-              <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors" />
+              <div>
+                <img className='group-hover/logo:hidden' src={logo} alt="MacSoft Logo" />
+                <div className="hidden group-hover/logo:block text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">
+                   <ChevronRight className=" w-full h-full text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors" />
+                </div>
+
+              </div>
             ) : (
               <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors" />
             )}

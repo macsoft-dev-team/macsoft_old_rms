@@ -1,337 +1,508 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Save, 
-  User, 
-  Bell, 
-  Shield, 
-  Globe, 
-  Wifi,
-  AlertCircle
-} from 'lucide-react';
-import useAuth from '../hooks/useAuth';
-import useUI from '../hooks/useUI';
+import { useState } from 'react';
+import { Save, Bell, Shield, Database, Wifi } from 'lucide-react';
+import { Button } from '../components/ui/button';
+import Input from '../components/ui/input';
+import { Switch } from '../components/ui/switch';
+import { Label } from '../components/ui/label';
+import { useToast } from '../hooks/use-toast';
+import TitleHead from '../components/TitleHead';
 
-export default function Settings() {
-  const { user } = useAuth();
-  const { theme, showNotification, setLoading } = useUI();
-  
-  const [activeTab, setActiveTab] = useState('profile');
+const Settings = () => {
+  const { toast } = useToast();
   const [settings, setSettings] = useState({
-    profile: {
-      name: user?.name || '',
-      email: user?.email || '',
-      role: user?.role || '',
+    notifications: {
+      emailAlerts: true,
+      smsAlerts: false,
+      browserNotifications: true,
+      faultAlerts: true,
+      maintenanceAlerts: true
     },
     system: {
-      systemName: 'MacSoft RMS',
-      timezone: 'UTC+05:30',
-      language: 'en',
-      theme: theme,
-    },
-    notifications: {
-      emailNotifications: true,
-      pushNotifications: true,
-      deviceAlerts: true,
-      systemAlerts: true,
+      dataRetentionDays: 60,
+      maxDevices: 100000,
+      mqttKeepAlive: 60,
+      autoReconnect: true,
+      dataBackup: true
     },
     security: {
+      sessionTimeout: 30,
+      passwordExpiry: 90,
       twoFactorAuth: false,
-      sessionTimeout: '30',
-      passwordExpiry: '90',
-    },
+      apiRateLimit: 1000
+    }
   });
 
-  const [hasChanges, setHasChanges] = useState(false);
-
-  useEffect(() => {
-    setHasChanges(true);
-  }, [settings]);
-
-  const handleInputChange = (section, field, value) => {
+  const handleSettingChange = (category, key, value) => {
     setSettings(prev => ({
       ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: value,
-      },
+      [category]: {
+        ...prev[category],
+        [key]: value
+      }
     }));
   };
 
-  const handleSave = async () => {
-    setLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      showNotification({
-        type: 'success',
-        title: 'Settings Saved',
-        message: 'Your settings have been updated successfully.',
-      });
-      setHasChanges(false);
-    } catch (error) {
-      showNotification({
-        type: 'error',
-        title: 'Save Failed',
-        message: 'Failed to save settings. Please try again.',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const tabs = [
-    { id: 'profile', label: 'Profile', icon: User },
-    { id: 'system', label: 'System', icon: Globe },
-    { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'security', label: 'Security', icon: Shield },
-  ];
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'profile':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Profile Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    value={settings.profile.name}
-                    onChange={(e) => handleInputChange('profile', 'name', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    value={settings.profile.email}
-                    onChange={(e) => handleInputChange('profile', 'email', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Role
-                  </label>
-                  <input
-                    type="text"
-                    value={settings.profile.role}
-                    disabled
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      
-      case 'system':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-4">System Configuration</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    System Name
-                  </label>
-                  <input
-                    type="text"
-                    value={settings.system.systemName}
-                    onChange={(e) => handleInputChange('system', 'systemName', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Timezone
-                  </label>
-                  <select
-                    value={settings.system.timezone}
-                    onChange={(e) => handleInputChange('system', 'timezone', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="UTC+05:30">Asia/Kolkata (UTC+05:30)</option>
-                    <option value="UTC+00:00">UTC (UTC+00:00)</option>
-                    <option value="UTC-05:00">America/New_York (UTC-05:00)</option>
-                    <option value="UTC-08:00">America/Los_Angeles (UTC-08:00)</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Language
-                  </label>
-                  <select
-                    value={settings.system.language}
-                    onChange={(e) => handleInputChange('system', 'language', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="en">English</option>
-                    <option value="es">Spanish</option>
-                    <option value="fr">French</option>
-                    <option value="de">German</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      
-      case 'notifications':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Notification Preferences</h3>
-              <div className="space-y-4">
-                {Object.entries(settings.notifications).map(([key, value]) => (
-                  <div key={key} className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-900 capitalize">
-                        {key.replace(/([A-Z])/g, ' $1').trim()}
-                      </h4>
-                      <p className="text-sm text-gray-500">
-                        {key === 'emailNotifications' && 'Receive notifications via email'}
-                        {key === 'pushNotifications' && 'Receive push notifications in browser'}
-                        {key === 'deviceAlerts' && 'Get alerts for device status changes'}
-                        {key === 'systemAlerts' && 'Receive system-wide alerts and warnings'}
-                      </p>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={value}
-                        onChange={(e) => handleInputChange('notifications', key, e.target.checked)}
-                        className="sr-only peer"
-                      />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        );
-      
-      case 'security':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Security Settings</h3>
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-900">Two-Factor Authentication</h4>
-                    <p className="text-sm text-gray-500">Add an extra layer of security to your account</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={settings.security.twoFactorAuth}
-                      onChange={(e) => handleInputChange('security', 'twoFactorAuth', e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Session Timeout (minutes)
-                    </label>
-                    <input
-                      type="number"
-                      value={settings.security.sessionTimeout}
-                      onChange={(e) => handleInputChange('security', 'sessionTimeout', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Password Expiry (days)
-                    </label>
-                    <input
-                      type="number"
-                      value={settings.security.passwordExpiry}
-                      onChange={(e) => handleInputChange('security', 'passwordExpiry', e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      
-      default:
-        return null;
-    }
+  const handleSaveSettings = () => {
+    // Simulate saving settings
+    toast({
+      title: "Settings Saved",
+      description: "Your settings have been saved successfully",
+    });
   };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600 mt-1">Configure system settings and preferences</p>
-        </div>
-        {hasChanges && (
-          <button
-            onClick={handleSave}
-            className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            Save Changes
-          </button>
-        )}
-      </div>
+      <TitleHead title="Settings" description="Configure system preferences and security" >
+        <Button onClick={handleSaveSettings}>
+          <Save className="w-4 h-4 mr-2" />
+          Save Changes
+        </Button>
+      </TitleHead>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        {/* Tabs */}
-        <div className="border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8 px-6">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 ${
-                    activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </nav>
-        </div>
+      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card >
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Bell className="w-5 h-5" />
+              <span>Notifications</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="email-alerts">Email Alerts</Label>
+              <Switch
+                id="email-alerts"
+                checked={settings.notifications.emailAlerts}
+                onCheckedChange={(value) => handleSettingChange('notifications', 'emailAlerts', value)}
+              />
+            </div>
 
-        {/* Tab Content */}
-        <div className="p-6">
-          {renderTabContent()}
-        </div>
-      </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="sms-alerts">SMS Alerts</Label>
+              <Switch
+                id="sms-alerts"
+                checked={settings.notifications.smsAlerts}
+                onCheckedChange={(value) => handleSettingChange('notifications', 'smsAlerts', value)}
+              />
+            </div>
 
-      {/* Unsaved Changes Warning */}
-      {hasChanges && (
-        <div className="fixed bottom-4 right-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4 shadow-lg">
-          <div className="flex items-center space-x-2">
-            <AlertCircle className="w-5 h-5 text-yellow-600" />
-            <span className="text-sm text-yellow-800">You have unsaved changes</span>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="browser-notifications">Browser Notifications</Label>
+              <Switch
+                id="browser-notifications"
+                checked={settings.notifications.browserNotifications}
+                onCheckedChange={(value) => handleSettingChange('notifications', 'browserNotifications', value)}
+              />
+            </div>
+
+            <Separator />
+
+            <div className="flex items-center justify-between">
+              <Label htmlFor="fault-alerts">Fault Alerts</Label>
+              <Switch
+                id="fault-alerts"
+                checked={settings.notifications.faultAlerts}
+                onCheckedChange={(value) => handleSettingChange('notifications', 'faultAlerts', value)}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <Label htmlFor="maintenance-alerts">Maintenance Alerts</Label>
+              <Switch
+                id="maintenance-alerts"
+                checked={settings.notifications.maintenanceAlerts}
+                onCheckedChange={(value) => handleSettingChange('notifications', 'maintenanceAlerts', value)}
+              />
+            </div>
+          </CardContent>
+        </Card> 
+        <Card >
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Database className="w-5 h-5" />
+              <span>System Configuration</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className='flex gap-2 w-full *:flex-1 *:w-full'>
+              <div>
+                <Label htmlFor="data-retention">Data Retention (days)</Label>
+                <Input
+                  id="data-retention"
+                  type="number"
+                  value={settings.system.dataRetentionDays}
+                  onChange={(e) => handleSettingChange('system', 'dataRetentionDays', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="max-devices">Maximum Devices</Label>
+                <Input
+                  id="max-devices"
+                  type="number"
+                  value={settings.system.maxDevices}
+                  onChange={(e) => handleSettingChange('system', 'maxDevices', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="mqtt-keepalive">MQTT Keep Alive (seconds)</Label>
+                <Input
+                  id="mqtt-keepalive"
+                  type="number"
+                  value={settings.system.mqttKeepAlive}
+                  onChange={(e) => handleSettingChange('system', 'mqttKeepAlive', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="auto-reconnect">Auto Reconnect</Label>
+              <Switch
+                id="auto-reconnect"
+                checked={settings.system.autoReconnect}
+                onCheckedChange={(value) => handleSettingChange('system', 'autoReconnect', value)}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <Label htmlFor="data-backup">Automatic Data Backup</Label>
+              <Switch
+                id="data-backup"
+                checked={settings.system.dataBackup}
+                onCheckedChange={(value) => handleSettingChange('system', 'dataBackup', value)}
+              />
+            </div>
+          </CardContent>
+        </Card> 
+        <Card className="row-span-2">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Wifi className="w-5 h-5" />
+              <span>MQTT Configuration</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className='flex gap-2 w-full *:flex-1 *:w-full'>
+              <div>
+                <Label htmlFor="broker-url">Primary Broker URL</Label>
+                <Input
+                  id="broker-url"
+                  value="mqtt.solarpump.com"
+                  className="mt-1"
+                  readOnly
+                />
+              </div>
+              <div>
+                <Label htmlFor="broker-port">Broker Port</Label>
+                <Input
+                  id="broker-port"
+                  value="1883"
+                  className="mt-1"
+                  readOnly
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="topics-config">Topics Configuration</Label>
+              <div className="mt-2 space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Data Publish:</span>
+                  <code className="bg-gray-100 px-2 py-1 rounded">data/pub</code>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Command Subscribe:</span>
+                  <code className="bg-gray-100 px-2 py-1 rounded">cmd/sub</code>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Command Publish:</span>
+                  <code className="bg-gray-100 px-2 py-1 rounded">cmd/pub</code>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <p className="text-sm text-yellow-800">
+                <strong>Note:</strong> MQTT configuration changes require system restart to take effect.
+              </p>
+            </div>
+          </CardContent>
+        </Card> 
+        <Card >
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Shield className="w-5 h-5" />
+              <span>Security</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 ">
+            <div className='flex gap-2 w-full *:flex-1 *:w-full'>
+              <div>
+                <Label htmlFor="session-timeout">Session Timeout (minutes)</Label>
+                <Input
+                  id="session-timeout"
+                  type="number"
+                  value={settings.security.sessionTimeout}
+                  onChange={(e) => handleSettingChange('security', 'sessionTimeout', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="password-expiry">Password Expiry (days)</Label>
+                <Input
+                  id="password-expiry"
+                  type="number"
+                  value={settings.security.passwordExpiry}
+                  onChange={(e) => handleSettingChange('security', 'passwordExpiry', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="api-rate-limit">API Rate Limit (requests/hour)</Label>
+                <Input
+                  id="api-rate-limit"
+                  type="number"
+                  value={settings.security.apiRateLimit}
+                  onChange={(e) => handleSettingChange('security', 'apiRateLimit', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="two-factor">Two-Factor Authentication</Label>
+              <Switch
+                id="two-factor"
+                checked={settings.security.twoFactorAuth}
+                onCheckedChange={(value) => handleSettingChange('security', 'twoFactorAuth', value)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div> */}
+
+      <div className="
+        grid grid-cols-1 lg:grid-cols-2 grid-rows-2 gap-0 
+        w-full min-h-[600px] bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden
+      ">
+        {/* Top Left: Notifications */}
+        <div className="p-6 border-b border-r border-gray-200 dark:border-gray-700 dark:bg-inherit">
+          <h2 className="font-semibold text-lg mb-4 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+            <Bell className="w-5 h-5" />
+            Notifications
+          </h2>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="email-alerts" className="text-gray-800 dark:text-gray-200">Email Alerts</Label>
+              <Switch
+                id="email-alerts"
+                checked={settings.notifications.emailAlerts}
+                onCheckedChange={value => handleSettingChange('notifications', 'emailAlerts', value)}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="sms-alerts" className="text-gray-800 dark:text-gray-200">SMS Alerts</Label>
+              <Switch
+                id="sms-alerts"
+                checked={settings.notifications.smsAlerts}
+                onCheckedChange={value => handleSettingChange('notifications', 'smsAlerts', value)}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="browser-notifications" className="text-gray-800 dark:text-gray-200">Browser Notifications</Label>
+              <Switch
+                id="browser-notifications"
+                checked={settings.notifications.browserNotifications}
+                onCheckedChange={value => handleSettingChange('notifications', 'browserNotifications', value)}
+              />
+            </div>
+            <hr className="my-2 border-gray-100 dark:border-gray-800" />
+            <div className="flex items-center justify-between">
+              <Label htmlFor="fault-alerts" className="text-gray-800 dark:text-gray-200">Fault Alerts</Label>
+              <Switch
+                id="fault-alerts"
+                checked={settings.notifications.faultAlerts}
+                onCheckedChange={value => handleSettingChange('notifications', 'faultAlerts', value)}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="maintenance-alerts" className="text-gray-800 dark:text-gray-200">Maintenance Alerts</Label>
+              <Switch
+                id="maintenance-alerts"
+                checked={settings.notifications.maintenanceAlerts}
+                onCheckedChange={value => handleSettingChange('notifications', 'maintenanceAlerts', value)}
+              />
+            </div>
           </div>
         </div>
-      )}
+
+        {/* Top Right: System Configuration */}
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700 dark:bg-inherit">
+          <h2 className="font-semibold text-lg mb-4 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+            <Database className="w-5 h-5" />
+            System Configuration
+          </h2>
+          <div className="space-y-4">
+            <div className="flex gap-2 w-full">
+              <div className="flex-1">
+                <Label htmlFor="data-retention" className="text-gray-800 dark:text-gray-200">Data Retention (days)</Label>
+                <Input
+                  id="data-retention"
+                  type="number"
+                  value={settings.system.dataRetentionDays}
+                  onChange={e => handleSettingChange('system', 'dataRetentionDays', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+              <div className="flex-1">
+                <Label htmlFor="max-devices" className="text-gray-800 dark:text-gray-200">Maximum Devices</Label>
+                <Input
+                  id="max-devices"
+                  type="number"
+                  value={settings.system.maxDevices}
+                  onChange={e => handleSettingChange('system', 'maxDevices', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+              <div className="flex-1">
+                <Label htmlFor="mqtt-keepalive" className="text-gray-800 dark:text-gray-200">MQTT Keep Alive (seconds)</Label>
+                <Input
+                  id="mqtt-keepalive"
+                  type="number"
+                  value={settings.system.mqttKeepAlive}
+                  onChange={e => handleSettingChange('system', 'mqttKeepAlive', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="auto-reconnect" className="text-gray-800 dark:text-gray-200">Auto Reconnect</Label>
+              <Switch
+                id="auto-reconnect"
+                checked={settings.system.autoReconnect}
+                onCheckedChange={value => handleSettingChange('system', 'autoReconnect', value)}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="data-backup" className="text-gray-800 dark:text-gray-200">Automatic Data Backup</Label>
+              <Switch
+                id="data-backup"
+                checked={settings.system.dataBackup}
+                onCheckedChange={value => handleSettingChange('system', 'dataBackup', value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Left: Security */}
+        <div className="p-6 border-r border-gray-200 dark:border-gray-700 dark:bg-inherit">
+          <h2 className="font-semibold text-lg mb-4 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+            <Shield className="w-5 h-5" />
+            Security
+          </h2>
+          <div className="space-y-4">
+            <div className="flex gap-2 w-full">
+              <div className="flex-1">
+                <Label htmlFor="session-timeout" className="text-gray-800 dark:text-gray-200">Session Timeout (minutes)</Label>
+                <Input
+                  id="session-timeout"
+                  type="number"
+                  value={settings.security.sessionTimeout}
+                  onChange={e => handleSettingChange('security', 'sessionTimeout', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+              <div className="flex-1">
+                <Label htmlFor="password-expiry" className="text-gray-800 dark:text-gray-200">Password Expiry (days)</Label>
+                <Input
+                  id="password-expiry"
+                  type="number"
+                  value={settings.security.passwordExpiry}
+                  onChange={e => handleSettingChange('security', 'passwordExpiry', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+              <div className="flex-1">
+                <Label htmlFor="api-rate-limit" className="text-gray-800 dark:text-gray-200">API Rate Limit (requests/hour)</Label>
+                <Input
+                  id="api-rate-limit"
+                  type="number"
+                  value={settings.security.apiRateLimit}
+                  onChange={e => handleSettingChange('security', 'apiRateLimit', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="two-factor" className="text-gray-800 dark:text-gray-200">Two-Factor Authentication</Label>
+              <Switch
+                id="two-factor"
+                checked={settings.security.twoFactorAuth}
+                onCheckedChange={value => handleSettingChange('security', 'twoFactorAuth', value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Right: MQTT Configuration */}
+        <div className="p-6 dark:bg-inherit">
+          <h2 className="font-semibold text-lg mb-4 flex items-center gap-2 text-gray-900 dark:text-gray-100">
+            <Wifi className="w-5 h-5" />
+            MQTT Configuration
+          </h2>
+          <div className="space-y-4">
+            <div className="flex gap-2 w-full">
+              <div className="flex-1">
+                <Label htmlFor="broker-url" className="text-gray-800 dark:text-gray-200">Primary Broker URL</Label>
+                <Input
+                  id="broker-url"
+                  value="mqtt.solarpump.com"
+                  className="mt-1"
+                  readOnly
+                />
+              </div>
+              <div className="flex-1">
+                <Label htmlFor="broker-port" className="text-gray-800 dark:text-gray-200">Broker Port</Label>
+                <Input
+                  id="broker-port"
+                  value="1883"
+                  className="mt-1"
+                  readOnly
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="topics-config" className="text-gray-800 dark:text-gray-200">Topics Configuration</Label>
+              <div className="mt-2 space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-700 dark:text-gray-300">Data Publish:</span>
+                  <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-gray-800 dark:text-gray-200">data/pub</code>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-700 dark:text-gray-300">Command Subscribe:</span>
+                  <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-gray-800 dark:text-gray-200">cmd/sub</code>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-700 dark:text-gray-300">Command Publish:</span>
+                  <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-gray-800 dark:text-gray-200">cmd/pub</code>
+                </div>
+              </div>
+            </div>
+            <div className="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg p-3 mt-2">
+              <p className="text-sm text-yellow-900 dark:text-yellow-100">
+                <strong className="text-yellow-900 dark:text-yellow-100">Note:</strong> MQTT configuration changes require system restart to take effect.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
     </div>
   );
-}
+};
+
+export default Settings;
