@@ -77,18 +77,18 @@ const DeviceMap = () => {
           <CardTitle>Device Locations</CardTitle>
         </CardHeader>
         <CardContent className="!p-0 h-full">
-          <div className="h-80">
+          <div className="h-80 relative">
             <MapContainer
               center={center}
               zoom={5}
-              className="h-full w-full"
+              className="h-full w-full z-0"
               ref={mapRef}
+              style={{ zIndex: 0 }}
             >
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
-              
               {mockDevices.map((device) => (
                 device.location && typeof device.location.lat === 'number' && typeof device.location.lng === 'number' ? (
                   <Marker

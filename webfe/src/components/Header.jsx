@@ -1,11 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
  
 import {
   Search,
   Bell,
   Settings,
-  User,
   Moon,
   Sun,
   Menu,
@@ -13,9 +12,13 @@ import {
   LogOut,
   UserCheck,
 } from 'lucide-react';
-import { toggleSidebar, setTheme, setNotification } from '../store/slices/uiSlice';
+import { toggleSidebar, setNotification } from '../store/slices/uiSlice';
 import { logout } from '../store/slices/authSlice';
 import { useTheme } from '../hooks/useTheme';
+import { NavLink } from 'react-router-dom';
+import Input from './ui/input';
+import Overlay from './Overlay';
+import { Button } from './ui/button';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -26,7 +29,16 @@ const Header = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  
+  const [showAccountDialog, setShowAccountDialog] = useState(false);
+
+  // Form state for account settings
+  const [formData, setFormData] = useState({
+    name: user?.name || '',
+    email: user?.email || '',
+    password: '',
+    confirmPassword: '',
+  });
+
   const userMenuRef = useRef(null);
   const notificationRef = useRef(null);
 
@@ -100,6 +112,23 @@ const Header = () => {
     }
   };
 
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAccountUpdate = (e) => {
+    e.preventDefault();
+    // Add validation and dispatch update logic here
+    // For now, just close dialog
+    setShowAccountDialog(false);
+    // Optionally show notification
+    dispatch(setNotification({
+      type: 'success',
+      message: 'Account updated successfully!',
+    }));
+  };
+
   const getNotificationIcon = (type) => {
     switch (type) {
       case 'warning':
@@ -149,13 +178,13 @@ const Header = () => {
           {/* Theme Toggle */}
           <button
             onClick={handleThemeToggle}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-700"
+            className="p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors dark:hover:bg-gray-700"
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
           >
             {theme === 'light' ? (
-              <Moon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              <Moon size={16} className=" text-gray-600 dark:text-gray-400" />
             ) : (
-              <Sun className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              <Sun size={16} className=" text-gray-600 dark:text-gray-400" />
             )}
           </button>
 
@@ -222,13 +251,7 @@ const Header = () => {
                 </div>
               </div>
             )}
-          </div>
-
-          {/* Settings */}
-          <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-700">
-            <Settings className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-          </button>
-
+          </div> 
           {/* User Menu */}
           <div className="relative" ref={userMenuRef}>
             <button
@@ -263,18 +286,22 @@ const Header = () => {
                   </p>
                 </div>
                 <div className="py-2">
-                  <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
-                    <User className="w-4 h-4 mr-3" />
-                    Profile Settings
-                  </button>
-                  <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+                  <button
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                    onClick={() => {
+                      setShowAccountDialog(true);
+                      setShowUserMenu(false);
+                    }}
+                  >
                     <UserCheck className="w-4 h-4 mr-3" />
                     Account Settings
                   </button>
-                  <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
-                    <Settings className="w-4 h-4 mr-3" />
-                    Preferences
-                  </button>
+                  <NavLink to="/settings"  >
+                    <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+                      <Settings className="w-4 h-4 mr-3" />
+                      Preferences
+                    </button>
+                  </NavLink>
                 </div>
                 <div className="border-t border-gray-200 py-2 dark:border-gray-600">
                   <button
@@ -289,6 +316,55 @@ const Header = () => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Account Settings Dialog */}
+      <div  >
+        {showAccountDialog && (
+          <Overlay  open={showAccountDialog} onClose={() => setShowAccountDialog(false)} title="Account Settings">
+            <form onSubmit={handleAccountUpdate}>
+              <div className="space-y-4">
+                <Input
+                  label="Name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleFormChange}
+                      required
+                    />
+                    <Input
+                      label="Email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleFormChange}
+                      required
+                    />
+                    <Input
+                      label="Password"
+                      name="password"
+                      type="password"
+                      value={formData.password}
+                      onChange={handleFormChange}
+                    />
+                    <Input
+                      label="Confirm Password"
+                      name="confirmPassword"
+                      type="password"
+                      value={formData.confirmPassword}
+                      onChange={handleFormChange}
+                    />
+                  </div>
+              <Button
+                       type="submit"
+                      className="px-4 my-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors"
+                    >
+                      Save Changes
+                    </Button>
+
+                </form>
+             
+          </Overlay>
+        )}
       </div>
     </header>
   );

@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send, MessageSquare, Clock, CheckCircle, XCircle, Loader } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -56,13 +55,13 @@ const MQTTCommands = () => {
   const getStatusConfig = (status) => {
     switch (status) {
       case 'sent':
-        return { icon: Loader, color: 'bg-yellow-100 text-yellow-800', spin: true };
+        return { icon: Loader, color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200', spin: true };
       case 'completed':
-        return { icon: CheckCircle, color: 'bg-green-100 text-green-800', spin: false };
+        return { icon: CheckCircle, color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200', spin: false };
       case 'failed':
-        return { icon: XCircle, color: 'bg-red-100 text-red-800', spin: false };
+        return { icon: XCircle, color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200', spin: false };
       default:
-        return { icon: MessageSquare, color: 'bg-blue-100 text-blue-800', spin: false };
+        return { icon: MessageSquare, color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200', spin: false };
     }
   };
 
@@ -84,7 +83,7 @@ const MQTTCommands = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2 block">
                   Select Device
                 </label>
                 <Select value={selectedDevice} onChange={e => setSelectedDevice(e.target.value)}>
@@ -98,7 +97,7 @@ const MQTTCommands = () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2 block">
                   Command Type
                 </label>
                 <Select value={commandType} onChange={e => setCommandType(e.target.value)}>
@@ -111,10 +110,9 @@ const MQTTCommands = () => {
                 </Select>
               </div>
 
-
               {commandType === 'SET_FREQ' && (
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2 block">
                     Frequency (Hz)
                   </label>
                   <Select value={commandValue} onChange={e => setCommandValue(e.target.value)}>
@@ -131,7 +129,7 @@ const MQTTCommands = () => {
                       placeholder="Enter custom frequency..."
                       value={commandValue === 'custom' ? '' : commandValue}
                       onChange={(e) => setCommandValue(e.target.value)}
-                      className="mt-2"
+                      className="mt-2 dark:bg-gray-800 dark:text-gray-100"
                     />
                   )}
                 </div>
@@ -139,7 +137,7 @@ const MQTTCommands = () => {
 
               {commandType === 'CUSTOM' && (
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2 block">
                     Custom Command
                   </label>
                   <Select value={commandValue} onChange={e => setCommandValue(e.target.value)}>
@@ -153,7 +151,7 @@ const MQTTCommands = () => {
                       placeholder="Enter custom command..."
                       value={commandValue === 'custom' ? '' : commandValue}
                       onChange={(e) => setCommandValue(e.target.value)}
-                      className="mt-2"
+                      className="mt-2 dark:bg-gray-800 dark:text-gray-100"
                     />
                   )}
                 </div>
@@ -195,7 +193,7 @@ const MQTTCommands = () => {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="p-3 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                      className="p-3 border rounded-lg bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center space-x-2">
@@ -209,7 +207,7 @@ const MQTTCommands = () => {
                           >
                             <StatusIcon className={`w-4 h-4 ${statusConfig.color.split(' ')[1]}`} />
                           </motion.div>
-                          <span className="font-medium text-sm text-gray-900">
+                          <span className="font-medium text-sm text-gray-900 dark:text-gray-100">
                             {message.command}
                           </span>
                         </div>
@@ -218,10 +216,10 @@ const MQTTCommands = () => {
                         </Badge>
                       </div>
                       
-                      <div className="text-xs text-gray-600 space-y-1">
+                      <div className="text-xs text-gray-600 dark:text-gray-300 space-y-1">
                         <p>Device: {message.deviceId}</p>
                         <p>Response: {message.response}</p>
-                        <div className="flex items-center space-x-1 text-xs text-gray-500">
+                        <div className="flex items-center space-x-1 text-xs text-gray-500 dark:text-gray-400">
                           <Clock className="w-3 h-3" />
                           <span>{new Date(message.timestamp).toLocaleString()}</span>
                         </div>

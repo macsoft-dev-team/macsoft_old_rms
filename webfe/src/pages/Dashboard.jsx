@@ -4,11 +4,9 @@ import { Zap, WifiOff, AlertTriangle, Users, TrendingUp, Activity } from 'lucide
 import StatCard from '../components/dashboard/StatCard';
 import DeviceMap from '../components/dashboard/DeviceMap';
 import RecentActivity from '../components/dashboard/RecentActivity';
-
-import Select from '../components/ui/select';
-
 import { mockStats } from '../data/mockData';
 import { DASHBOARD_STATS } from '../lib/constants/dashboard';
+import TitleHead from '../components/TitleHead';
 
 const Dashboard = () => {
   // Map icon string to actual icon component
@@ -38,15 +36,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between"
-      >
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-2">Monitor your solar pump network in real-time</p>
-        </div>
+      <TitleHead title="Dashboard" description="Monitor your solar pump network in real-time" >
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -58,18 +48,7 @@ const Dashboard = () => {
             {new Date().toLocaleTimeString()}
           </p>
         </motion.div>
-      </motion.div>
-
-      {/* Example Select for filtering stats */}
-      <div className="w-48 mb-2">
-        <Select
-          options={statOptions}
-          value={statFilter}
-          onChange={e => setStatFilter(e.target.value)}
-          placeholder="Filter stats"
-        />
-      </div>
-
+      </TitleHead>
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {stats

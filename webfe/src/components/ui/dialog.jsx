@@ -46,26 +46,29 @@ export function DialogContent({ className = "", children }) {
         <AnimatePresence>
             {open && (
                 <motion.div
-                    className={"fixed inset-0 z-50 flex min-h-screen w-full min-w-full items-center justify-center " + className}
+                    className={
+                        "fixed inset-0 z-50 flex min-h-screen w-full min-w-full items-center justify-center " +
+                        className
+                    }
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                 >
                     {/* Overlay */}
                     <div
-                        className="fixed inset-0 bg-black/20 bg-opacity-60"
+                        className="fixed inset-0 bg-black/20 bg-opacity-60 dark:bg-black/60"
                         onClick={() => onOpenChange(false)}
                     />
                     {/* Modal Box */}
                     <motion.div
-                        className="relative bg-white rounded-lg shadow-lg p-6 max-w-2xl w-full z-10 max-h-[90vh] overflow-y-auto"
+                        className="relative bg-white dark:bg-gray-900 dark:border dark:border-gray-700 rounded-lg shadow-lg p-6 max-w-2xl w-full z-10 max-h-[90vh] overflow-y-auto dark:text-gray-100"
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.95, opacity: 0 }}
                     >
                         {children}
                         <button
-                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200"
                             onClick={() => onOpenChange(false)}
                             aria-label="Close"
                         >
@@ -90,7 +93,7 @@ export function DialogHeader({ className = "", children }) {
 
 export function DialogTitle({ className = "", children }) {
     return (
-        <h2 className={"text-lg font-semibold leading-none tracking-tight " + className}>
+        <h2 className={"text-lg font-semibold leading-none tracking-tight dark:text-gray-100 " + className}>
             {children}
         </h2>
     );
@@ -106,7 +109,7 @@ export function DialogFooter({ className = "", children }) {
 
 export function DialogDescription({ className = "", children }) {
     return (
-        <p className={"text-sm text-muted-foreground " + className}>
+        <p className={"text-sm text-muted-foreground dark:text-gray-400 " + className}>
             {children}
         </p>
     );

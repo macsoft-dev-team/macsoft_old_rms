@@ -10,7 +10,7 @@ import MQTTCommands from '../../pages/MQTTCommands';
 import ModbusTemplates from '../../pages/ModbusTemplates';
 import ServerTemplates from '../../pages/ServerTemplates';
 import Manufacturers from '../../pages/Manufacturers';
-import Settings from '../../pages/SettingsNew';
+import Settings from '../../pages/Settings';
 import Users from '../../pages/Users';
 
 export const router = createBrowserRouter([

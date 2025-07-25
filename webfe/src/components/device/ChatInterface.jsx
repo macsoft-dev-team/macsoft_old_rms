@@ -157,24 +157,24 @@ const ChatInterface = ({ deviceId, deviceName }) => {
   };
 
   return (
-    <div className="flex flex-col h-[60vh] bg-white border border-gray-400 rounded-lg">
+    <div className="flex flex-col h-[60vh] bg-white dark:bg-gray-900 border border-gray-400 dark:border-gray-700 rounded-lg">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-400 bg-gray-50 rounded-t-lg">
+      <div className="flex items-center justify-between p-4 border-b border-gray-400 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-t-lg">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-blue-500 dark:bg-blue-700 rounded-full flex items-center justify-center">
             <span className="text-white font-semibold text-sm">
               {deviceName?.charAt(0) || 'D'}
             </span>
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900">{deviceName}</h3>
-            <p className="text-xs text-green-600 flex items-center space-x-1">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100">{deviceName}</h3>
+            <p className="text-xs text-green-600 dark:text-green-400 flex items-center space-x-1">
+              <div className="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full"></div>
               <span>Online</span>
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="text-xs">
+        <Badge variant="outline" className="text-xs dark:bg-gray-900 dark:text-gray-100">
           MQTT
         </Badge>
       </div>
@@ -193,18 +193,19 @@ const ChatInterface = ({ deviceId, deviceName }) => {
                 }`}
             >
               <div
-                className={`max-w-xs px-3 py-2 rounded-lg ${message.type === 'outgoing'
-                  ? 'bg-blue-500 text-white'
-                  : message.type === 'system'
-                    ? 'bg-gray-200 text-gray-700 text-sm'
-                    : 'bg-gray-100 text-gray-900'
+                className={`max-w-xs px-3 py-2 rounded-lg ${
+                  message.type === 'outgoing'
+                    ? 'bg-blue-500 text-white dark:bg-blue-700'
+                    : message.type === 'system'
+                      ? 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
                   }`}
               >
                 <p className="font-mono text-sm">{message.content}</p>
 
                 <div className={`flex items-center space-x-1 mt-1 ${message.type === 'outgoing' ? 'justify-end' : 'justify-start'
                   }`}>
-                  <span className={`text-xs ${message.type === 'outgoing' ? 'text-blue-100' : 'text-gray-500'
+                  <span className={`text-xs ${message.type === 'outgoing' ? 'text-blue-100 dark:text-blue-200' : 'text-gray-500 dark:text-gray-400'
                     }`}>
                     {formatTime(message.timestamp)}
                   </span>
@@ -224,12 +225,12 @@ const ChatInterface = ({ deviceId, deviceName }) => {
               exit={{ opacity: 0, y: -20 }}
               className="flex justify-start"
             >
-              <div className="bg-gray-100 px-4 py-3 rounded-lg">
+              <div className="bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-lg">
                 <div className="flex space-x-1">
                   {[0, 1, 2].map((i) => (
                     <motion.div
                       key={i}
-                      className="w-2 h-2 bg-gray-400 rounded-full"
+                      className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full"
                       animate={{
                         scale: [1, 1.2, 1],
                         opacity: [0.5, 1, 0.5]
@@ -251,37 +252,37 @@ const ChatInterface = ({ deviceId, deviceName }) => {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t border-gray-400 bg-gray-50 rounded-b-lg">
-      <div className="space-y-3">
-        <Select
-          options={commandTypes}
-          value={commandType}
-          onChange={e => setCommandType(e.target.value)}
-          placeholder="Select command type..."
-          className="w-full"
-        />
-
-        {commandType === 'CUSTOM' && (
-          <Input
-            className="pl-10 w-100 border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            placeholder="Enter custom command..."
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+      <div className="p-4 border-t border-gray-400 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-b-lg">
+        <div className="space-y-3">
+          <Select
+            options={commandTypes}
+            value={commandType}
+            onChange={e => setCommandType(e.target.value)}
+            placeholder="Select command type..."
+            className="w-full dark:bg-gray-800 dark:text-gray-100"
           />
-        )}
 
-        <div className="flex space-x-2">
-          <Button
-            onClick={handleSendMessage}
-            disabled={!commandType || (commandType === 'CUSTOM' && !newMessage.trim())}
-            className="flex-1"
-          >
-            <Send className="w-4 h-4 mr-2" />
-            Send Command
-          </Button>
+          {commandType === 'CUSTOM' && (
+            <Input
+              className="pl-10 w-100 border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+              placeholder="Enter custom command..."
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+            />
+          )}
+
+          <div className="flex space-x-2">
+            <Button
+              onClick={handleSendMessage}
+              disabled={!commandType || (commandType === 'CUSTOM' && !newMessage.trim())}
+              className="flex-1 dark:bg-blue-700 dark:text-white"
+            >
+              <Send className="w-4 h-4 mr-2" />
+              Send Command
+            </Button>
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );

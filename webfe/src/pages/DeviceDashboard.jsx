@@ -2,7 +2,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
   ArrowLeft,
-  MapPin,
   AlertTriangle,
   Play,
   StopCircle,
@@ -21,7 +20,6 @@ import { deviceDashboardMetrics } from '../lib/constants/deviceDashboardMetrics'
 const DeviceDashboard = () => {
   const { deviceId } = useParams();
   const device = mockDevices.find(d => d.id === deviceId);
-  const isRunning = device.data?.runStatus === 1;
   const hasAlerts = (device.data?.alarmCode ?? 0) !== 0 || (device.data?.faultCode ?? 0) !== 0;
 
   // Meta: Solar Pump Metrics Grid configuration
@@ -32,7 +30,7 @@ const DeviceDashboard = () => {
   if (!device) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-gray-500">Device not found</p>
+        <p className="text-gray-500 dark:text-gray-400">Device not found</p>
       </div>
     );
   }
@@ -70,20 +68,20 @@ const DeviceDashboard = () => {
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{device.name}</h1>
-            <div className="flex items-center space-x-4 mt-2">
-              <Badge className={statusConfig.color}>
+            <h1 className="text-2xl sm:text-2xl tracking-wide font-medium text-slate-700 dark:text-white uppercase">{device.name}</h1>
+              <div className="flex items-center space-x-4 mt-2">
+              <Badge className={statusConfig.color + " dark:bg-opacity-80"}>
                 {statusConfig.label}
               </Badge>
-              <span className="text-gray-600">ID: {device.id}</span>
-              <span className="text-gray-600">IMEI: {device.imei}</span>
+              <span className="text-gray-600 dark:text-gray-300">ID: {device.id}</span>
+              <span className="text-gray-600 dark:text-gray-300">IMEI: {device.imei}</span>
             </div>
           </div>
         </div>
 
         <div className="text-right">
-          <p className="text-sm text-gray-500">Last Update</p>
-          <p className="text-lg font-semibold text-gray-900">
+          <p className="text-sm text-gray-500 dark:text-gray-400">Last Update</p>
+          <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             {new Date(device.lastUpdate).toLocaleString()}
           </p>
         </div>
@@ -101,18 +99,18 @@ const DeviceDashboard = () => {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-red-50 border border-red-200 rounded-lg p-4"
+              className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-4"
             >
               <div className="flex items-center space-x-2">
-                <AlertTriangle className="w-5 h-5 text-red-600" />
-                <h3 className="font-semibold text-red-800">Active Alerts</h3>
+                <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400" />
+                <h3 className="font-semibold text-red-800 dark:text-red-300">Active Alerts</h3>
               </div>
               <div className="mt-2 space-y-1">
                 {device.data?.faultCode !== 0 && (
-                  <p className="text-sm text-red-700">Fault Code: {device.data?.faultCode}</p>
+                  <p className="text-sm text-red-700 dark:text-red-400">Fault Code: {device.data?.faultCode}</p>
                 )}
                 {device.data?.alarmCode !== 0 && (
-                  <p className="text-sm text-red-700">Alarm Code: {device.data?.alarmCode}</p>
+                  <p className="text-sm text-red-700 dark:text-red-400">Alarm Code: {device.data?.alarmCode}</p>
                 )}
               </div>
             </motion.div>
@@ -137,22 +135,33 @@ const DeviceDashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white p-6 rounded-lg shadow-sm border"
+            className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border dark:border-gray-800"
           >
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
               Historical Data Trends (Last 3 Days)
             </h3>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={device.history}>
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                   <XAxis
                     dataKey="timestamp"
                     tickFormatter={(value) => new Date(value).toLocaleDateString()}
+                    stroke="#6b7280"
                   />
-                  <YAxis />
+                  <YAxis stroke="#6b7280" />
                   <Tooltip
                     labelFormatter={(value) => new Date(value).toLocaleString()}
+                    contentStyle={{
+                      backgroundColor: 'rgb(255 255 255 / 1)',
+                      color: '#111827',
+                      border: '1px solid #e5e7eb'
+                    }}
+                    wrapperStyle={{
+                      backgroundColor: 'rgb(31 41 55 / 1)',
+                      color: '#f3f4f6',
+                      border: '1px solid #374151'
+                    }}
                   />
                   <Line type="monotone" dataKey="motorVoltage" stroke="#3b82f6" strokeWidth={2} name="Motor Voltage" />
                   <Line type="monotone" dataKey="motorCurrent" stroke="#10b981" strokeWidth={2} name="Motor Current" />
@@ -174,10 +183,10 @@ const DeviceDashboard = () => {
             className="grid grid-cols-1 lg:grid-cols-2 gap-6"
           >
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
                 Device Command Interface
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
                 Send commands to {device.name} using the WhatsApp-style interface below.
               </p>
 

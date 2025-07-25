@@ -1,13 +1,19 @@
-import { useCallback } from 'react';
+import { useContext, useCallback } from 'react';
+import { ToastContext } from '../components/ui/toast';
 
 export function useToast() {
-  // Simple toast implementation using window.alert for demo
-  // Replace with your own toast library or UI as needed
-  const toast = useCallback(({ title, description, variant }) => {
-    let message = title;
-    if (description) message += `: ${description}`;
-    window.alert(message);
-  }, []);
+  const context = useContext(ToastContext);
+  if (!context) {
+    throw new Error('useToast must be used within a ToastProvider');
+  }
+
+  const toast = useCallback(
+    ({ title, description, variant }) => {
+      context.addToast({ title, description, variant });
+    },
+    [context]
+  );
 
   return { toast };
 }
+   

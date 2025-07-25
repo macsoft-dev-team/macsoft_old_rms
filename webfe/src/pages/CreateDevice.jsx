@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Scan, Save, MapPin, Zap } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -119,7 +119,7 @@ const CreateDevice = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium mb-2 block text-gray-900 dark:text-gray-100">
                   IMEI Number *
                 </label>
                 <div className="flex space-x-2">
@@ -127,7 +127,7 @@ const CreateDevice = () => {
                     value={deviceForm.imei}
                     onChange={(e) => setDeviceForm(prev => ({ ...prev, imei: e.target.value }))}
                     placeholder="Enter IMEI number..."
-                    className="flex-1"
+                    className="flex-1 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                   />
                   <Button variant="outline" onClick={handleScanIMEI}>
                     <Scan className="w-4 h-4 mr-2" />
@@ -137,18 +137,19 @@ const CreateDevice = () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium mb-2 block text-gray-900 dark:text-gray-100">
                   Device Name *
                 </label>
                 <Input
                   value={deviceForm.name}
                   onChange={(e) => setDeviceForm(prev => ({ ...prev, name: e.target.value }))}
                   placeholder="Enter device name..."
+                  className="placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium mb-2 block text-gray-900 dark:text-gray-100">
                   Manufacturer *
                 </label>
                 <Select
@@ -176,7 +177,7 @@ const CreateDevice = () => {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <label className="text-sm font-medium mb-2 block text-gray-900 dark:text-gray-100">
                     Latitude
                   </label>
                   <Input
@@ -187,10 +188,11 @@ const CreateDevice = () => {
                       location: { ...prev.location, lat: e.target.value }
                     }))}
                     placeholder="28.6139"
+                    className="placeholder:text-gray-400 dark:placeholder:text-gray-500"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <label className="text-sm font-medium mb-2 block text-gray-900 dark:text-gray-100">
                     Longitude
                   </label>
                   <Input
@@ -201,11 +203,12 @@ const CreateDevice = () => {
                       location: { ...prev.location, lng: e.target.value }
                     }))}
                     placeholder="77.2090"
+                    className="placeholder:text-gray-400 dark:placeholder:text-gray-500"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium mb-2 block text-gray-900 dark:text-gray-100">
                   Address
                 </label>
                 <Input
@@ -215,6 +218,7 @@ const CreateDevice = () => {
                     location: { ...prev.location, address: e.target.value }
                   }))}
                   placeholder="Enter location address..."
+                  className="placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 />
               </div>
             </CardContent>
@@ -233,7 +237,7 @@ const CreateDevice = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium mb-2 block text-gray-900 dark:text-gray-100">
                   Modbus Template
                 </label>
                 <Select
@@ -250,7 +254,7 @@ const CreateDevice = () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium mb-2 block text-gray-900 dark:text-gray-100">
                   Server Template
                 </label>
                 <Select
@@ -279,7 +283,7 @@ const CreateDevice = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium mb-2 block text-gray-900 dark:text-gray-100">
                   Username
                 </label>
                 <Input
@@ -290,11 +294,12 @@ const CreateDevice = () => {
                   }))}
                   placeholder="MQTT username..."
                   readOnly
+                  className="placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium mb-2 block text-gray-900 dark:text-gray-100">
                   Password
                 </label>
                 <Input
@@ -305,11 +310,12 @@ const CreateDevice = () => {
                   }))}
                   placeholder="MQTT password..."
                   readOnly
+                  className="placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium mb-2 block text-gray-900 dark:text-gray-100">
                   Client ID
                 </label>
                 <Input
@@ -320,11 +326,12 @@ const CreateDevice = () => {
                   }))}
                   placeholder="MQTT client ID..."
                   readOnly
+                  className="placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 />
               </div>
 
               {deviceForm.mqttCredentials.username && (
-                <Badge className="bg-green-100 text-green-800">
+                <Badge className="bg-green-200 text-green-900 dark:bg-green-800 dark:text-green-100">
                   Credentials Generated
                 </Badge>
               )}
