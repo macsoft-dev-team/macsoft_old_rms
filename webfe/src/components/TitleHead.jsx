@@ -1,0 +1,18 @@
+import { motion } from 'motion/react';
+
+export default function TitleHead({ children ,...props }) {
+    const {title, description} = props;
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center justify-between"
+        >
+            <div className='space-y-1'>
+                <h1 className="text-2xl sm:text-2xl tracking-wide font-medium text-slate-700 dark:text-white uppercase">{title}</h1>
+                <p className="text-gray-600 dark:text-gray-300">{description}</p>
+            </div>
+           {children}
+        </motion.div>
+    );
+}
