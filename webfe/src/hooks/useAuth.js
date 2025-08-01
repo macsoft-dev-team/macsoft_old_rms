@@ -9,7 +9,7 @@ import {
   login,
   logout,
   clearAuthError
-} from '../store/slices/authSlice';
+} from '../lib/features/authSlice';
 
 export const useAuth = () => {
   const dispatch = useDispatch();

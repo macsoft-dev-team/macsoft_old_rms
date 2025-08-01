@@ -6,7 +6,7 @@ export default function TitleHead({ children ,...props }) {
         <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-between"
+            className="grid gap-2 xl:flex items-center justify-between"
         >
             <div className='space-y-1'>
                 <h1 className="text-2xl sm:text-2xl tracking-wide font-medium text-slate-700 dark:text-white uppercase">{title}</h1>

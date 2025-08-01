@@ -3,15 +3,16 @@ import Layout from '../../components/Layout';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import Login from '../../pages/Login';
 import Dashboard from '../../pages/Dashboard';
-import Devices from '../../pages/Devices';
 import DeviceDashboard from '../../pages/DeviceDashboard';
 import CreateDevice from '../../pages/CreateDevice';
 import MQTTCommands from '../../pages/MQTTCommands';
 import ModbusTemplates from '../../pages/ModbusTemplates';
 import ServerTemplates from '../../pages/ServerTemplates';
-import Manufacturers from '../../pages/Manufacturers';
 import Settings from '../../pages/Settings';
 import Users from '../../pages/Users';
+import Devices from '../../pages/devices/Devices';
+import Manufacturers from '../../pages/manufacturers/Manufacturers';
+import NotFound from '../../pages/NotFound';
 
 export const router = createBrowserRouter([
   {
@@ -106,3 +107,51 @@ export const router = createBrowserRouter([
     ]
   }
 ]);
+ 
+const baseRoutes = [
+  { index: true, path: '/', element: <Dashboard /> },
+  { path: 'devices', element: <Devices /> },
+  { path: 'devices/:deviceId', element: <DeviceDashboard /> },
+  { path: 'devices/create', element: <CreateDevice /> },
+  { path: 'commands', element: <MQTTCommands /> },
+  { path: 'templates/modbus', element: <ModbusTemplates /> },
+  { path: 'templates/server', element: <ServerTemplates /> },
+  { path: 'settings', element: <Settings /> },
+];
+
+
+const roleBasedRoutes = {
+  MACSOFT_ADMIN: [
+    { path: 'manufacturers', element: <Manufacturers /> },
+    { path: 'users', element: <Users /> },
+  ],
+  MACSOFT_USER: [],
+  CUSTOMER_ADMIN: [{ path: 'users', element: <Users /> }],
+  CUSTOMER_USER: [],
+  END_USER: [
+    { path: 'devices/:deviceId', element: <DeviceDashboard /> },
+  ],
+};
+
+
+
+export const switchRoutes = (role) => {
+ 
+  return createBrowserRouter([
+    { path: '/login', element: <Login /> },
+    {
+      path: '/',
+       errorElement: <NotFound />,
+      element: (
+        <ProtectedRoute>
+          <Layout />
+        </ProtectedRoute>
+      ),
+      children: [
+        ...baseRoutes,
+        ...(roleBasedRoutes[role] || []),
+        
+      ],
+    },
+  ]);
+}; 

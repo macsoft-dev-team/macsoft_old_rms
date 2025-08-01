@@ -12,8 +12,8 @@ import {
   LogOut,
   UserCheck,
 } from 'lucide-react';
-import { toggleSidebar, setNotification } from '../store/slices/uiSlice';
-import { logout } from '../store/slices/authSlice';
+import { toggleSidebar, setNotification } from '../lib/features/uiSlice';
+import { logout } from '../lib/features/authSlice';
 import { useTheme } from '../hooks/useTheme';
 import { NavLink } from 'react-router-dom';
 import Input from './ui/input';
@@ -158,7 +158,7 @@ const Header = () => {
             <Menu className="w-5 h-5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors" />
           </button>
 
-          {/* Search Bar */}
+          {/* Search Bar 
           <form onSubmit={handleSearch} className="relative">
             <div className="flex items-center">
               <Search className="absolute left-3 w-5 h-5 text-gray-400 dark:text-gray-500" />
@@ -170,7 +170,7 @@ const Header = () => {
                 className="pl-10 pr-4 py-2 w-64 lg:w-80 text-sm bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
               />
             </div>
-          </form>
+          </form>*/}
         </div>
 
         {/* Right Section */}
