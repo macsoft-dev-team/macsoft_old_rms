@@ -7,7 +7,7 @@ import {
   setLoading,
   setNotification,
   clearNotification 
-} from '../store/slices/uiSlice';
+} from '../lib/features/uiSlice';
 
 export const useUI = () => {
   const dispatch = useDispatch();

@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 import Notification from './Notification';
 import LoadingSpinner from './LoadingSpinner';
-import { setIsMobile } from '../store/slices/uiSlice';
+import { setIsMobile } from '../lib/features/uiSlice';
 import { ToastProvider } from '../components/ui/toast';
 
 const Layout = () => {

@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
-import { toggleSidebar, setSidebarCollapsed } from '../store/slices/uiSlice';
-import { logout } from '../store/slices/authSlice';
+import { toggleSidebar, setSidebarCollapsed } from '../lib/features/uiSlice';
+import { logout } from '../lib/features/authSlice';
 import logo from '../assets/macsoft-logo.png';
 import { switchMenuItems } from '../lib/constants/navData';
 

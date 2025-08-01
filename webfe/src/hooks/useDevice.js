@@ -1,0 +1,48 @@
+import { fetchDevices, setDevice, setFilter } from "../lib/features/devices";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useCallback } from "react";
+
+export const useDevice = () => {
+  const dispatch = useDispatch();
+  const { devices, device, currentPage, totalPages, filter, loading } =
+    useSelector((state) => state.device);
+
+  useEffect(() => {
+    dispatch(fetchDevices({ skip: 0, take: 10 ,filter}));
+  }, [dispatch, filter]);
+
+  const onPageChange = useCallback(
+    (skip) => {
+        console.log("onPageChange", skip, filter);
+
+      dispatch(fetchDevices({ skip, take: 10, filter }));
+    },
+    [dispatch, filter]
+  );
+
+  const setDeviceCallback = useCallback(
+    (device) => dispatch(setDevice(device)),
+    [dispatch]
+  );
+  const fetchDevicesCallback = useCallback(
+    (params) => dispatch(fetchDevices(params)),
+    [dispatch]
+  );
+  const setFilterCallback = useCallback(
+    (filter) => dispatch(setFilter(filter)),
+    [dispatch]
+  );
+
+  return {
+    devices,
+    device,
+    currentPage,
+    totalPages,
+    filter,
+    loading,
+    setDevice: setDeviceCallback,
+    fetchDevices: fetchDevicesCallback,
+    setFilter: setFilterCallback,
+    onPageChange,
+  };
+};

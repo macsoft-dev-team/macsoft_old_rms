@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
-import { clearNotification } from '../store/slices/uiSlice';
+import { clearNotification } from '../lib/features/uiSlice';
 
 const Notification = () => {
   const dispatch = useDispatch();
