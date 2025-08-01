@@ -1,17 +1,19 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Filter, Plus, Download } from 'lucide-react';
+import { Filter, Plus, Download, ExternalLink } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import  Select from '../components/ui/select';
+import Select from '../components/ui/select';
 import DeviceCard from '../components/devices/DeviceCard';
 import { mockDevices } from '../data/mockData';
 import TitleHead from '../components/TitleHead';
 import SearchForm from '../components/SearchForm';
 import { NavLink } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 const Devices = () => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [manufacturerFilter, setManufacturerFilter] = useState('all');
@@ -28,26 +30,32 @@ const Devices = () => {
     .sort((a, b) => new Date(b.lastUpdate) - new Date(a.lastUpdate));
 
   const manufacturers = [...new Set(mockDevices.map(device => device.manufacturer))];
-
-
-
+ 
   return (
     <div className="space-y-6">
       <TitleHead title="Device Management" description="Monitor and manage all solar pump devices">
         <div className="flex gap-3 *:uppercase *:text-sm">
+        
           <Button variant="outline" className="dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">
-            <Download className="w-4 h-4 mr-2" />
+            <ExternalLink className="w-4 h-4 mr-2" />
             <span className='hidden lg:inline'>
 
               Export
             </span>
           </Button>
           <NavLink to="/devices/create">
-          <Button className="dark:bg-blue-500 dark:hover:bg-blue-600">
-            <Plus className="w-4 h-4 mr-2" />
-            <span className='hidden lg:inline'> Add Device</span>
-          </Button>
+            <Button className="dark:bg-blue-500 dark:hover:bg-blue-600">
+              <Plus className="w-4 h-4 mr-2" />
+              <span className='hidden lg:inline'> Add Device</span>
+            </Button>
           </NavLink>
+          <Button variant="outline" className="dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">
+            <Download className="w-4 h-4 mr-2" />
+            <span className='hidden lg:inline'>
+
+              Import Devices
+            </span>
+          </Button>
         </div>
       </TitleHead>
 
@@ -73,6 +81,7 @@ const Devices = () => {
             className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600"
           />
         </div>
+        {(user?.role === 'MACSOFT_ADMIN' || user?.role === 'MACSOFT_USER') && (
         <div className="w-full sm:w-48">
           <Select
             options={[{ value: 'all', label: 'All Manufacturers' }, ...manufacturers.map(m => ({ value: m, label: m }))]}
@@ -82,10 +91,11 @@ const Devices = () => {
             className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600"
           />
         </div>
-        <Button variant="outline" className="dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">
+        )}
+       {/*  <Button variant="outline" className="dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">
           <Filter className="w-4 h-4 mr-2" />
           More Filters
-        </Button>
+        </Button> */}
       </motion.div>
 
       {/* Recently Updated Badge */}

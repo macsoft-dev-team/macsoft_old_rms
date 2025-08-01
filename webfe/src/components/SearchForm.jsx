@@ -19,7 +19,7 @@ export default function SearchForm() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search devices, logs, customers..."
+                    placeholder="Search devices . . ."
                  />
             </div>
         </form>
