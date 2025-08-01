@@ -6,6 +6,7 @@ import {
   setPermissions,
   setAuthLoading,
   setAuthError,
+  login,
   logout,
   clearAuthError
 } from '../store/slices/authSlice';
@@ -16,6 +17,7 @@ export const useAuth = () => {
 
   return {
     ...auth,
+    login: (email, password) => dispatch(login({ email, password })),
     setUser: (user) => dispatch(setUser(user)),
     setToken: (token) => dispatch(setToken(token)),
     setPermissions: (permissions) => dispatch(setPermissions(permissions)),

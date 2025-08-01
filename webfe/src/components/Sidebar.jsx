@@ -1,19 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import { toggleSidebar, setSidebarCollapsed } from '../store/slices/uiSlice';
 import { logout } from '../store/slices/authSlice';
-import { menuItems } from '../lib/constants/navData';
 import logo from '../assets/macsoft-logo.png';
+import { switchMenuItems } from '../lib/constants/navData';
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const { sidebarCollapsed, isMobile } = useSelector((state) => state.ui);
   const { user } = useSelector((state) => state.auth);
-
-
+  const [menuItems, setMenuItems] = useState([]);
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -26,7 +25,12 @@ const Sidebar = () => {
 
     return () => window.removeEventListener('resize', handleResize);
   }, [dispatch]);
-
+  useEffect(() => {
+    if (user) {
+      const menuItems = switchMenuItems(user.role) || [];
+      setMenuItems(menuItems);
+    }
+  }, [user]);
   const handleToggle = () => {
     console.log('Toggle button clicked, current state:', sidebarCollapsed);
     dispatch(toggleSidebar());
@@ -126,7 +130,7 @@ const Sidebar = () => {
               <div>
                 <img className='group-hover/logo:hidden' src={logo} alt="MacSoft Logo" />
                 <div className="hidden group-hover/logo:block text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">
-                   <ChevronRight className=" w-full h-full text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors" />
+                  <ChevronRight className=" w-full h-full text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors" />
                 </div>
 
               </div>

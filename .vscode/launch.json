@@ -10,7 +10,7 @@
           "request": "launch",
           "runtimeArgs": ["run", "dev"],
           "runtimeExecutable": "npm",
-          "cwd": "${workspaceFolder}/server",
+          "cwd": "${workspaceFolder}/api",
           "skipFiles": ["<node_internals>/**"]
         },
         {
@@ -18,7 +18,7 @@
           "type": "chrome",
           "request": "launch",
           "url": "http://localhost:5173",
-          "webRoot": "${workspaceFolder}/client/src",
+          "webRoot": "${workspaceFolder}/webfe/src",
           "sourceMaps": true
         },
         {
@@ -27,7 +27,7 @@
           "request": "launch",
           "runtimeExecutable": "npm",
           "runtimeArgs": ["run", "dev"],
-          "cwd": "${workspaceFolder}/client",
+          "cwd": "${workspaceFolder}/webfe",
           "skipFiles": ["<node_internals>/**"]
         },
     ],

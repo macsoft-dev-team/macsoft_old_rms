@@ -3,12 +3,13 @@ import { motion } from 'framer-motion';
 import { Scan, Save, MapPin, Zap } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import  Input  from '../components/ui/input';
+import Input from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
 import { useToast } from '../hooks/use-toast.js';
-import  Select from '../components/ui/select';
+import Select from '../components/ui/select';
 import { mockManufacturers, mockTemplates, mockServerTemplates } from '../data/mockData';
 import TitleHead from '../components/TitleHead.jsx';
+import { NavLink } from 'react-router-dom';
 
 const CreateDevice = () => {
   const { toast } = useToast();
@@ -64,7 +65,7 @@ const CreateDevice = () => {
       ...prev,
       imei: simulatedIMEI
     }));
-    
+
     toast({
       title: "IMEI Scanned",
       description: `IMEI ${simulatedIMEI} captured successfully`,
@@ -101,8 +102,8 @@ const CreateDevice = () => {
 
   return (
     <div className="space-y-6">
-<TitleHead title="Create Device" description="Add a new solar pump device to the system">
-  </TitleHead>
+      <TitleHead title="Create Device" description="Add a new solar pump device to the system">
+      </TitleHead>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Device Information */}
         <motion.div
@@ -183,8 +184,8 @@ const CreateDevice = () => {
                   <Input
                     type="number"
                     value={deviceForm.location.lat}
-                    onChange={(e) => setDeviceForm(prev => ({ 
-                      ...prev, 
+                    onChange={(e) => setDeviceForm(prev => ({
+                      ...prev,
                       location: { ...prev.location, lat: e.target.value }
                     }))}
                     placeholder="28.6139"
@@ -198,8 +199,8 @@ const CreateDevice = () => {
                   <Input
                     type="number"
                     value={deviceForm.location.lng}
-                    onChange={(e) => setDeviceForm(prev => ({ 
-                      ...prev, 
+                    onChange={(e) => setDeviceForm(prev => ({
+                      ...prev,
                       location: { ...prev.location, lng: e.target.value }
                     }))}
                     placeholder="77.2090"
@@ -213,8 +214,8 @@ const CreateDevice = () => {
                 </label>
                 <Input
                   value={deviceForm.location.address}
-                  onChange={(e) => setDeviceForm(prev => ({ 
-                    ...prev, 
+                  onChange={(e) => setDeviceForm(prev => ({
+                    ...prev,
                     location: { ...prev.location, address: e.target.value }
                   }))}
                   placeholder="Enter location address..."
@@ -274,7 +275,7 @@ const CreateDevice = () => {
 
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center w-full justify-between">
                 <CardTitle>MQTT Credentials</CardTitle>
                 <Button variant="outline" size="sm" onClick={generateMQTTCredentials}>
                   Generate
@@ -288,8 +289,8 @@ const CreateDevice = () => {
                 </label>
                 <Input
                   value={deviceForm.mqttCredentials.username}
-                  onChange={(e) => setDeviceForm(prev => ({ 
-                    ...prev, 
+                  onChange={(e) => setDeviceForm(prev => ({
+                    ...prev,
                     mqttCredentials: { ...prev.mqttCredentials, username: e.target.value }
                   }))}
                   placeholder="MQTT username..."
@@ -304,8 +305,8 @@ const CreateDevice = () => {
                 </label>
                 <Input
                   value={deviceForm.mqttCredentials.password}
-                  onChange={(e) => setDeviceForm(prev => ({ 
-                    ...prev, 
+                  onChange={(e) => setDeviceForm(prev => ({
+                    ...prev,
                     mqttCredentials: { ...prev.mqttCredentials, password: e.target.value }
                   }))}
                   placeholder="MQTT password..."
@@ -320,8 +321,8 @@ const CreateDevice = () => {
                 </label>
                 <Input
                   value={deviceForm.mqttCredentials.clientId}
-                  onChange={(e) => setDeviceForm(prev => ({ 
-                    ...prev, 
+                  onChange={(e) => setDeviceForm(prev => ({
+                    ...prev,
                     mqttCredentials: { ...prev.mqttCredentials, clientId: e.target.value }
                   }))}
                   placeholder="MQTT client ID..."
@@ -337,11 +338,19 @@ const CreateDevice = () => {
               )}
             </CardContent>
           </Card>
+          <div className='flex items-center justify-end space-x-2 mt-4'>
 
-          <Button onClick={handleCreateDevice} className="w-full h-12">
-            <Save className="w-4 h-4 mr-2" />
-            Create Device
-          </Button>
+            <Button onClick={handleCreateDevice} variant='success'>
+              <Save className="w-4 h-4 mr-2" />
+              Create Device
+            </Button>
+            <NavLink to="/devices">
+              <Button variant='outline'   >
+                Cancel
+              </Button>
+            </NavLink>
+          </div>
+
         </motion.div>
       </div>
     </div>

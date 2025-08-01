@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+ }
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum role {
+  MACSOFT_ADMIN
+  CUSTOMER_ADMIN
+  MACSOFT_USER
+  CUSTOMER_USER
+  END_USER
+}
+
+model user {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  role      role     @default(END_USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  customerId String?
+  customer  customer? @relation(fields: [customerId], references: [id])
+  notifications notification[]
+}
+
+model customer {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     user[]
+  devices   device[]
+}
+
+model device {
+  id        String   @id @default(cuid())
+  imeinumber   String    @unique
+  host         String?
+  port         Int?
+  username     String?
+  password     String?
+  pubTopicData String?
+  subTopicCmd  String?
+  pubTopicCmd  String?
+  lattitude    String?
+  longitude    String?
+  simnumber    String?
+  pcbsn        String?
+  status       String    @default("active")
+  lastupdated  DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId        String?
+  customerId    String?
+  customer      customer?      @relation(fields: [customerId], references: [id])
+  devicelogones devicelogone[]
+  devicelogtwos devicelogtwo[]
+}
+
+model devicelogone {
+  id          String   @id @default(uuid())
+  imeinumber  String
+  receivedAt  DateTime @default(now())
+  messageType String
+  payload     Json
+  deviceId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  device     device @relation(fields: [deviceId], references: [id])
+}
+
+model devicelogtwo {
+  id          String   @id @default(cuid())
+  imeinumber  String
+  receivedAt  DateTime @default(now())
+  messageType String
+  payload     Json
+  deviceId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  device     device @relation(fields: [deviceId], references: [id])
+}
+
+model notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String?
+  user      user?    @relation(fields: [userId], references: [id])
+}
+model configuration {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+ }
