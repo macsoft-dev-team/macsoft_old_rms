@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { API_ENDPOINTS } from "../../lib/constants/api";
-import { switchMenuItems } from "../../lib/constants/navData";
+
 const user = JSON.parse(sessionStorage.getItem("user"));
 
 const initialState = {

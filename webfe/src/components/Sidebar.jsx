@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import { toggleSidebar, setSidebarCollapsed } from '../lib/features/uiSlice';
 import { logout } from '../lib/features/authSlice';
 import logo from '../assets/macsoft-logo.png';
-import { switchMenuItems } from '../lib/constants/navData';
+import { switchMenuItems } from '../lib/constants/routes';
 
 const Sidebar = () => {
   const dispatch = useDispatch();

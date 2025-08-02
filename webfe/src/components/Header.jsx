@@ -88,6 +88,7 @@ const Header = () => {
 
   const handleThemeToggle = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
+    localStorage.setItem('theme', theme === 'light' ? 'dark' : 'light');
   };
 
   const handleSidebarToggle = () => {

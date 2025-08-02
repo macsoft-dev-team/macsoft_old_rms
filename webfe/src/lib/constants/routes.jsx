@@ -1,4 +1,13 @@
-import { createBrowserRouter } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  Users,
+  Settings,
+  FileText,
+  Monitor,
+  UserCheck,
+  Server,
+} from 'lucide-react';
+
 import Layout from '../../components/Layout';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import Login from '../../pages/Login';
@@ -8,151 +17,147 @@ import CreateDevice from '../../pages/CreateDevice';
 import MQTTCommands from '../../pages/MQTTCommands';
 import ModbusTemplates from '../../pages/ModbusTemplates';
 import ServerTemplates from '../../pages/ServerTemplates';
-import Settings from '../../pages/Settings';
-import Users from '../../pages/Users';
+import SettingsPage from '../../pages/Settings';
+import UsersPage from '../../pages/Users';
 import Devices from '../../pages/devices/Devices';
 import Manufacturers from '../../pages/manufacturers/Manufacturers';
 import NotFound from '../../pages/NotFound';
+import { createBrowserRouter } from 'react-router-dom';
 
-export const router = createBrowserRouter([
-  {
-    path: '/login',
-    element: <Login />
-  },
-  {
+// 1️⃣ Base config with both menu + component
+const BASE_ITEMS = {
+  dashboard: {
     path: '/',
-    element: (
-      <ProtectedRoute>
-        <Layout />
-      </ProtectedRoute>
-    ),
-    children: [
-      {
-        index: true,
-        path: '/',
-        element: <Dashboard />
-      },
-      {
-        path: 'devices',
-        element: (
-          <ProtectedRoute >
-            <Devices />
-          </ProtectedRoute>
-        )
-      },
-      {
-        path: 'devices/:deviceId',
-        element: (
-          <ProtectedRoute >
-            <DeviceDashboard />
-          </ProtectedRoute>
-        )
-      },
-      {
-        path: 'devices/create',
-        element: (
-          <ProtectedRoute>
-            <CreateDevice />
-          </ProtectedRoute>
-        )
-      },
-      {
-        path: 'commands',
-        element: (
-          <ProtectedRoute>
-            <MQTTCommands />
-          </ProtectedRoute>
-        )
-      },
-      {
-        path: 'templates/modbus',
-        element: (
-          <ProtectedRoute>
-            <ModbusTemplates />
-          </ProtectedRoute>
-        )
-      },
-      {
-        path: 'templates/server',
-        element: (
-          <ProtectedRoute >
-            <ServerTemplates />
-          </ProtectedRoute>
-        )
-      },
-      {
-        path: 'manufacturers',
-        element: (
-          <ProtectedRoute >
-            <Manufacturers />
-          </ProtectedRoute>
-        )
-      },
-      {
-        path: 'users',
-        element: (
-          <ProtectedRoute >
-            <Users />
-          </ProtectedRoute>
-        )
-      },
-      {
-        path: 'settings',
-        element: (
-          <ProtectedRoute >
-            <Settings />
-          </ProtectedRoute>
-        )
-      }
-    ]
-  }
-]);
- 
-const baseRoutes = [
-  { index: true, path: '/', element: <Dashboard /> },
-  { path: 'devices', element: <Devices /> },
-  { path: 'devices/:deviceId', element: <DeviceDashboard /> },
-  { path: 'devices/create', element: <CreateDevice /> },
-  { path: 'commands', element: <MQTTCommands /> },
-  { path: 'templates/modbus', element: <ModbusTemplates /> },
-  { path: 'templates/server', element: <ServerTemplates /> },
-  { path: 'settings', element: <Settings /> },
-];
-
-
-const roleBasedRoutes = {
-  MACSOFT_ADMIN: [
-    { path: 'manufacturers', element: <Manufacturers /> },
-    { path: 'manufacturer/:manufacturerId', element: <Devices /> },
-    { path: 'users', element: <Users /> },
-  ],
-  MACSOFT_USER: [],
-  CUSTOMER_ADMIN: [{ path: 'users', element: <Users /> }],
-  CUSTOMER_USER: [],
-  END_USER: [
-    { path: 'devices/:deviceId', element: <DeviceDashboard /> },
-  ],
+    icon: LayoutDashboard,
+    label: 'Dashboard',
+    category: 'main',
+    element: <Dashboard />,
+  },
+  devices: {
+    path: '/devices',
+    icon: Monitor,
+    label: 'Devices',
+    category: 'main',
+    element: <Devices />,
+  },
+  deviceDetails: {
+    path: '/devices/:deviceId',
+    icon: Monitor,
+    label: 'Device Details',
+    category: 'main',
+    element: <DeviceDashboard />,
+  },
+  createDevice: {
+    path: '/devices/create',
+    icon: Monitor,
+    label: 'Create Device',
+    category: 'main',
+    element: <CreateDevice />,
+  },
+  users: {
+    path: '/users',
+    icon: UserCheck,
+    label: 'Users',
+    category: 'management',
+    element: <UsersPage />,
+  },
+  manufacturers: {
+    path: '/manufacturers',
+    icon: Users,
+    label: 'Manufacturers',
+    category: 'management',
+    element: <Manufacturers />,
+  },
+  modbus: {
+    path: '/templates/modbus',
+    icon: FileText,
+    label: 'Modbus Templates',
+    category: 'main',
+    element: <ModbusTemplates />,
+  },
+  serverTemplates: {
+    path: '/templates/server',
+    icon: FileText,
+    label: 'Server Templates',
+    category: 'main',
+    element: <ServerTemplates />,
+  },
+  commands: {
+    path: '/commands',
+    icon: Server,
+    label: 'MQTT Commands',
+    category: 'main',
+    element: <MQTTCommands />,
+  },
+  settings: {
+    path: '/settings',
+    icon: Settings,
+    label: 'Settings',
+    category: 'system',
+    element: <SettingsPage />,
+  },
+  endUserDevices: {
+    path: '/devices/:deviceId',
+    icon: Monitor,
+    label: 'Devices',
+    category: 'main',
+    element: <DeviceDashboard />,
+  },
 };
 
+ const ROLE_ITEMS = {
+  MACSOFT_ADMIN: [
+    BASE_ITEMS.dashboard,
+    BASE_ITEMS.devices,
+    BASE_ITEMS.manufacturers,
+    BASE_ITEMS.users,
+    BASE_ITEMS.modbus,
+    BASE_ITEMS.commands,
+    BASE_ITEMS.settings,
+  ],
+  MACSOFT_USER: [
+    BASE_ITEMS.dashboard,
+    BASE_ITEMS.devices,
+    BASE_ITEMS.modbus,
+    BASE_ITEMS.commands,
+    BASE_ITEMS.settings,
+  ],
+  CUSTOMER_ADMIN: [
+    BASE_ITEMS.dashboard,
+    BASE_ITEMS.devices,
+    BASE_ITEMS.users,
+    BASE_ITEMS.modbus,
+    BASE_ITEMS.commands,
+    BASE_ITEMS.settings,
+  ],
+  CUSTOMER_USER: [
+    BASE_ITEMS.dashboard,
+    BASE_ITEMS.devices,
+    BASE_ITEMS.modbus,
+    BASE_ITEMS.commands,
+    BASE_ITEMS.settings,
+  ],
+  END_USER: [BASE_ITEMS.endUserDevices],
+};
+
+export const switchMenuItems = (role) => ROLE_ITEMS[role] || ROLE_ITEMS.END_USER;
 
 
-export const switchRoutes = (role) => {
- 
-  return createBrowserRouter([
+export const switchRoutes = (role) =>
+  createBrowserRouter([
     { path: '/login', element: <Login /> },
     {
       path: '/',
-       errorElement: <NotFound />,
+      errorElement: <NotFound />,
       element: (
         <ProtectedRoute>
           <Layout />
         </ProtectedRoute>
       ),
-      children: [
-        ...baseRoutes,
-        ...(roleBasedRoutes[role] || []),
-        
-      ],
+      children: (ROLE_ITEMS[role] || ROLE_ITEMS.END_USER).map((item) => ({
+        path: item.path.replace(/^\//, ''), // remove leading slash for child routes
+        index: item.path === '/',
+        element: <ProtectedRoute>{item.element}</ProtectedRoute>,
+      })),
     },
   ]);
-}; 
