@@ -3,7 +3,7 @@ import Layout from '../../components/Layout';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import Login from '../../pages/Login';
 import Dashboard from '../../pages/Dashboard';
-import DeviceDashboard from '../../pages/DeviceDashboard';
+import DeviceDashboard from '../../pages/device/DeviceDashboard';
 import CreateDevice from '../../pages/CreateDevice';
 import MQTTCommands from '../../pages/MQTTCommands';
 import ModbusTemplates from '../../pages/ModbusTemplates';
@@ -123,6 +123,7 @@ const baseRoutes = [
 const roleBasedRoutes = {
   MACSOFT_ADMIN: [
     { path: 'manufacturers', element: <Manufacturers /> },
+    { path: 'manufacturer/:manufacturerId', element: <Devices /> },
     { path: 'users', element: <Users /> },
   ],
   MACSOFT_USER: [],

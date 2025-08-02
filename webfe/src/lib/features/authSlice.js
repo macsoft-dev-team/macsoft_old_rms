@@ -3,12 +3,10 @@ import axios from "axios";
 import { API_ENDPOINTS } from "../../lib/constants/api";
 import { switchMenuItems } from "../../lib/constants/navData";
 const user = JSON.parse(sessionStorage.getItem("user"));
-const token = sessionStorage.getItem("authToken");
 
 const initialState = {
   user: user || null,
-  token: token || null,
-  isAuthenticated: !!token,
+  isAuthenticated: !!user,
   permissions: [],
   loading: false,
   error: null,
@@ -17,21 +15,38 @@ const initialState = {
 
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ email, password }, { dispatch }) => {
+  async ({ email, password }, { dispatch, rejectWithValue }) => {
     try {
-      const response = await axios.post(API_ENDPOINTS.login, {
-        email,
-        password,
-      });
-      const { user, token, permissions } = response.data;
+      const response = await axios.post(API_ENDPOINTS.login, { email, password }, { withCredentials: true });
+      const { user, success } = response.data;
+      if (!success) throw new Error("Login failed");
       dispatch(setUser(user));
       sessionStorage.setItem("user", JSON.stringify(user));
-      sessionStorage.setItem("authToken", token);
-      dispatch(setToken(token));
-      dispatch(setPermissions(permissions));
+      return { user };
     } catch (error) {
       dispatch(setAuthError(error.message));
-      throw error;
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const checkAuth = createAsyncThunk(
+  "auth/checkAuth",
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await axios.get(API_ENDPOINTS.login.replace("/login", "/check"), { withCredentials: true });
+      const { user, isAuthenticated } = response.data;
+      if (isAuthenticated) {
+        dispatch(setUser(user));
+        sessionStorage.setItem("user", JSON.stringify(user));
+        return { user };
+      } else {
+        dispatch(logout());
+        return rejectWithValue("Not authenticated");
+      }
+    } catch (error) {
+      dispatch(logout());
+      return rejectWithValue(error.message);
     }
   }
 );
@@ -44,11 +59,7 @@ const authSlice = createSlice({
       state.user = action.payload;
       state.isAuthenticated = !!action.payload;
     },
-    setToken: (state, action) => {
-      state.token = action.payload;
-      state.isAuthenticated = !!action.payload;
-      sessionStorage.setItem("authToken", action.payload);
-    },
+    setToken: (state, action) => {}, // No-op, token is not handled client-side
     setPermissions: (state, action) => {
       state.permissions = action.payload;
     },
@@ -60,11 +71,9 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       state.user = null;
-      state.token = null;
       state.isAuthenticated = false;
       state.permissions = [];
       state.error = null;
-      sessionStorage.removeItem("authToken");
       sessionStorage.removeItem("user");
     },
     clearAuthError: (state) => {
@@ -80,13 +89,26 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token;
-        state.permissions = action.payload.permissions;
         state.isAuthenticated = true;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
+      })
+      .addCase(checkAuth.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(checkAuth.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        state.isAuthenticated = true;
+      })
+      .addCase(checkAuth.rejected, (state, action) => {
+        state.loading = false;
+        state.user = null;
+        state.isAuthenticated = false;
+        state.error = action.payload;
       });
   },
 });

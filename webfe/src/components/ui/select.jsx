@@ -68,13 +68,13 @@ const Select = ({
           {options.length === 0 && (
             <div className="px-4 py-2 text-gray-400 dark:text-gray-500 whitespace-nowrap">No options</div>
           )}
-          {options.map((option) => {
+          {options.map((option,i) => {
             const val = option.value ?? option;
             const label = option.label ?? option;
             const isSelected = value === val;
             return (
               <div
-                key={val}
+                key={i}
                 className={`px-4 py-2 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 whitespace-nowrap ${
                   isSelected ? 'bg-blue-50 dark:bg-blue-800 font-semibold text-blue-700 dark:text-blue-200' : 'text-gray-700 dark:text-gray-100'
                 }`}

@@ -1,68 +1,59 @@
 // Device dashboard metric card meta data
-// Each object describes a metric card for the dashboard
-
-import { 
-  SolarPVMeter, 
-  MotorAmmeter, 
-  WaterPumpFlow, 
-  IndustrialThermometer,
-  SolarEnergyBattery,
-  RelevantMotor
-} from '../../components/device/RelevantAnimatedIcons';
-import { Clock } from 'lucide-react';
+ 
+import { Sun, Plug, Activity, Zap, Gauge, Droplets, Thermometer, BatteryCharging, Clock } from 'lucide-react';
 
 export const deviceDashboardMetrics = [
   {
-    icon: <SolarPVMeter  />,
+    icon: <Sun />,
     title: "Solar PV Voltage",
     key: "pvDcVoltage",
     unit: "V DC",
     color: "yellow",
   },
   {
-    icon: <SolarPVMeter  />,
+    icon: <Plug />,
     title: "Motor Input Voltage",
     key: "outputMotorVoltage",
     unit: "V AC",
     color: "blue",
   },
   {
-    icon: <MotorAmmeter />,
+    icon: <Activity />, 
     title: "Motor Current Draw",
     key: "outputMotorCurrent",
     unit: "A",
     color: "purple",
   },
   {
-    icon: <SolarEnergyBattery />,
+    icon: <Zap />, 
     title: "Motor Power Output",
     key: "outputMotorPower",
     unit: "kW",
     color: "green",
   },
   {
-    icon: <RelevantMotor   />,
+    icon: <Gauge />,
     title: "Motor Speed",
     key: "rpm",
     unit: "RPM",
     color: "red",
   },
   {
-    icon: <WaterPumpFlow />,  
+    icon: <Droplets />,  
     title: "Water Flow Rate",
     key: "flowSpeed",
     unit: "L/min",
     color: "blue",
   },
   {
-    icon: <IndustrialThermometer  />,
+    icon: <Thermometer  />,
     title: "Motor Temperature",
     key: "temperature",
     unit: "°C",
     color: "orange",
   },
   {
-    icon: <SolarEnergyBattery />,
+    icon: <BatteryCharging />,
     title: "Daily Energy Generated",
     key: "todayEnergy",
     unit: "kWh",

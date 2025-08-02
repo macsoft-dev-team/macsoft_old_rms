@@ -2,7 +2,7 @@ import { MotionDiv, DeviceCard, DeviceSkeleton } from '.';
  import { useEffect, useState } from 'react';
 
 
-const DevicesGrid = ({ devices, loading }) => {
+const DevicesGrid = ({ devices, loading, setDevice, fetchDeviceById }) => {
     const [fakeLoading, setFakeLoading] = useState(true);
 
     useEffect(() => {
@@ -32,6 +32,8 @@ const DevicesGrid = ({ devices, loading }) => {
                         device={device}
                         delay={index * 0.1}
                         darkMode={true}
+                        setDevice={setDevice}
+                        fetchDeviceById={fetchDeviceById}
                     />
                 ))}
         </MotionDiv>

@@ -1,19 +1,24 @@
-import { fetchDevices, setDevice, setFilter } from "../lib/features/devices";
+import {
+  fetchDevices,
+  fetchDeviceById,
+  setDevice,
+  setFilter,
+} from "../lib/features/devices";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useCallback } from "react";
 
 export const useDevice = () => {
   const dispatch = useDispatch();
-  const { devices, device, currentPage, totalPages, filter, loading } =
+  const { devices, device,deviceId, currentPage, totalPages, filter, loading } =
     useSelector((state) => state.device);
 
   useEffect(() => {
-    dispatch(fetchDevices({ skip: 0, take: 10 ,filter}));
+    dispatch(fetchDevices({ skip: 0, take: 10, filter }));
   }, [dispatch, filter]);
 
   const onPageChange = useCallback(
     (skip) => {
-        console.log("onPageChange", skip, filter);
+      console.log("onPageChange", skip, filter);
 
       dispatch(fetchDevices({ skip, take: 10, filter }));
     },
@@ -26,6 +31,10 @@ export const useDevice = () => {
   );
   const fetchDevicesCallback = useCallback(
     (params) => dispatch(fetchDevices(params)),
+    [dispatch]
+  );
+  const fetchDeviceByIdCallback = useCallback(
+    (id) => dispatch(fetchDeviceById(id)),
     [dispatch]
   );
   const setFilterCallback = useCallback(
@@ -44,5 +53,6 @@ export const useDevice = () => {
     fetchDevices: fetchDevicesCallback,
     setFilter: setFilterCallback,
     onPageChange,
+    fetchDeviceById: fetchDeviceByIdCallback,
   };
 };

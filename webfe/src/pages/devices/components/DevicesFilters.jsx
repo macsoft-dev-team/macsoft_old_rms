@@ -6,6 +6,7 @@ import { Search } from 'lucide-react';
 import Input from '../../../components/ui/input';
 
 import { Button } from '../../../components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 
 const DevicesFilters = ({
@@ -13,6 +14,7 @@ const DevicesFilters = ({
     setFilter,
     user
 }) => {
+    const navigate =useNavigate ();
     const { register, handleSubmit, setValue, watch, reset } = useForm({
         defaultValues: {
             search: '',
@@ -21,6 +23,7 @@ const DevicesFilters = ({
         },
     });
     const onSubmit = (data) => {
+        navigate('/devices');
         const _data ={}
         if (data.search) _data.search = data.search;
         if (data.status && data.status !== '') _data.status = data.status;
@@ -70,7 +73,7 @@ const DevicesFilters = ({
                 {(user?.role === 'MACSOFT_ADMIN' || user?.role === 'MACSOFT_USER') && (
                     <div className="w-full sm:w-48">
                         <Select
-                            options={[{ value: 'all', label: 'All Manufacturers' }, ...manufacturers.map(m => ({ value: m, label: m }))]}
+                            options={[{ value: 'all', label: 'All Manufacturers' }, ...manufacturers.map(m => ({ value: m.id, label: m.name }))]}
                             name={'manufacturer'}
                             value={watch('manufacturer')}
                             onChange={e => setValue('manufacturer', e.target.value)}

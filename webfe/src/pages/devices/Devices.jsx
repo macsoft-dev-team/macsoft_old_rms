@@ -1,6 +1,8 @@
+import { useParams } from 'react-router-dom';
 import TitleHead from '../../components/TitleHead';
 import useAuth from '../../hooks/useAuth';
 import { useDevice } from '../../hooks/useDevice';
+import { useManufacturer } from '../../hooks/useManufacturer';
 import {
   DevicesHeader,
   DevicesFilters,
@@ -8,11 +10,23 @@ import {
   DevicesGrid,
   DevicesEmpty
 } from './components';
+import { useEffect } from 'react';
 
 const Devices = () => {
+    const { manufacturerId } = useParams();
     const { user } = useAuth();
-    const { devices, setFilter } = useDevice();
+    const { devices, setFilter, setDevice, fetchDeviceById } = useDevice();
+    const { manufacturers } = useManufacturer();
     const safeDevices = Array.isArray(devices) ? devices : [];
+    const safeManufacturers = Array.isArray(manufacturers) ? manufacturers : [];
+    useEffect(() => {
+        if (manufacturerId) {
+            setFilter({ manufacturer: manufacturerId });
+        }
+        return () => {
+            setFilter({ manufacturer: '' });
+        };
+    }, [manufacturerId, setFilter]);
     return (
         <div className="space-y-5">
             <TitleHead title="Device Management" description="Monitor and manage all solar pump devices">
@@ -20,12 +34,12 @@ const Devices = () => {
             </TitleHead>
             <DevicesFilters
                 setFilter={setFilter}
-                manufacturers={[]}
+                manufacturers={safeManufacturers}
                 user={user}
             />
             <DevicesBadge count={safeDevices.length} />
             {safeDevices.length > 0 ? (
-                <DevicesGrid devices={safeDevices} />
+                <DevicesGrid devices={safeDevices} setDevice={setDevice} fetchDeviceById={fetchDeviceById} />
             ) : (
                 <DevicesEmpty />
             )}

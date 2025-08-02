@@ -2,6 +2,7 @@ import MotionDiv from './MotionDiv';
 import { Badge } from '../../../components/ui/badge';
 import { NavLink } from 'react-router-dom';
 import { dateF } from '../../../lib/constants/variables';
+import { useDevice } from '../../../hooks/useDevice';
 
 const statusColors = {
   online: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300',
@@ -9,7 +10,7 @@ const statusColors = {
   fault: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300',
 };
 
-const DeviceCard = ({ device, delay = 0 }) => {
+const DeviceCard = ({ device, delay = 0, setDevice, fetchDeviceById }) => {
   return (
     <MotionDiv
       transition={{ delay }}
@@ -30,6 +31,10 @@ const DeviceCard = ({ device, delay = 0 }) => {
       <div className="px-4 pb-4">
         <NavLink
           to={`/devices/${device.id}`}
+          onClick={() => {
+            setDevice(device);
+            fetchDeviceById(device.id);
+          }}
           className="w-full inline-block text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded transition-colors duration-150"
         >
           View Details

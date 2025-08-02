@@ -1,9 +1,9 @@
 import React from 'react';
 import { RouterProvider } from "react-router-dom";
-import { store } from './lib/store';
 import { switchRoutes } from "./lib/constants/routes";
 import "./App.css";
 import useAuth from './hooks/useAuth';
+import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
   const [router, setRouter] = React.useState(null);
@@ -17,7 +17,7 @@ function App() {
   }, [user]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />; // Show loading spinner while auth is being checked
   }
 
   if (!router) {

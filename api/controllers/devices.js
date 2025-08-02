@@ -1,12 +1,15 @@
- const deviceService = require("../services/devices");
+const deviceService = require("../services/devices");
 
- const getAllDevices = async (req, res) => {
+const getAllDevices = async (req, res) => {
   try {
     const { skip, take, filter } = req.query;
+    // destructure user from cookies
+    const user = req.user; // Assuming user is set by authentication middleware
     const { devices, count } = await deviceService.getAllDevices(
       skip,
       take,
-      filter
+      filter,
+      user
     );
 
     res.status(200).json({
@@ -19,9 +22,10 @@
   }
 };
 
- const getDeviceById = async (req, res) => {
+const getDeviceById = async (req, res) => {
   try {
-    const device = await deviceService.getDeviceById(req.params.id);
+     const { id } = req.params;
+    const device = await deviceService.getDeviceById(id);
     if (!device) return res.status(404).json({ error: "Device not found" });
     res.json(device);
   } catch (err) {
@@ -29,7 +33,7 @@
   }
 };
 
- const createDevice = async (req, res) => {
+const createDevice = async (req, res) => {
   try {
     const device = await deviceService.createDevice(req.body);
     res.status(201).json(device);
@@ -38,7 +42,7 @@
   }
 };
 
- const updateDevice = async (req, res) => {
+const updateDevice = async (req, res) => {
   try {
     const device = await deviceService.updateDevice(req.params.id, req.body);
     if (!device) return res.status(404).json({ error: "Device not found" });
@@ -48,7 +52,7 @@
   }
 };
 
- const deleteDevice = async (req, res) => {
+const deleteDevice = async (req, res) => {
   try {
     const result = await deviceService.deleteDevice(req.params.id);
     if (!result) return res.status(404).json({ error: "Device not found" });

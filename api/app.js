@@ -7,10 +7,14 @@ const { PrismaClient } = require("@prisma/client");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const indexRouter = require("./routes/index");
-
-const prisma = new PrismaClient();
+ 
 var app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    credentials: process.env.CORS_CREDENTIALS === "true" ? true : false,
+  })
+);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 

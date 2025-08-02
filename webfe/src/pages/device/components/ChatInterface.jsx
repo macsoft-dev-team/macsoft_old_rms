@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, Check, CheckCheck, Clock, AlertCircle, Loader2 } from 'lucide-react';
-import Input from '../ui/input';
-import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
-import Select from '../ui/select';
+import Input from '../../../components/ui/input';
+import { Button } from '../../../components/ui/button';
+import { Badge } from '../../../components/ui/badge';
+import Select from '../../../components/ui/select';
 
 const ChatInterface = ({ deviceId, deviceName }) => {
   const [messages, setMessages] = useState([

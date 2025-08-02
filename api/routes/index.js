@@ -2,8 +2,11 @@ const express = require('express');
 const router = express.Router();
 const auth =require('./auth')
 const devices = require('./devices');
+const customers = require('./customers');
+ const { verifyToken } = require('../middleware/auth');
 
-/* GET home page. */
 router.use('/auth', auth);
-router.use('/devices', devices);
+router.use('/devices', verifyToken, devices);
+router.use('/customers', verifyToken, customers);
+
 module.exports = router;

@@ -12,7 +12,7 @@ export const fetchDevices = createAsyncThunk(
     if (skip !== 0) params.skip = skip;
     if (take !== 0) params.take = take;
     if (filter) params.filter = filter;
-    const response = await axios.get(API_ENDPOINTS.devices, { params });
+    const response = await axios.get(API_ENDPOINTS.devices, { params, withCredentials: true });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -24,7 +24,7 @@ export const fetchDeviceById = createAsyncThunk(
   "devices/fetchDeviceById",
   async (deviceId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_ENDPOINTS.devices}/${deviceId}`);
+      const response = await axios.get(`${API_ENDPOINTS.devices}/${deviceId}`, { withCredentials: true });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -36,7 +36,7 @@ export const updateDevice = createAsyncThunk(
   "devices/updateDevice",
   async ({ deviceId, data }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${API_ENDPOINTS.devices}/${deviceId}`, data);
+      const response = await axios.put(`${API_ENDPOINTS.devices}/${deviceId}`, data, { withCredentials: true });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -48,7 +48,7 @@ export const deleteDevice = createAsyncThunk(
   "devices/deleteDevice",
   async (deviceId, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`${API_ENDPOINTS.devices}/${deviceId}`);
+      const response = await axios.delete(`${API_ENDPOINTS.devices}/${deviceId}`, { withCredentials: true });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -62,7 +62,8 @@ export const uploadDevice= createAsyncThunk(
     try {
       const response = await axios.post(
         `${API_ENDPOINTS.devices}/upload`,
-        formData
+        formData,
+        { withCredentials: true }
       );
       return response.data;
     } catch (error) {
@@ -97,6 +98,57 @@ export const devicesSlice = createSlice({
       .addCase(fetchDevices.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch devices";
+      })
+      .addCase(fetchDeviceById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchDeviceById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.device = action.payload;
+      })
+      .addCase(fetchDeviceById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch device by ID";
+      })
+      .addCase(updateDevice.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateDevice.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.devices.findIndex(device => device.id === action.payload.id);
+        if (index !== -1) {
+          state.devices[index] = action.payload;
+        }
+      })
+      .addCase(updateDevice.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to update device";
+      })
+      .addCase(deleteDevice.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteDevice.fulfilled, (state, action) => {
+        state.loading = false;
+        state.devices = state.devices.filter(device => device.id !== action.payload.id);
+      })
+      .addCase(deleteDevice.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to delete device";
+      })
+      .addCase(uploadDevice.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uploadDevice.fulfilled, (state, action) => {
+        state.loading = false;
+        state.devices.push(action.payload);
+      })
+      .addCase(uploadDevice.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to upload device";
       });
   },
 });
