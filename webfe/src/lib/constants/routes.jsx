@@ -14,7 +14,7 @@ import Login from '../../pages/Login';
 import Dashboard from '../../pages/Dashboard';
 import DeviceDashboard from '../../pages/device/DeviceDashboard';
 import CreateDevice from '../../pages/CreateDevice';
-import MQTTCommands from '../../pages/MQTTCommands';
+import MQTTCommands from '../../pages/mqttcommands/MQTTCommands';
 import ModbusTemplates from '../../pages/ModbusTemplates';
 import ServerTemplates from '../../pages/ServerTemplates';
 import SettingsPage from '../../pages/Settings';
@@ -109,6 +109,7 @@ const BASE_ITEMS = {
   MACSOFT_ADMIN: [
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
+    BASE_ITEMS.deviceDetails,
     BASE_ITEMS.manufacturers,
     BASE_ITEMS.users,
     BASE_ITEMS.modbus,
@@ -118,6 +119,7 @@ const BASE_ITEMS = {
   MACSOFT_USER: [
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
+    BASE_ITEMS.deviceDetails,
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
     BASE_ITEMS.settings,
@@ -125,6 +127,7 @@ const BASE_ITEMS = {
   CUSTOMER_ADMIN: [
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
+    BASE_ITEMS.deviceDetails,
     BASE_ITEMS.users,
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
@@ -133,6 +136,7 @@ const BASE_ITEMS = {
   CUSTOMER_USER: [
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
+    BASE_ITEMS.deviceDetails,
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
     BASE_ITEMS.settings,
