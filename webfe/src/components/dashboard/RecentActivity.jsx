@@ -1,6 +1,6 @@
  
 
-import { activities } from '../../../data/mockData';
+import { activities } from '../../data/mockData';
 
 const RecentActivity = () => {
   return (

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Zap, WifiOff, AlertTriangle, Users, TrendingUp, Activity } from 'lucide-react';
 import StatCard from '../components/dashboard/StatCard';
 import DeviceMap from './device/components/DeviceMap';
-import RecentActivity from './device/components/RecentActivity';
+import RecentActivity from '../components/dashboard/RecentActivity';
 import { mockStats } from '../data/mockData';
 import { DASHBOARD_STATS } from '../lib/constants/dashboard';
 import TitleHead from '../components/TitleHead';

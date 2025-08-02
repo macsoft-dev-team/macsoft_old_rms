@@ -2,7 +2,7 @@ import DeviceMetricCard from '../../../components/DeviceMetricCard';
 import { deviceDashboardMetrics } from '../../../lib/constants/deviceDashboardMetrics';
 
 const MetricsGrid = ({ device }) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     {deviceDashboardMetrics.map((metric, idx) => (
       <DeviceMetricCard
         key={metric.title + idx}
@@ -10,8 +10,7 @@ const MetricsGrid = ({ device }) => (
         title={metric.title}
         value={device[metric.key]}
         unit={metric.unit}
-        color={metric.color}
-      />
+       />
     ))}
   </div>
 );
