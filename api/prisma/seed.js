@@ -21,9 +21,7 @@ async function main() {
   const seeds = [
     ['customer', 'customer.json'],
     ['user', 'user.json'],
-    ['device', 'device.json'],
-    ['devicelogone', 'devicelogone.json'],
-    ['devicelogtwo', 'devicelogtwo.json'],
+    ['device', 'device.json'], 
   ];
   for (const [model, file] of seeds) {
     await seedFromFile(model, file);

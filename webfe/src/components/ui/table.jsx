@@ -1,6 +1,6 @@
 export function Table({ children, ...props }) {
   return (
-    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900" {...props}>
+    <table className="min-w-full table-auto divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900" style={{ borderCollapse: 'separate', borderSpacing: 0 }} {...props}>
       {children}
     </table>
   );
@@ -16,7 +16,7 @@ export function TableHeader({ children, ...props }) {
 
 export function TableRow({ children, ...props }) {
   return (
-    <tr className="hover:bg-gray-100 dark:hover:bg-blue-900 transition-colors" {...props}>
+    <tr className="hover:bg-gray-100 dark:hover:bg-blue-900 transition-colors" style={{ minHeight: '56px' }} {...props}>
       {children}
     </tr>
   );
@@ -24,7 +24,7 @@ export function TableRow({ children, ...props }) {
 
 export function TableHead({ children, ...props }) {
   return (
-    <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-blue-100 uppercase tracking-wider bg-gray-50 dark:bg-blue-900" {...props}>
+    <th className="px-8 py-4 text-left text-sm font-medium text-gray-500 dark:text-blue-100 uppercase tracking-wider bg-gray-50 dark:bg-blue-900" {...props}>
       {children}
     </th>
   );
@@ -40,7 +40,7 @@ export function TableBody({ children, ...props }) {
 
 export function TableCell({ children, ...props }) {
   return (
-    <td className="px-6 py-4 whitespace-nowrap text-base text-gray-900 dark:text-blue-100 dark:bg-gray-900" {...props}>
+    <td className="px-8 py-4 whitespace-nowrap text-base text-gray-900 dark:text-blue-100 dark:bg-gray-900" {...props}>
       {children}
     </td>
   );

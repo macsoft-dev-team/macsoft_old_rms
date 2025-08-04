@@ -43,7 +43,7 @@ const Sidebar = () => {
   const renderMenuItem = (item) => {
     const Icon = item.icon;
     const isActive = location.pathname === item.path;
-
+    if (item.hidden) return null; 
     return (
       <Link
         key={item.path}

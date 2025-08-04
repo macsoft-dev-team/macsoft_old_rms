@@ -15,7 +15,7 @@ import Dashboard from '../../pages/Dashboard';
 import DeviceDashboard from '../../pages/device/DeviceDashboard';
 import CreateDevice from '../../pages/CreateDevice';
 import MQTTCommands from '../../pages/mqttcommands/MQTTCommands';
-import ModbusTemplates from '../../pages/ModbusTemplates';
+import ModbusTemplates from '../../pages/modbustemplates/ModbusTemplates';
 import ServerTemplates from '../../pages/ServerTemplates';
 import SettingsPage from '../../pages/Settings';
 import UsersPage from '../../pages/Users';
@@ -44,6 +44,7 @@ const BASE_ITEMS = {
     path: '/devices/:deviceId',
     icon: Monitor,
     label: 'Device Details',
+    hidden: true,
     category: 'main',
     element: <DeviceDashboard />,
   },
@@ -67,6 +68,14 @@ const BASE_ITEMS = {
     label: 'Manufacturers',
     category: 'management',
     element: <Manufacturers />,
+  },
+  manufacturerDevices: {
+    path: '/manufacturer/:manufacturerId',
+    icon: Users,
+    label: 'Manufacturer Devices',
+    hidden: true,
+    category: 'management',
+    element: <Devices />,
   },
   modbus: {
     path: '/templates/modbus',
@@ -111,6 +120,7 @@ const BASE_ITEMS = {
     BASE_ITEMS.devices,
     BASE_ITEMS.deviceDetails,
     BASE_ITEMS.manufacturers,
+    BASE_ITEMS.manufacturerDevices,
     BASE_ITEMS.users,
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
@@ -120,6 +130,7 @@ const BASE_ITEMS = {
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
     BASE_ITEMS.deviceDetails,
+    BASE_ITEMS.manufacturerDevices,
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
     BASE_ITEMS.settings,
