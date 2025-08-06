@@ -1,17 +1,17 @@
 // Device dashboard metric card meta data
  
 import { Sun, Plug, Activity, Zap, Gauge, Droplets, Thermometer, BatteryCharging, Clock } from 'lucide-react';
-
+import {icons} from './icons';
 export const deviceDashboardMetrics = [
   {
-    icon: <Sun />,
+    icon: icons.solarPower,
     title: "Solar PV Voltage",
     key: "pvDcVoltage",
     unit: "V DC",
     color: "yellow",
   },
   {
-    icon: <Plug />,
+    icon: icons.spark,
     title: "Motor Input Voltage",
     key: "outputMotorVoltage",
     unit: "V AC",
@@ -25,21 +25,21 @@ export const deviceDashboardMetrics = [
     color: "purple",
   },
   {
-    icon: <Zap />, 
+    icon: icons.energizer,
     title: "Motor Power Output",
     key: "outputMotorPower",
     unit: "kW",
     color: "green",
   },
   {
-    icon: <Gauge />,
+    icon:  icons.cFan,
     title: "Motor Speed",
     key: "rpm",
     unit: "RPM",
     color: "red",
   },
   {
-    icon: <Droplets />,  
+    icon: icons.waterWaves,
     title: "Water Flow Rate",
     key: "flowSpeed",
     unit: "L/min",

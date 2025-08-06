@@ -1,4 +1,4 @@
-import DeviceMetricCard from '../../../components/DeviceMetricCard';
+import DeviceMetricCard from './DeviceMetricCard';
 import { deviceDashboardMetrics } from '../../../lib/constants/deviceDashboardMetrics';
 
 const MetricsGrid = ({ device }) => (

@@ -1,4 +1,6 @@
  
+import Lottie from "lottie-react";
+
 const DeviceMetricCard = ({
   title,
   value,
@@ -8,7 +10,11 @@ const DeviceMetricCard = ({
   children,
   className = '',
 }) => {
- 
+  const style = {
+    height:400,
+    width:400,
+  };
+
   return (
     <div
       className={`relative overflow-hidden rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6 flex flex-col gap-3 transition-transform hover:scale-[1.025] hover:shadow-xl ${className}`}
@@ -18,8 +24,17 @@ const DeviceMetricCard = ({
 
       <div className="flex items-center gap-4 z-10">
         {icon && (
-          <div className="flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-300 shadow-inner text-3xl">
-            {icon}
+          <div className="flex items-center justify-center w-18 h-18 overflow-hidden rounded-full bg-blue-50/25 dark:bg-blue-900 text-blue-600 dark:text-blue-300 shadow-inner text-3xl">
+            {typeof icon === 'object' && icon.layers ? (
+              <Lottie
+                animationData={icon}
+                style={style}
+                loop={true}
+                autoplay={true}
+              />
+            ) : (
+              icon
+            )}
           </div>
         )}
         <div className="flex flex-col justify-center">
