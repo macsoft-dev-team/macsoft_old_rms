@@ -10,6 +10,7 @@ import AlertBanner from './components/AlertBanner';
 import MetricsGrid from './components/MetricsGrid';
 import HistoricalChart from './components/HistoricalChart';
 import CommandButtons from './components/CommandButtons';
+import DeviceConnectionInfo from './components/DeviceConnectionInfo';
 const DeviceDashboard = () => {
   const { deviceId } = useParams();
   const { device ,fetchDeviceById ,loading} = useDevice();
@@ -56,9 +57,10 @@ const DeviceDashboard = () => {
        <DeviceHeader device={device} statusConfig={statusConfig} navigate={navigate} />
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="commands">Commands</TabsTrigger>
+          <TabsTrigger value="connection">Connection</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -85,6 +87,10 @@ const DeviceDashboard = () => {
               />
             </div>
           </div>
+        </TabsContent>
+
+        <TabsContent value="connection">
+          <DeviceConnectionInfo device={device} />
         </TabsContent>
       </Tabs>
     </div>

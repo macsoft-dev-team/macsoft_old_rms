@@ -14,32 +14,32 @@ const DeviceHeader = ({ device, statusConfig, navigate }) => (
   <motion.div
     initial={{ opacity: 0, y: -20 }}
     animate={{ opacity: 1, y: 0 }}
-    className="flex items-center justify-between"
+    className="flex  sm:items-center sm:justify-between gap-4"
   >
-    <div className="flex items-center space-x-4">
+    <div className="flex items-start sm:items-center space-x-3 sm:space-x-4">
       <Button
         variant="outline"
         size="icon"
         onClick={() => navigate('/devices')}
+        className="shrink-0"
       >
         <ArrowLeft className="w-4 h-4" />
       </Button>
-      <div>
-        <h1 className="text-2xl sm:text-2xl tracking-wide font-medium text-slate-700 dark:text-white uppercase">{device.name}</h1>
-        <div className="flex items-center space-x-4 mt-2">
-          <Badge className={statusColors[device.status] + " dark:bg-opacity-80"}>
-            {device.status}
-          </Badge>
-          <span className="text-gray-600 dark:text-gray-300">username: {device.username}</span>
-          <span className="text-gray-600 dark:text-gray-300">IMEI: {device.imeinumber}</span>
+     
+    </div>
+    <div className="min-w-0 ms-auto grid">
+      <h1 className="text-lg sm:text-2xl tracking-wide font-medium text-slate-700 dark:text-white uppercase break-words">{device.name}</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-2">
+        <Badge className={statusColors[device.status] + " dark:bg-opacity-80 w-fit"}>
+          {device.status}
+        </Badge>
+        <div className="text-left sm:text-right shrink-0">
+          <p className="text-sm text-gray-500 dark:text-gray-400">Last Update</p>
+          <p className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {dateF(device.lastupdated)}
+          </p>
         </div>
       </div>
-    </div>
-    <div className="text-right">
-      <p className="text-sm text-gray-500 dark:text-gray-400">Last Update</p>
-      <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-        {dateF(device.lastupdated)}
-      </p>
     </div>
   </motion.div>
 );
