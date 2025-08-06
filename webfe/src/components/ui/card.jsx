@@ -13,19 +13,19 @@ export const Card = ({ children, className = '' }) => (
 );
 
 export const CardHeader = ({ children, className = '' }) => (
-  <div className={`px-6 py-2 min-h-14 flex items-center border-b border-gray-200 dark:border-gray-700 ${className}`}>
+  <div className={`px-4 sm:px-6 py-2 min-h-14 flex items-center border-b border-gray-200 dark:border-gray-700 ${className}`}>
     {children}
   </div>
 );
 
 export const CardTitle = ({ children, className = '' }) => (
-  <h2 className={`text-xl font-semibold text-gray-800 dark:text-gray-100 ${className}`}>
+  <h2 className={`text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100 ${className}`}>
     {children}
   </h2>
 );
 
 export const CardContent = ({ children, className = '' }) => (
-  <div className={`px-6 py-4 ${className}`}>
+  <div className={`px-4 sm:px-6 py-4 ${className}`}>
     {children}
   </div>
 );

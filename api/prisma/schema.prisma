@@ -27,6 +27,11 @@ enum status {
   FAULT
 }
 
+enum cmdStatus {
+  READ
+  WRITE
+}
+
 model user {
   id            String         @id @default(cuid())
   email         String         @unique
@@ -75,14 +80,23 @@ model device {
   customer     customer? @relation(fields: [customerId], references: [id])
 }
 
+model template {
+  id        String @id @default(cuid())
+  name      String
+  driveCode String
+  parameter Json
+}
+
 model command {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
+  action    cmdStatus
   address   String
-  value     String   @db.LongText
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  value     String    @db.LongText
+  response  String    @db.LongText
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deviceId  String?
-  device    device?  @relation(fields: [deviceId], references: [id])
+  device    device?   @relation(fields: [deviceId], references: [id])
 }
 
 model notification {

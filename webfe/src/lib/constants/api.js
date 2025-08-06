@@ -6,4 +6,5 @@ export const API_ENDPOINTS = {
   logout: `${API_URL}/auth/logout`,
   devices: `${API_URL}/devices`,
   manufacturers: `${API_URL}/customers`,
+  commands:`${API_URL}/commands`
  };

@@ -1,8 +1,14 @@
  
 
-const Button = ({ children, variant = "default", className = "", ...props }) => {
+const Button = ({
+  children,
+  variant = "default",
+  size = "medium",
+  className = "",
+  ...props
+}) => {
   const baseStyles =
-    "px-4 flex gap-1 cursor-pointer items-center py-2 rounded font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500";
+    "flex gap-1 cursor-pointer items-center rounded font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500";
   const variants = {
     default: "bg-blue-600 text-white hover:bg-blue-700",
     outline: "bg-transparent border border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20",
@@ -14,9 +20,14 @@ const Button = ({ children, variant = "default", className = "", ...props }) => 
     info: "bg-cyan-600 text-white hover:bg-cyan-700 border border-cyan-600",
     dark: "bg-gray-900 text-white hover:bg-gray-800 border border-gray-900",
   };
+  const sizes = {
+    small: "px-2 py-1 text-xs",
+    medium: "px-4 py-2 text-base",
+    large: "px-6 py-3 text-lg",
+  };
   return (
     <button
-      className={`${baseStyles} ${variants[variant] || ""} ${className}`}
+      className={`${baseStyles} ${variants[variant] || ""} ${sizes[size] || sizes["medium"]} ${className}`}
       {...props}
     >
       {children}

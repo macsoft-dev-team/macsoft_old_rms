@@ -22,6 +22,7 @@ async function main() {
     ['customer', 'customer.json'],
     ['user', 'user.json'],
     ['device', 'device.json'], 
+    ['command', 'command.json'], 
   ];
   for (const [model, file] of seeds) {
     await seedFromFile(model, file);
