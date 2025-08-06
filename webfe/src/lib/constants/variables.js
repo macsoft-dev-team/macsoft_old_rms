@@ -39,6 +39,24 @@ export const commandsState = {
   error: null,
 };
 
+export const templatesState = {
+  templates: [],
+  template: null,
+  mode:{
+    create: false,
+    edit: false,
+    view: false,
+    confirmDelete: false,
+  },
+  filter: {
+    search: "",
+  },
+  totalPages: 0,
+  currentPage: 0,
+  loading: false,
+  error: null,
+};
+
 export const dateF = (date) => {
   return moment(date).format("DD/MM/YYYY HH:mm:ss");
 };
