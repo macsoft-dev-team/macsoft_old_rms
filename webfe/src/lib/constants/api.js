@@ -7,6 +7,6 @@ export const API_ENDPOINTS = {
   upload: `${API_URL}/upload`,
   devices: `${API_URL}/devices`,
   manufacturers: `${API_URL}/customers`,
-  commands:`${API_URL}/commands`
-
- };
+  commands: `${API_URL}/commands`,
+  templates: `${API_URL}/templates/modbus`,
+};

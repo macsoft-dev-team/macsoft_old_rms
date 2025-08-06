@@ -85,7 +85,7 @@ const Toast = ({
   }, [id, removeToast]);
 
   const base =
-    "group pointer-events-auto relative flex w-full items-center justify-between space-x-2 overflow-hidden rounded-md p-4 pr-6 shadow-lg transition-all";
+    "group m-2 pointer-events-auto relative flex w-full items-center justify-between space-x-2 overflow-hidden rounded-md p-4 pr-6 shadow-lg transition-all";
   const variantClass = VARIANT_CLASSES[variant] || VARIANT_CLASSES.default;
   return (
     <div className={`${base} ${variantClass} ${className || ""}`}>

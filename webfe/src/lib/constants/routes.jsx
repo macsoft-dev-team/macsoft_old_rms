@@ -170,7 +170,7 @@ export const switchRoutes = (role) =>
         </ProtectedRoute>
       ),
       children: (ROLE_ITEMS[role] || ROLE_ITEMS.END_USER).map((item) => ({
-        path: item.path.replace(/^\//, ''), // remove leading slash for child routes
+        path: item.path === '/' ? '' : item.path.replace(/^\//, ''), 
         index: item.path === '/',
         element: <ProtectedRoute>{item.element}</ProtectedRoute>,
       })),

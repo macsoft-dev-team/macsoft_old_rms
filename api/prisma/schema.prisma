@@ -86,7 +86,7 @@ model template {
   id        String @id @default(cuid())
   name      String
   driveCode String
-  parameter Json
+  parameters Json
 }
 
 model command {

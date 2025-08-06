@@ -7,7 +7,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
   const [router, setRouter] = React.useState(null);
-  const { user, loading } = useAuth(); // assuming your hook has loading
+  const { user, loading } = useAuth(); 
 
   React.useEffect(() => {
     if (user) {
@@ -17,12 +17,11 @@ function App() {
   }, [user]);
 
   if (loading) {
-    return <LoadingSpinner />; // Show loading spinner while auth is being checked
+    return <LoadingSpinner />;  
   }
 
   if (!router) {
-    // when user is null (not logged in), show login route
-    const loginRouter = switchRoutes("END_USER"); // fallback or guest routes
+     const loginRouter = switchRoutes("END_USER");  
     return <RouterProvider router={loginRouter} />;
   }
 

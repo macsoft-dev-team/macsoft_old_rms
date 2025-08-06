@@ -10,7 +10,15 @@ const ModbusTemplatesTable = ({
   isViewing,
   setIsViewing,
   viewTemplate
-}) => (
+}) => {
+  if (!templates || templates.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-gray-500 dark:text-gray-400">No templates available</p>
+      </div>
+    );
+  }
+  return(
   <div className="overflow-x-auto">
     <table className="min-w-full bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-200 dark:border-gray-800">
       <thead className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800">
@@ -24,7 +32,7 @@ const ModbusTemplatesTable = ({
       </thead>
       <tbody className="divide-y divide-gray-100 dark:divide-blue-900">
         {templates.map((template, index) => (
-          <tr key={template.id} className="group hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors">
+          <tr key={template.id} className="group hover:bg-gray-50 dark:hover:bg-blue-950 transition-colors">
             <td className="px-8 py-4 whitespace-nowrap text-base text-gray-700 dark:text-blue-100">{index + 1}</td>
             <td className="px-8 py-4 whitespace-nowrap text-base text-gray-700 dark:text-blue-100 flex items-center gap-2">
               <FileText className="w-4 h-4 mr-1" />
@@ -60,6 +68,6 @@ const ModbusTemplatesTable = ({
       </tbody>
     </table>
   </div>
-);
+);}
 
 export default ModbusTemplatesTable;
