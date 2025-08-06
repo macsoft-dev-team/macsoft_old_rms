@@ -58,13 +58,14 @@ export const deleteDevice = createAsyncThunk(
 
 export const uploadDevice= createAsyncThunk(
   "devices/uploadDevice",
-  async (formData, { rejectWithValue }) => {
+  async (formData, { rejectWithValue ,dispatch}) => {
     try {
       const response = await axios.post(
-        `${API_ENDPOINTS.devices}/upload`,
+        `${API_ENDPOINTS.upload}/devices`,
         formData,
         { withCredentials: true }
       );
+      dispatch(fetchDevices({ skip: 0, take: 12 }));  
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -144,7 +145,10 @@ export const devicesSlice = createSlice({
       })
       .addCase(uploadDevice.fulfilled, (state, action) => {
         state.loading = false;
-        state.devices.push(action.payload);
+        // Add all uploaded devices to the existing devices array
+        if (action.payload.devices && Array.isArray(action.payload.devices)) {
+          state.devices.push(...action.payload.devices);
+        }
       })
       .addCase(uploadDevice.rejected, (state, action) => {
         state.loading = false;

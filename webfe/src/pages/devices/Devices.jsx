@@ -15,7 +15,7 @@ import { useEffect } from 'react';
 const Devices = () => {
     const { manufacturerId } = useParams();
     const { user } = useAuth();
-    const { devices, setFilter, setDevice, fetchDeviceById } = useDevice();
+    const { devices, loading, setFilter, setDevice, fetchDeviceById, uploadDevice } = useDevice();
     const { manufacturers } = useManufacturer();
     const safeDevices = Array.isArray(devices) ? devices : [];
     const safeManufacturers = Array.isArray(manufacturers) ? manufacturers : [];
@@ -30,7 +30,7 @@ const Devices = () => {
     return (
         <div className="space-y-5">
             <TitleHead title="Device Management" description="Monitor and manage all solar pump devices">
-                <DevicesHeader />
+                <DevicesHeader uploadDevice={uploadDevice} loading={loading} />
             </TitleHead>
             <DevicesFilters
                 setFilter={setFilter}

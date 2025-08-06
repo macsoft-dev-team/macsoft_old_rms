@@ -1,8 +1,9 @@
 import React from "react";
 
-const Badge = ({ children, variant = "default", className = "", ...props }) => {
+const Badge = ({ children, variant = "default", size = "medium", className = "", ...props }) => {
   const baseStyles =
-    "inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border transition-colors";
+    "inline-flex items-center rounded-full font-semibold border transition-colors";
+  
   const variants = {
     default: "bg-gray-200 text-gray-800 border-gray-300",
     outline: "bg-transparent text-gray-800 border-gray-400",
@@ -13,8 +14,16 @@ const Badge = ({ children, variant = "default", className = "", ...props }) => {
     info: "bg-cyan-100 text-cyan-700 border-cyan-200",
     dark: "bg-gray-900 text-white border-gray-800",
   };
+
+  const sizes = {
+    xsmall: "px-1.5 py-0.5 text-[0.6rem]",
+    small: "px-2 py-0.5 text-xs",
+    medium: "px-3 py-1 text-xs",
+    large: "px-4 py-1.5 text-sm",
+  };
+  
   return (
-    <span className={`${baseStyles} ${variants[variant] || ""} ${className}`} {...props}>
+    <span className={`${baseStyles} ${variants[variant] || ""} ${sizes[size] || ""} ${className}`} {...props}>
       {children}
     </span>
   );

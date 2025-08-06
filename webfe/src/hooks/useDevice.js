@@ -3,6 +3,7 @@ import {
   fetchDeviceById,
   setDevice,
   setFilter,
+  uploadDevice,
 } from "../lib/features/devices";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useCallback } from "react";
@@ -13,14 +14,14 @@ export const useDevice = () => {
     useSelector((state) => state.device);
 
   useEffect(() => {
-    dispatch(fetchDevices({ skip: 0, take: 10, filter }));
+    dispatch(fetchDevices({ skip: 0, take: 12, filter }));
   }, [dispatch, filter]);
 
   const onPageChange = useCallback(
     (skip) => {
       console.log("onPageChange", skip, filter);
 
-      dispatch(fetchDevices({ skip, take: 10, filter }));
+      dispatch(fetchDevices({ skip, take: 12, filter }));
     },
     [dispatch, filter]
   );
@@ -41,6 +42,10 @@ export const useDevice = () => {
     (filter) => dispatch(setFilter(filter)),
     [dispatch]
   );
+  const uploadDeviceCallback = useCallback(
+    (file) => dispatch(uploadDevice(file)),
+    [dispatch]
+  );
 
   return {
     devices,
@@ -53,6 +58,7 @@ export const useDevice = () => {
     fetchDevices: fetchDevicesCallback,
     setFilter: setFilterCallback,
     onPageChange,
+    uploadDevice: uploadDeviceCallback,
     fetchDeviceById: fetchDeviceByIdCallback,
   };
 };

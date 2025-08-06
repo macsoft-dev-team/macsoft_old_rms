@@ -23,7 +23,7 @@ const DevicesGrid = ({ devices, loading, setDevice, fetchDeviceById }) => {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
             {showLoading
-                ? Array.from({ length: 10 }).map((_, idx) => (
+                ? Array.from({ length: 12 }).map((_, idx) => (
                     <DeviceSkeleton key={idx} />
                 ))
                 : devices.map((device, index) => (

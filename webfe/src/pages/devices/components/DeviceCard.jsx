@@ -2,12 +2,11 @@ import MotionDiv from './MotionDiv';
 import { Badge } from '../../../components/ui/badge';
 import { NavLink } from 'react-router-dom';
 import { dateF } from '../../../lib/constants/variables';
-import { useDevice } from '../../../hooks/useDevice';
-
+ 
 const statusColors = {
-  online: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300',
-  offline: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
-  fault: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300',
+  ONLINE: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300',
+  OFFLINE: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
+  FAULT: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300',
 };
 
 const DeviceCard = ({ device, delay = 0, setDevice, fetchDeviceById }) => {
@@ -21,7 +20,7 @@ const DeviceCard = ({ device, delay = 0, setDevice, fetchDeviceById }) => {
           <span className="text-lg font-semibold text-gray-900 tracking-wider dark:text-white uppercase">{device.username}</span>
           <span className="text-xs text-gray-500 dark:text-gray-400">{device.manufacturer}</span>
         </div>
-        <Badge className={statusColors[device.status] || 'bg-gray-100 uppercase text-gray-800 dark:bg-gray-800 dark:text-gray-300'}>
+        <Badge size="xsmall" className={statusColors[device.status] || 'bg-gray-100 uppercase text-gray-800 dark:bg-gray-800 dark:text-gray-300'}>
           {device.status}
         </Badge>
       </div>

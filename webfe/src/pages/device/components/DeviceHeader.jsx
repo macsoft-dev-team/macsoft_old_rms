@@ -4,6 +4,12 @@ import { Badge } from '../../../components/ui/badge';
 import { dateF } from '../../../lib/constants/variables';
 import { motion } from 'motion/react';
 
+const statusColors = {
+  ONLINE: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300',
+  OFFLINE: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
+  FAULT: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300',
+};
+
 const DeviceHeader = ({ device, statusConfig, navigate }) => (
   <motion.div
     initial={{ opacity: 0, y: -20 }}
@@ -21,8 +27,8 @@ const DeviceHeader = ({ device, statusConfig, navigate }) => (
       <div>
         <h1 className="text-2xl sm:text-2xl tracking-wide font-medium text-slate-700 dark:text-white uppercase">{device.name}</h1>
         <div className="flex items-center space-x-4 mt-2">
-          <Badge className={statusConfig.color + " dark:bg-opacity-80"}>
-            {statusConfig.label}
+          <Badge className={statusColors[device.status] + " dark:bg-opacity-80"}>
+            {device.status}
           </Badge>
           <span className="text-gray-600 dark:text-gray-300">username: {device.username}</span>
           <span className="text-gray-600 dark:text-gray-300">IMEI: {device.imeinumber}</span>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 
 // Dialog context
 const DialogContext = createContext();
@@ -72,9 +73,7 @@ export function DialogContent({ className = "", children }) {
                             onClick={() => onOpenChange(false)}
                             aria-label="Close"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                           <X className="w-5 h-5" />
                         </button>
                     </motion.div>
                 </motion.div>

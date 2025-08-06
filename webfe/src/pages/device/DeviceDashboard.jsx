@@ -14,8 +14,7 @@ const DeviceDashboard = () => {
   const { deviceId } = useParams();
   const { device ,fetchDeviceById ,loading} = useDevice();
 
-  // Meta: Solar Pump Metrics Grid configuration
-
+ 
   const navigate = useNavigate();
   useEffect(() => {
     console.log("Fetching device by ID:", deviceId);
@@ -54,8 +53,7 @@ const DeviceDashboard = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <DeviceHeader device={device} statusConfig={statusConfig} navigate={navigate} />
+       <DeviceHeader device={device} statusConfig={statusConfig} navigate={navigate} />
 
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList className="grid w-full grid-cols-2">
@@ -64,17 +62,13 @@ const DeviceDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          {/* Alert Banner */}
-          <AlertBanner faultCode={device.data?.faultCode ?? 0} alarmCode={device.data?.alarmCode ?? 0} />
+           <AlertBanner faultCode={device.data?.faultCode ?? 0} alarmCode={device.data?.alarmCode ?? 0} />
 
-          {/* Enhanced Solar Pump Metrics Grid */}
-          <MetricsGrid device={device} />
+           <MetricsGrid device={device} />
 
-          {/* Historical Data Chart */}
-          <HistoricalChart history={device.history} />
+           <HistoricalChart history={device.history} />
 
-          {/* Location Map */}
-          <DeviceMap 
+           <DeviceMap 
             status={device.status}
             latitude={device.lattitude}
             longitude={device.longitude}

@@ -24,8 +24,14 @@ L.Icon.Default.mergeOptions({
 
 const DeviceMap = ({ latitude = 11.0395392, longitude = 76.9818624, status = 'online' }) => {
   const mapRef = useRef(null);
-  const center = [latitude, longitude];
-  const hasLocation = latitude !== undefined && longitude !== undefined;
+  
+  // Ensure we have valid numeric coordinates
+  const validLatitude = typeof latitude === 'number' && !isNaN(latitude) ? latitude : 11.0395392;
+  const validLongitude = typeof longitude === 'number' && !isNaN(longitude) ? longitude : 76.9818624;
+  
+  const center = [validLatitude, validLongitude];
+  const hasLocation = typeof latitude === 'number' && !isNaN(latitude) && 
+                     typeof longitude === 'number' && !isNaN(longitude);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -54,6 +60,30 @@ const DeviceMap = ({ latitude = 11.0395392, longitude = 76.9818624, status = 'on
     popupAnchor: [0, -32]
   });
 
+  // Don't render the map if we don't have valid coordinates
+  if (!hasLocation || !center || center.some(coord => coord === null || coord === undefined || isNaN(coord))) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.3 }}
+        className="pb-10"
+      >
+        <Card className="h-96 overflow-hidden">
+          <CardHeader className="pb-3">
+            <CardTitle>Device Locations</CardTitle>
+          </CardHeader>
+          <CardContent className="!p-0 h-full flex items-center justify-center">
+            <div className="text-center text-gray-500">
+              <MapPin className="mx-auto mb-2" size={48} />
+              <p>Location data not available</p>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -69,7 +99,7 @@ const DeviceMap = ({ latitude = 11.0395392, longitude = 76.9818624, status = 'on
           <div className="h-80 relative">
             <MapContainer
               center={center}
-              zoom={hasLocation ? 30 : 20}
+              zoom={15}
               className="h-full w-full z-0"
               ref={mapRef}
               style={{ zIndex: 0 }}
@@ -78,21 +108,19 @@ const DeviceMap = ({ latitude = 11.0395392, longitude = 76.9818624, status = 'on
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
-              {hasLocation && (
-                <Marker
-                  position={center}
-                  icon={statusPointerIcon}
-                >
-                  <Popup>
-                    <div className="p-2">
-                      <h3 className="font-semibold text-lg">Device Location</h3>
-                      <p className="text-sm">Lat: {center[0]}</p>
-                      <p className="text-sm">Lng: {center[1]}</p>
-                      <span className={`text-xs font-semibold ${getStatusTextColor(status)}`}>Status: {status}</span>
-                    </div>
-                  </Popup>
-                </Marker>
-              )}
+              <Marker
+                position={center}
+                icon={statusPointerIcon}
+              >
+                <Popup>
+                  <div className="p-2">
+                    <h3 className="font-semibold text-lg">Device Location</h3>
+                    <p className="text-sm">Lat: {center[0]}</p>
+                    <p className="text-sm">Lng: {center[1]}</p>
+                    <span className={`text-xs font-semibold ${getStatusTextColor(status)}`}>Status: {status}</span>
+                  </div>
+                </Popup>
+              </Marker>
             </MapContainer>
           </div>
         </CardContent>
