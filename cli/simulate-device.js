@@ -4,12 +4,13 @@ const axios = require('axios');
 const mqtt = require('mqtt');
 const CronJob = require('cron').CronJob;
 
-const IMEINUMBER = process.env.IMEINUMBER;
-const HTTP_SERVER = process.env.HTTP_SERVER;
-const CRON_EXPRESSION = process.env.CRON_EXPRESSION || '0 */15 * * * *';
+const IMEINUMBER = process.env.RMS_IMEINUMBER;
+const HTTP_SERVER = process.env.RMS_HTTP_SERVER;
+const CRON_EXPRESSION = process.env.RMS_CRON_EXPRESSION || '0 */15 * * * *';
 
 async function fetchMqttCredentials(imeinumber) {
   const url = `${HTTP_SERVER}/api/devices/mqtt-credentials?imeinumber=${imeinumber}`;
+  console.log(`Fetching MQTT credentials from: ${url}`);
   const response = await axios.get(url);
   return response.data;
 }

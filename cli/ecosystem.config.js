@@ -7,26 +7,22 @@ module.exports = {
       env: {
         NODE_ENV: 'development',
         DATABASE_URL:"mysql://root:Welcome123!@localhost:3306/rms",
-        PORT:3000,
-        JWT_SECRET_KEY:"mqtt-secret",
-        HTTP_SERVER:"http://localhost:3000",
-        IMEINUMBER:"9962264503",
-        MQTT_HOST: "mqtt://localhost",
-        MQTT_PORT: 1883,        
-        MQTT_USERNAME:"admin",
-        MQTT_PASSWORD:"admin"
+        RMS_HTTP_SERVER:"http://localhost:3000",
+        RMS_IMEINUMBER:"9962264503",
+        RMS_MQTT_HOST: "mqtt://localhost",
+        RMS_MQTT_PORT: 1883,        
+        RMS_MQTT_USERNAME:"admin",
+        RMS_MQTT_PASSWORD:"admin"
       },
       env_production: {
         NODE_ENV: 'production',
         DATABASE_URL:"mysql://root:Welcome123!@localhost:3306/rms",
-        PORT:3000,
-        JWT_SECRET_KEY:"mqtt-secret",
-        HTTP_SERVER:"https://rms.macsoftautomations.in",
-        IMEINUMBER:"9962264503",
-        MQTT_HOST: "mqtt://mqtt.macsoftautomations.in",
-        MQTT_PORT: 1883,        
-        MQTT_USERNAME:"admin",
-        MQTT_PASSWORD:"admin"
+        RMS_HTTP_SERVER:"https://rms.macsoftautomations.in",
+        RMS_IMEINUMBER:"862287076795236",
+        RMS_MQTT_HOST: "mqtt://mqtt.macsoftautomations.in",
+        RMS_MQTT_PORT: 1883,        
+        RMS_MQTT_USERNAME:"admin",
+        RMS_MQTT_PASSWORD:"admin"
       }
     },
     {
@@ -36,24 +32,20 @@ module.exports = {
       env: {
         NODE_ENV: 'development',
         DATABASE_URL:"mysql://root:Welcome123!@localhost:3306/rms",
-        PORT:3000,
-        JWT_SECRET_KEY:"mqtt-secret",
-        HTTP_SERVER:"http://localhost:3000",
-        IMEINUMBER:"9962264503",
-        MQTT_USERNAME:"admin",
-        MQTT_PASSWORD:"admin",
-        CRON_EXPRESSION: '0 */1 * * * *'
+        RMS_HTTP_SERVER:"http://localhost:3000",
+        RMS_IMEINUMBER:"9962264503",
+        RMS_MQTT_USERNAME:"admin",
+        RMS_MQTT_PASSWORD:"admin",
+        RMS_CRON_EXPRESSION: "0 */1 * * * *"
       },
       env_production: {
         NODE_ENV: 'production',
         DATABASE_URL:"mysql://root:Welcome123!@localhost:3306/rms",
-        PORT:3000,
-        JWT_SECRET_KEY:"mqtt-secret",
-        HTTP_SERVER:"https://rms.macsoftautomations.in",
-        IMEINUMBER:"9962264503",
-        MQTT_USERNAME:"admin",
-        MQTT_PASSWORD:"admin",
-        CRON_EXPRESSION: '0 */10 * * * *'
+        RMS_HTTP_SERVER:"https://rms.macsoftautomations.in",
+        RMS_IMEINUMBER:"862287076795236",
+        RMS_MQTT_USERNAME:"admin",
+        RMS_MQTT_PASSWORD:"admin",
+        RMS_CRON_EXPRESSION: "0 */1 * * * *"
       }
     }
   ]

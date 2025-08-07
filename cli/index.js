@@ -2,9 +2,9 @@ const mqtt = require('mqtt');
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
-const client = mqtt.connect(`${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`, {
-  username: process.env.MQTT_USERNAME,
-  password: process.env.MQTT_PASSWORD,
+const client = mqtt.connect(`${process.env.RMS_MQTT_HOST}:${process.env.RMS_MQTT_PORT}`, {
+  username: process.env.RMS_MQTT_USERNAME,
+  password: process.env.RMS_MQTT_PASSWORD,
   clientId: `mqtt-logger-${Date.now()}`, // Unique client ID
 });
 
