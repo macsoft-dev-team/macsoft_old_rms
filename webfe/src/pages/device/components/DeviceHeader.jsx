@@ -1,47 +1,162 @@
 import { Button } from '../../../components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Clock, Wifi, WifiOff, AlertTriangle } from 'lucide-react';
 import { Badge } from '../../../components/ui/badge';
 import { dateF } from '../../../lib/constants/variables';
 import { motion } from 'motion/react';
 
-const statusColors = {
-  ONLINE: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300',
-  OFFLINE: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
-  FAULT: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300',
+const statusConfig = {
+  ONLINE: {
+    color: 'bg-gradient-to-r from-green-500 to-emerald-500 text-white',
+    icon: Wifi,
+    pulse: 'animate-pulse',
+  },
+  OFFLINE: {
+    color: 'bg-gradient-to-r from-gray-400 to-slate-500 text-white',
+    icon: WifiOff,
+    pulse: '',
+  },
+  FAULT: {
+    color: 'bg-gradient-to-r from-red-500 to-pink-500 text-white',
+    icon: AlertTriangle,
+    pulse: 'animate-pulse',
+  },
 };
 
-const DeviceHeader = ({ device, statusConfig, navigate }) => (
-  <motion.div
-    initial={{ opacity: 0, y: -20 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="flex  sm:items-center sm:justify-between gap-4"
-  >
-    <div className="flex items-start sm:items-center space-x-3 sm:space-x-4">
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => navigate('/devices')}
-        className="shrink-0"
-      >
-        <ArrowLeft className="w-4 h-4" />
-      </Button>
-     
-    </div>
-    <div className="min-w-0 ms-auto grid">
-      <h1 className="text-lg sm:text-2xl tracking-wide font-medium text-slate-700 dark:text-white uppercase break-words">{device.name}</h1>
-      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-2">
-        <Badge className={statusColors[device.status] + " dark:bg-opacity-80 w-fit"}>
-          {device.status}
-        </Badge>
-        <div className="text-left sm:text-right shrink-0">
-          <p className="text-sm text-gray-500 dark:text-gray-400">Last Update</p>
-          <p className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
-            {dateF(device.lastupdated)}
-          </p>
+const DeviceHeader = ({ device, navigate }) => {
+  const StatusIcon = statusConfig[device.status]?.icon || Wifi;
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="relative overflow-hidden"
+    >
+      {/* Main Header Container */}
+      <div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg shadow-gray-900/5 dark:shadow-black/20">
+        
+        {/* Animated Background Pattern */}
+        <div className="absolute inset-0 opacity-5 dark:opacity-10">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-blue-400/20 via-purple-400/20 to-transparent rounded-full blur-2xl" />
         </div>
+
+        {/* Content */}
+        <div className="relative p-3 sm:p-4">
+          <div className="flex items-center justify-between gap-3">
+            
+            {/* Back Button */}
+            <motion.div
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button
+                variant="outline"
+                size="small"
+                onClick={() => navigate('/devices')}
+               >
+                <ArrowLeft className="w-3.5 h-3.5 text-gray-700 dark:text-gray-200" />
+              </Button>
+            </motion.div>
+
+            {/* Device Info */}
+            <motion.div 
+              className="flex-1 min-w-0 text-center"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              <motion.h1 
+                className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white bg-clip-text text-transparent leading-tight truncate"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
+              >
+                {device.name}
+              </motion.h1>
+              
+              <motion.p 
+                className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.4 }}
+              >
+                Device Monitor
+              </motion.p>
+            </motion.div>
+
+            {/* Status Indicator */}
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.3, duration: 0.6, type: "spring", bounce: 0.4 }}
+              className="flex-shrink-0"
+            >
+              <div className={`relative p-2 rounded-xl ${statusConfig[device.status]?.color} shadow-md`}>
+                <StatusIcon className={`w-4 h-4 ${statusConfig[device.status]?.pulse}`} />
+                {device.status === 'ONLINE' && (
+                  <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full animate-ping" />
+                )}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Status and Last Update Row */}
+          <motion.div 
+            className="mt-3 flex items-center justify-between gap-3"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.4 }}
+          >
+            {/* Status Badge */}
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Badge className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/60 dark:border-gray-600/60 text-gray-700 dark:text-gray-200 font-medium rounded-full shadow-sm text-xs">
+                <div className={`w-1.5 h-1.5 rounded-full ${
+                  device.status === 'ONLINE' ? 'bg-green-500 animate-pulse' :
+                  device.status === 'FAULT' ? 'bg-red-500 animate-pulse' :
+                  'bg-gray-400'
+                }`} />
+                {device.status}
+              </Badge>
+            </motion.div>
+
+            {/* Last Update */}
+            <motion.div 
+              className="flex items-center gap-1.5 text-right"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6, duration: 0.4 }}
+            >
+              <Clock className="w-3 h-3 text-gray-400" />
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium leading-none">
+                  Last Update
+                </p>
+                <p className="text-xs font-semibold text-gray-700 dark:text-gray-200">
+                  {dateF(device.lastupdated)}
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Bottom Accent Line */}
+        <motion.div 
+          className={`h-1 ${statusConfig[device.status]?.color}`}
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 0.7, duration: 0.8, ease: "easeOut" }}
+          style={{ originX: 0 }}
+        />
       </div>
-    </div>
-  </motion.div>
-);
+    </motion.div>
+  );
+};
 
 export default DeviceHeader;

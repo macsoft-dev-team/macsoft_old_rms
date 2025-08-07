@@ -6,9 +6,9 @@ const HistoricalChart = ({ history }) => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.4 }}
-    className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border dark:border-gray-800"
+    className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-800"
   >
-    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 uppercase tracking-wider">
       Historical Data Trends (Last 3 Days)
     </h3>
     <div className="h-80">

@@ -19,6 +19,7 @@ const Button = ({
     warning: "bg-yellow-500 text-white hover:bg-yellow-600 border border-yellow-500",
     info: "bg-cyan-600 text-white hover:bg-cyan-700 border border-cyan-600",
     dark: "bg-gray-900 text-white hover:bg-gray-800 border border-gray-900",
+    ghost: "bg-transparent text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 border border-gray-200/60 dark:border-gray-600/60",
   };
   const sizes = {
     small: "px-2 py-1 text-xs",
