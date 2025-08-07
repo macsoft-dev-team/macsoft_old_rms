@@ -1,20 +1,8 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const getDeviceLogs = async (skip, take, fromDate, toDate, imeinumber) => {
-  // Get tablename for the device
-  const deviceResult = await prisma.device.findFirst({
-    where: { imeinumber },
-    select: { tablename: true }
-  });
-  if (!deviceResult || !deviceResult.tablename) {
-    throw new Error(
-      `Device with IMEI ${imeinumber} not found or has no tablename`
-    );
-  }
-
-  const tablename = deviceResult.tablename;
-
+const getDeviceLogs = async (skip, take, fromDate, toDate, imeinumber, tablename) => {
+  // Get tablename from the params
   // Build Prisma where clause
   const where = {
     imeinumber,

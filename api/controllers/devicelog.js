@@ -2,7 +2,7 @@ const devicelog = require("../services/devicelog");
 
 const getDeviceLogs = async (req, res) => {
   try {
-    const { skip = 0, take = 10, fromDate, toDate } = req.query;
+    const { skip = 0, take = 10, fromDate, toDate, tablename } = req.query;
     const { imeinumber } = req.params; 
     
     const { rows, count } = await devicelog.getDeviceLogs(
@@ -10,7 +10,8 @@ const getDeviceLogs = async (req, res) => {
       take,
       fromDate,
       toDate,
-      imeinumber
+      imeinumber,
+      tablename
     );
     
     const result = {

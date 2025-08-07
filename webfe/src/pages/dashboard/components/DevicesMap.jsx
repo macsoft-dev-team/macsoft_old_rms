@@ -115,7 +115,7 @@ const DevicesMap = ({ deviceLocations = [] }) => {
         <CardContent className="!p-0 h-full">
           <div className="h-80 relative">
             <MapContainer
-              center={[deviceLocations[0].lattitude, deviceLocations[0].longitude]}
+              center={[10.9974, 76.9589]} // Default center, can be adjusted
               zoom={4}
               className="h-full w-full z-0"
               ref={mapRef}
@@ -126,7 +126,7 @@ const DevicesMap = ({ deviceLocations = [] }) => {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
               {deviceLocations.map((device, index) => {
-                const position = [device.lattitude, device.longitude];
+                const position = [10.9974, 76.9589];
                 return (
                   <Marker key={device.imeinumber} position={position} icon={statusPointerIcon}>
                     <Popup>

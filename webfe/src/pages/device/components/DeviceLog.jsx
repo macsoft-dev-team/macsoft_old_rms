@@ -63,7 +63,8 @@ const DeviceLog = ({ deviceId }) => {
       const filterParams = {
         skip: 1,
         take: 10,
-        imeinumber: device.imeinumber
+        imeinumber: device.imeinumber,
+        tablename: device.tablename
       };
 
       if (data.fromDate) {

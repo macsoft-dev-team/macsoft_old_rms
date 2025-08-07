@@ -75,9 +75,9 @@ export const uploadDevice= createAsyncThunk(
 
 export const fetchDeviceLogs = createAsyncThunk(
   "devices/fetchDeviceLogs",
-  async ({skip,take,fromDate,toDate,imeinumber}, { rejectWithValue }) => {
+  async ({skip,take,fromDate,toDate,imeinumber,tablename}, { rejectWithValue }) => {
     try {
-       const params = {};
+       const params = {tablename};
       if (skip !== 0) params.skip = skip;
       if (take !== 0) params.take = take;
       if (fromDate) params.fromDate = fromDate;
