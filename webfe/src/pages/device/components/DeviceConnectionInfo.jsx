@@ -5,18 +5,18 @@ import { useState } from 'react';
 const DeviceConnectionInfo = ({ device }) => {
   const [copiedField, setCopiedField] = useState(null);
 
-  const imei = device?.imeinumber || device?.serialNumber || '862287076795236';
-    const serialNumber = device?.serialNumber || imei;
+  const imei = device?.imeinumber;
+  
   const connectionInfo = {
-    host: 'mqtt.macsoftautomations.in',
-    imei: imei,
-    username: `device_${imei}`,
-    password: '$2b$10$IIzivdY7/40uyzWxpFoiPu.mO0WUjuR1tAUgQiHvVLDGrBkYlS6ZW',
-    port: '1883',
-    pubTopicData: `device/${imei}/data`,
-    subTopicCmd: `device/${imei}/cmd`,
-    pubTopicCmd: `device/${imei}/cmd/response`,
-    serialNumber: serialNumber,
+    host: device.host,
+    imei: device.imei,
+    username: device.username,
+    password: device.password,
+    port: device.port,
+    pubTopicData: device.pubTopicData,
+    subTopicCmd: device.subTopicCmd,
+    pubTopicCmd: device.pubTopicCmd,
+    serialNumber: device.serialNumber
   };
 
   const copyToClipboard = async (text, field) => {
