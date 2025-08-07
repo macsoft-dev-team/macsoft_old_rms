@@ -59,10 +59,26 @@ const deleteDevice = async (id) => {
   return prisma.device.delete({ where: { id } });
 };
 
+const getDeviceByImei = async (imeinumber) => {
+  try {
+    const device = await prisma.device.findUnique({
+      where: { imeinumber },
+      include: {
+        customer: true,
+      },
+    });
+    return device;
+  } catch (error) {
+    console.error("Error fetching device by IMEI:", error);
+    throw new Error("Internal server error");
+  }
+};
+
 module.exports = {
   getAllDevices,
   getDeviceById,
   createDevice,
   updateDevice,
   deleteDevice,
+  getDeviceByImei,
 };

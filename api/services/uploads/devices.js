@@ -39,7 +39,7 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
         subTopicCmd: `device/${device.imeinumber}/cmd`,
         pubTopicCmd: `device/${device.imeinumber}/cmd/response`,
         imeinumber: String(device.imeinumber),
-        tableName: tableName,
+        tablename: tableName,
       };
     });
 

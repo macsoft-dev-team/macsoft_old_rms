@@ -62,10 +62,28 @@ const deleteDevice = async (req, res) => {
   }
 };
 
+const getDeviceByImei = async (req, res) => {
+  // Extract imeinumber from query parameters
+  const { imeinumber } = req.query;
+  try {
+    const device = await deviceService.getDeviceByImei(imeinumber);
+    if (!device) {
+      return res.status(404).json({ error: "Device not found" });
+    }
+    res.status(200).json(device);
+  } catch (error) {
+    console.error("Error fetching device by IMEI:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
 module.exports = {
   getAllDevices,
   getDeviceById,
   createDevice,
   updateDevice,
   deleteDevice,
+  getDeviceByImei
 };

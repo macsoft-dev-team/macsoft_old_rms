@@ -9,8 +9,10 @@ const indexRouter = require("./routes/index");
 var app = express();
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
-    credentials: process.env.CORS_CREDENTIALS === "true" ? true : false,
+    origin: 'http://localhost:5173',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
   })
 );
 app.set("views", path.join(__dirname, "views"));
