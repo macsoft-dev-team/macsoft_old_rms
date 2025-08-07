@@ -277,9 +277,7 @@ const DeviceLog = ({ deviceId }) => {
                 className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 border-b-2 border-gray-200 dark:border-gray-600"
               >
                 <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">S.No</th>
-                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">IMEI</th>
                 <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Timestamp</th>
-                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Status</th>
                 <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Output Voltage</th>
                 <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Output Current</th>
                 <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Flow</th>
@@ -354,23 +352,7 @@ const DeviceLog = ({ deviceId }) => {
                       {(deviceLog.currentPage - 1) * 10 + index + 1}
                     </td>
                     <td className="p-4 text-sm text-gray-900 dark:text-gray-100 font-mono group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {log.imeinumber}
-                    </td>
-                    <td className="p-4 text-sm text-gray-900 dark:text-gray-100 font-mono group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                       {new Date(log.timestamp).toLocaleString()}
-                    </td>
-                    <td className="p-4 text-sm text-gray-900 dark:text-gray-100">
-                      <motion.span 
-                        whileHover={{ scale: 1.05 }}
-                        className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide ${
-                          log.status === 2 
-                            ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg'
-                            : log.status === 1
-                            ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg'
-                            : 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg'
-                        }`}>
-                        {log.status === 1 ? 'ONLINE' : log.status === 2 ? 'FAULT' : 'OFFLINE'}
-                      </motion.span>
                     </td>
                     <td className="p-4 text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                       {formatValue(log.outputVoltage)} V
