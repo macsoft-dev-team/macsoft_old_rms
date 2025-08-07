@@ -1,53 +1,50 @@
-const connect = require('../db/mysql');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 const getDeviceLogs = async (skip, take, fromDate, toDate, imeinumber) => {
-  const connection = await connect();
- 
-  const [deviceResult] = await connection.execute(
-    "SELECT tablename FROM device WHERE imeinumber = ?",
-    [imeinumber]
-  );
-  if (!deviceResult.length || !deviceResult[0].tablename) {
+  // Get tablename for the device
+  const deviceResult = await prisma.device.findFirst({
+    where: { imeinumber },
+    select: { tablename: true }
+  });
+  if (!deviceResult || !deviceResult.tablename) {
     throw new Error(
       `Device with IMEI ${imeinumber} not found or has no tablename`
     );
   }
 
-  const tablename = deviceResult[0].tablename;
+  const tablename = deviceResult.tablename;
 
-  let whereClause = 'WHERE imeinumber = ?';
-  let params = [imeinumber];
-  
-  if (fromDate) {
-    whereClause += ' AND created_at >= ?';
-    params.push(fromDate);
-  }
+  // Build Prisma where clause
+  const where = {
+    imeinumber,
+  };
+  if (fromDate) where.created_at = { gte: new Date(fromDate) };
   if (toDate) {
-    whereClause += ' AND created_at <= ?';
-    params.push(toDate);
+    where.created_at = where.created_at || {};
+    where.created_at.lte = new Date(toDate);
   }
+
   let paginationParams = {};
   if (skip) paginationParams.skip = (parseInt(skip) - 1) * parseInt(take) || 0;
   if (take) paginationParams.take = parseInt(take);
-  
-  const limit = paginationParams.take || 10;
-  const offset = paginationParams.skip || 0;
 
-  const [rows, countResult] = await Promise.all([
-    connection.execute(
-      `SELECT * FROM ${tablename} ${whereClause} ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`,
-      params
-    ),
-    connection.execute(
-      `SELECT COUNT(*) as count FROM ${tablename} ${whereClause}`,
-      params
-    ),
+  // Use Prisma model dynamically
+  const model = prisma[tablename];
+  if (!model) throw new Error(`Model for table ${tablename} not found`);
+
+  const [rows, count] = await Promise.all([
+    model.findMany({
+      where,
+      orderBy: { created_at: 'desc' },
+      ...paginationParams,
+    }),
+    model.count({ where }),
   ]);
 
-  await connection.end();
-  return { rows: rows[0], count: countResult[0][0].count };
+  return { rows, count };
 };
 
 module.exports = {
   getDeviceLogs
-}; 
+};

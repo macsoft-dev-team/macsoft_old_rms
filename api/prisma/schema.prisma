@@ -83,9 +83,9 @@ model device {
 }
 
 model template {
-  id        String @id @default(cuid())
-  name      String
-  driveCode String
+  id         String @id @default(cuid())
+  name       String
+  driveCode  String
   parameters Json
 }
 
@@ -118,4 +118,1166 @@ model configuration {
   value     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Explicit Prisma models for deviceLog_1 to deviceLog_40
+model deviceLog_1 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_1")
+}
+model deviceLog_2 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_2")
+}
+model deviceLog_3 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_3")
+}
+model deviceLog_4 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_4")
+}
+model deviceLog_5 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_5")
+}
+model deviceLog_6 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_6")
+}
+model deviceLog_7 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_7")
+}
+model deviceLog_8 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_8")
+}
+model deviceLog_9 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_9")
+}
+model deviceLog_10 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_10")
+}
+model deviceLog_11 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_11")
+}
+model deviceLog_12 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_12")
+}
+model deviceLog_13 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_13")
+}
+model deviceLog_14 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_14")
+}
+model deviceLog_15 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_15")
+}
+model deviceLog_16 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_16")
+}
+model deviceLog_17 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_17")
+}
+model deviceLog_18 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_18")
+}
+model deviceLog_19 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_19")
+}
+model deviceLog_20 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_20")
+}
+model deviceLog_21 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_21")
+}
+model deviceLog_22 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_22")
+}
+model deviceLog_23 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_23")
+}
+model deviceLog_24 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_24")
+}
+model deviceLog_25 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_25")
+}
+model deviceLog_26 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_26")
+}
+model deviceLog_27 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_27")
+}
+model deviceLog_28 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_28")
+}
+model deviceLog_29 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_29")
+}
+model deviceLog_30 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_30")
+}
+model deviceLog_31 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_31")
+}
+model deviceLog_32 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_32")
+}
+model deviceLog_33 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_33")
+}
+model deviceLog_34 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_34")
+}
+model deviceLog_35 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_35")
+}
+model deviceLog_36 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_36")
+}
+model deviceLog_37 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_37")
+}
+model deviceLog_38 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_38")
+}
+model deviceLog_39 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_39")
+}
+model deviceLog_40 {
+  id                Int      @id @default(autoincrement())
+  imeinumber        String   @db.VarChar(32)
+  timestamp         DateTime @db.Timestamp(0)
+  firmwareVersion   Float?
+  hardwareVersion   Float?
+  driveCode         Int?
+  outputVoltage     Float?
+  outputCurrent     Float?
+  inputVoltage      Float?
+  inputCurrent      Float?
+  frequency         Float?
+  outputPower       Float?
+  inputPower        Float?
+  faultCode         Int?
+  status            Int?
+  temperature       Float?
+  flow              Float?
+  cumulativeKWH     Float?
+  cumulativeFlow    Float?
+  cumulativeHours   Float?
+  todayKWH          Float?
+  todayFlow         Float?
+  todayHours        Float?
+  signalStrength    Int?
+  created_at        DateTime @default(now()) @db.Timestamp(0)
+  updated_at        DateTime @default(now()) @db.Timestamp(0)
+  @@map("deviceLog_40")
 }
