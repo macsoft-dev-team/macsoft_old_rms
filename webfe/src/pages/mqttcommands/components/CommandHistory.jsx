@@ -1,7 +1,7 @@
 
 import { useForm } from 'react-hook-form';
 import { CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
-import { MessageSquare, ArrowBigRight } from 'lucide-react';
+import { MessageSquare, ArrowBigRight, RefreshCw } from 'lucide-react';
 import Input from '../../../components/ui/input';
 import { Button } from '../../../components/ui/button';
 import Select from '../../../components/ui/select';
@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 
 
 function CommandActionRow({ device, postCommand, setCommand }) {
-    if (!device)  return null;
+    if (!device) return null;
     const { register, handleSubmit, watch, reset } = useForm({
         defaultValues: {
             action: 'READ',
@@ -79,16 +79,32 @@ const CommandHistory = ({
     totalPages,
     setCommand,
     loading,
-    error
+    error,
+    onRefresh
 }) => {
-     const{commands} =useSelector((state) => state.command);
+    const { commands } = useSelector((state) => state.command);
 
     return (
         <div>
             <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                    <MessageSquare className="w-5 h-5" />
-                    <span>Command History</span>
+                <CardTitle className="flex items-center justify-between w-full">
+                    <div className="flex items-center space-x-2">
+                        <MessageSquare className="w-5 h-5" />
+                        <span>Command History</span>
+                    </div>
+                    {onRefresh && (
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="small"
+                            onClick={onRefresh}
+                            disabled={loading}
+                            className="flex items-center space-x-2 ms-auto"
+                        >
+                            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                            <span>Refresh</span>
+                        </Button>
+                    )}
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -101,7 +117,6 @@ const CommandHistory = ({
                                 <th className="px-3 py-2 text-left text-sm font-semibold text-gray-600 bg-gray-100 dark:bg-gray-800 sticky top-0 z-20">Action</th>
                                 <th className="px-3 py-2 text-left text-sm font-semibold text-gray-600 bg-gray-100 dark:bg-gray-800 sticky top-0 z-20">Address</th>
                                 <th className="px-3 py-2 text-left text-sm font-semibold text-gray-600 bg-gray-100 dark:bg-gray-800 sticky top-0 z-20">Value</th>
-                                <th className="px-3 py-2 text-left text-sm font-semibold text-gray-600 bg-gray-100 dark:bg-gray-800 sticky top-0 z-20">Response</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -121,8 +136,9 @@ const CommandHistory = ({
                                         <td className="px-3 py-2 text-sm text-gray-500 whitespace-nowrap">{dateF(_command.createdAt)}</td>
                                         <td className="px-3 py-2 text-sm text-gray-700">{_command.action}</td>
                                         <td className="px-3 py-2 font-mono text-sm text-gray-700">{_command.address}</td>
-                                        <td className="px-3 py-2 text-sm text-gray-700">{_command.value}</td>
-                                        <td className="px-3 py-2 text-sm text-gray-700">{_command.response}</td>
+                                        <td className="px-3 py-2 text-sm text-gray-700">
+                                            {_command.action === 'READ' || _command.action === 'READ' || _command.action === 'READ' ? '-' : (_command.value || '-')}
+                                        </td>
                                     </tr>
                                 )
                             }) : (

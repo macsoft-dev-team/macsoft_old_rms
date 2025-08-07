@@ -40,6 +40,7 @@ const MQTTCommands = () => {
             setCommands={setCommands}
           />
           <CommandHistory
+            onRefresh
             commands={commands}
             command={command}
             device={device}
