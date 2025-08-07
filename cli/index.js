@@ -83,6 +83,13 @@ client.on('message', async (topic, message) => {
         }
         await model.create({ data: deviceData });
 
+        // update device model 
+        delete deviceData.imeinumber
+        await prisma.device.update({
+          where: { imeinumber: imeinumber },
+          data: deviceData,
+        });
+
       }
 
     } catch (e) {
