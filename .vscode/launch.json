@@ -8,7 +8,7 @@
           "name": "server",
           "type": "node",
           "request": "launch",
-          "runtimeArgs": ["run", "dev"],
+          "runtimeArgs": ["run", "start"],
           "runtimeExecutable": "npm",
           "cwd": "${workspaceFolder}/api",
           "skipFiles": ["<node_internals>/**"]

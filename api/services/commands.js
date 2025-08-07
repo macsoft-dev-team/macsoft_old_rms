@@ -1,5 +1,4 @@
 const { PrismaClient } = require("@prisma/client");
-const { response } = require("../app");
 const prisma = new PrismaClient();
 
 const getAllCommandsByDeviceId = async (skip, take, filter, deviceId) => {
