@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "receivedata": "node -r dotenv/config index.js",
+    "receivedata:prod": "DOTENV_CONFIG_PATH=.env.production node -r dotenv/config index.js",
     "simulatedevice": "node -r dotenv/config simulate-device.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,6 +16,8 @@
     "@prisma/client": "^6.10.1",
     "axios": "^1.10.0",
     "cron": "^4.3.1",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.6.0",
     "mqtt": "^5.13.1"
   },
   "devDependencies": {
