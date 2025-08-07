@@ -53,7 +53,8 @@ const DeviceLog = ({ deviceId }) => {
       fetchDeviceLogs({
         skip: 1,
         take: 10,
-        imeinumber: device.imeinumber
+        imeinumber: device.imeinumber,
+        tablename: device.tablename
       });
     }
   };
@@ -106,7 +107,8 @@ const DeviceLog = ({ deviceId }) => {
       const filterParams = {
         skip: page,
         take: 10,
-        imeinumber: device.imeinumber
+        imeinumber: device.imeinumber,
+        tablename: device.tablename
       };
 
       if (currentFilters.fromDate) {
