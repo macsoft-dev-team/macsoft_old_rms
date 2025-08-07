@@ -5,8 +5,8 @@ import { useState } from 'react';
 const DeviceConnectionInfo = ({ device }) => {
   const [copiedField, setCopiedField] = useState(null);
 
-  const imei = device?.imei || device?.serialNumber || '862287076795236';
-  
+  const imei = device?.imeinumber || device?.serialNumber || '862287076795236';
+    const serialNumber = device?.serialNumber || imei;
   const connectionInfo = {
     host: 'mqtt.macsoftautomations.in',
     imei: imei,
@@ -15,7 +15,8 @@ const DeviceConnectionInfo = ({ device }) => {
     port: '1883',
     pubTopicData: `device/${imei}/data`,
     subTopicCmd: `device/${imei}/cmd`,
-    pubTopicCmd: `device/${imei}/cmd/response`
+    pubTopicCmd: `device/${imei}/cmd/response`,
+    serialNumber: serialNumber,
   };
 
   const copyToClipboard = async (text, field) => {
@@ -218,24 +219,25 @@ const DeviceConnectionInfo = ({ device }) => {
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <InfoCard 
-          icon={Server} 
-          label="MQTT Host" 
-          value={connectionInfo.host} 
+       
+        <InfoCard
+          icon={Server}
+          label="MQTT Host"
+          value={connectionInfo.host}
           field="host"
           className="md:col-span-2 lg:col-span-1"
-        />
-        <InfoCard 
-          icon={Hash} 
-          label="IMEI Number" 
-          value={connectionInfo.imei} 
-          field="imei"
         />
         <InfoCard 
           icon={ArrowUpDown} 
           label="Port" 
           value={connectionInfo.port} 
           field="port"
+        />
+        <InfoCard
+          icon={Hash}
+          label="IMEI Number"
+          value={connectionInfo.imei}
+          field="imei"
         />
       </div>
 
@@ -251,7 +253,7 @@ const DeviceConnectionInfo = ({ device }) => {
           label="Password" 
           value={connectionInfo.password} 
           field="password"
-        />
+        /> 
       </div>
 
       <motion.div
