@@ -9,7 +9,7 @@ const uploadDevices = require("./uploads/devices");
 const { verifyToken } = require("../middleware/auth");
 
 router.use("/auth", auth);
-router.use("/devices", verifyToken, devices);
+router.use("/devices", devices);
 router.use("/customers", verifyToken, customers);
 router.use("/templates/modbus", verifyToken, templates);
 router.use("/commands", verifyToken, commands);
