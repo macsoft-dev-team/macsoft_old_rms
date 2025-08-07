@@ -67,6 +67,22 @@ export const templatesState = {
   error: null,
 };
 
+export const dashboardState = {
+  dashboard: {
+    totalDevices: 0,
+    onlineDevices: 0,
+    faultDevices: 0,
+    offlineDevices: 0,
+    activeManufacturers: 0,
+    todaysComplaints: 0,
+    deviceLocations: [],
+    recentActivity: [],
+  },
+  lastUpdated: null,
+  loading: false,
+  error: null,
+};
+
 export const dateF = (date) => {
   return moment(date).format("DD/MM/YYYY HH:mm:ss");
 };

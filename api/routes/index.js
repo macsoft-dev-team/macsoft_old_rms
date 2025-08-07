@@ -6,9 +6,11 @@ const customers = require("./customers");
 const commands = require("./commands");
 const templates = require("./templates");
 const uploadDevices = require("./uploads/devices");
+const dashboard = require("./dashboard");
 const { verifyToken } = require("../middleware/auth");
 
 router.use("/auth", auth);
+router.use("/dashboard", verifyToken, dashboard);
 router.use("/devices", devices);
 router.use("/customers", verifyToken, customers);
 router.use("/templates/modbus", verifyToken, templates);

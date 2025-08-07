@@ -47,7 +47,7 @@ const Select = ({
       id={id}
       name={name}
       tabIndex={disabled ? -1 : 0}
-      className={`relative w-full z-30 select-none whitespace-nowrap ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'} ${className}`}
+      className={`relative w-full z-20 select-none whitespace-nowrap ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'} ${className}`}
       aria-disabled={disabled}
       aria-label={placeholder}
       onClick={() => !disabled && setOpen((prev) => !prev)}

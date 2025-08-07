@@ -9,4 +9,5 @@ export const API_ENDPOINTS = {
   manufacturers: `${API_URL}/customers`,
   commands: `${API_URL}/commands`,
   templates: `${API_URL}/templates/modbus`,
+  dashboard:`${API_URL}/dashboard`,
 };

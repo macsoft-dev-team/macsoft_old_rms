@@ -38,7 +38,7 @@ export const DASHBOARD_STATS = [
     trend: { type: 'up', value: '+1' }
   },
   {
-    key: 'todayComplaints',
+    key: 'todaysComplaints',
     title: "Today's Complaints",
     icon: 'TrendingUp',
     color: 'from-orange-500 to-orange-600',

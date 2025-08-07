@@ -11,7 +11,7 @@ import {
 import Layout from '../../components/Layout';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import Login from '../../pages/Login';
-import Dashboard from '../../pages/Dashboard';
+import Dashboard from '../../pages/dashboard/Dashboard';
 import DeviceDashboard from '../../pages/device/DeviceDashboard';
 import CreateDevice from '../../pages/CreateDevice';
 import MQTTCommands from '../../pages/mqttcommands/MQTTCommands';

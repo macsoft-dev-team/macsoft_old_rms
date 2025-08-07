@@ -102,7 +102,7 @@ const Sidebar = () => {
       {/* Mobile Overlay */}
       {isMobile && !sidebarCollapsed && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden dark:bg-black dark:bg-opacity-60"
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden dark:bg-black dark:bg-opacity-60"
           onClick={() => dispatch(setSidebarCollapsed(true))}
         />
       )}

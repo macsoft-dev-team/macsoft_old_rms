@@ -5,6 +5,7 @@ import devicesSlice from "../features/devices";
 import manufacturersSlice from "../features/manufacturers";
 import commandSlice from "../features/commands";
 import templatesSlice from "../features/template";
+import dashboardSlice from "../features/dashboard";
 export const store = configureStore({
   reducer: {
     ui: uiSlice,
@@ -14,6 +15,7 @@ export const store = configureStore({
     manufacturer: manufacturersSlice,
     command: commandSlice,
     template: templatesSlice,
+    dashboard:dashboardSlice
   },
 });
 
