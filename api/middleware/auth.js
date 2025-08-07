@@ -10,9 +10,6 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    if (!user.isActive) {
-      return res.status(401).json({ message: "User is not active" });
-    }
     // Check if password is correct
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
