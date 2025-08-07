@@ -16,3 +16,4 @@ router.use("/commands", verifyToken, commands);
 router.use("/upload/devices", verifyToken, uploadDevices);
 
 module.exports = router;
+

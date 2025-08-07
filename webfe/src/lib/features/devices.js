@@ -73,6 +73,23 @@ export const uploadDevice= createAsyncThunk(
   }
 );
 
+export const fetchDeviceLogs = createAsyncThunk(
+  "devices/fetchDeviceLogs",
+  async ({skip,take,fromDate,toDate,imeinumber}, { rejectWithValue }) => {
+    try {
+       const params = {};
+      if (skip !== 0) params.skip = skip;
+      if (take !== 0) params.take = take;
+      if (fromDate) params.fromDate = fromDate;
+      if (toDate) params.toDate = toDate;
+       const response = await axios.get(`${API_ENDPOINTS.devices}/logs/${imeinumber}`, { params, withCredentials: true });
+       return response.data;
+    } catch (error) {
+       return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const devicesSlice = createSlice({
   name: "devices",
   initialState: devicesState,
@@ -82,6 +99,10 @@ export const devicesSlice = createSlice({
     },
     setFilter : (state, action) => {
       state.filter = action.payload;
+    },
+    setDeviceLogFilters: (state, action) => {
+      state.deviceLog.fromDate = action.payload.fromDate || "";
+      state.deviceLog.toDate = action.payload.toDate || "";
     },
   },
   extraReducers: (builder) => {
@@ -145,18 +166,32 @@ export const devicesSlice = createSlice({
       })
       .addCase(uploadDevice.fulfilled, (state, action) => {
         state.loading = false;
-        // Add all uploaded devices to the existing devices array
-        if (action.payload.devices && Array.isArray(action.payload.devices)) {
+         if (action.payload.devices && Array.isArray(action.payload.devices)) {
           state.devices.push(...action.payload.devices);
         }
       })
       .addCase(uploadDevice.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to upload device";
+      })
+      .addCase(fetchDeviceLogs.pending, (state) => {
+        state.deviceLog.loading = true;
+        state.deviceLog.error = null;
+      })
+      .addCase(fetchDeviceLogs.fulfilled, (state, action) => {
+         state.deviceLog.loading = false;
+        state.deviceLog.logs = action.payload.devicelog; 
+        state.deviceLog.totalPages = action.payload.totalPages;
+        state.deviceLog.currentPage = action.payload.currentPage;
+        state.deviceLog.totalCount = action.payload.totalCount; 
+       })
+      .addCase(fetchDeviceLogs.rejected, (state, action) => {
+        state.deviceLog.loading = false;
+        state.deviceLog.error = action.payload || "Failed to fetch device logs";
       });
   },
 });
 
-export const { setDevice,setFilter } = devicesSlice.actions;
+export const { setDevice,setFilter,setDeviceLogFilters } = devicesSlice.actions;
 
 export default devicesSlice.reducer;

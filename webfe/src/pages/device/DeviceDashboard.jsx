@@ -12,15 +12,13 @@ import HistoricalChart from './components/HistoricalChart';
 import CommandButtons from './components/CommandButtons';
 import DeviceConnectionInfo from './components/DeviceConnectionInfo';
 import DeviceLog from './components/DeviceLog';
-const DeviceDashboard = () => {
+ const DeviceDashboard = () => {
   const { deviceId } = useParams();
   const { device ,fetchDeviceById ,loading} = useDevice();
 
  
   const navigate = useNavigate();
-  useEffect(() => {
-    console.log("Fetching device by ID:", deviceId);
-    
+  useEffect(() => {   
     if (deviceId) {
       fetchDeviceById(deviceId);
     }
@@ -67,11 +65,8 @@ const DeviceDashboard = () => {
 
         <TabsContent value="overview" className="space-y-6">
            <AlertBanner faultCode={device.data?.faultCode ?? 0} alarmCode={device.data?.alarmCode ?? 0} />
-
            <MetricsGrid device={device} />
-
            <HistoricalChart history={device.history} />
-
            <DeviceMap 
             status={device.status}
             latitude={device.lattitude}

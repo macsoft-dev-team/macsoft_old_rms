@@ -168,10 +168,10 @@ const ChatInterface = ({ deviceId, deviceName, loading }) => {
           </div>
           <div>
             <h3 className="font-semibold text-gray-900 dark:text-gray-100">{deviceName}</h3>
-            <p className="text-xs text-green-600 dark:text-green-400 flex items-center space-x-1">
+            <div className="text-xs text-green-600 dark:text-green-400 flex items-center space-x-1">
               <div className="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full"></div>
               <span>Online</span>
-            </p>
+            </div>
           </div>
         </div>
         <div className=' ms-auto flex items-center gap-1'>

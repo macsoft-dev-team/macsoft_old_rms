@@ -3,6 +3,16 @@ export const devicesState = {
   devices: [],
   device: null,
   deviceId: null,
+  deviceLog: {
+    logs: [],
+    totalPages: 0,
+    currentPage: 0,
+    totalCount: 0,
+    loading: false,
+    error: null,
+    fromDate: "",
+    toDate: "",
+  },
   filter: {
     search: "",
     status: "",
