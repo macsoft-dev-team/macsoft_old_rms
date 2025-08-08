@@ -38,7 +38,7 @@ const Layout = () => {
         {/* Overlay for mobile when sidebar is open */}
         {isMobile && !sidebarCollapsed && (
           <div
-            className="fixed inset-0 z-20 bg-black bg-opacity-40 transition-opacity duration-300"
+            className="fixed inset-0 z-20 bg-black/10 transition-opacity duration-300"
             onClick={() => dispatch({ type: 'ui/toggleSidebar' })}
           />
         )}
