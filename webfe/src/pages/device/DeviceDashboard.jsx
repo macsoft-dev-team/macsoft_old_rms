@@ -56,11 +56,11 @@ import DeviceLog from './components/DeviceLog';
        <DeviceHeader device={device} statusConfig={statusConfig} navigate={navigate} />
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="logs">Device Log</TabsTrigger>
-          <TabsTrigger value="commands">Commands</TabsTrigger>
-          <TabsTrigger value="connection">Connection</TabsTrigger>
+        <TabsList className="flex w-full lg:grid grid-cols-4 overflow-x-auto xl:overscroll-none scrollbar-hide">
+          <TabsTrigger value="overview" className="flex-shrink-0">Overview</TabsTrigger>
+          <TabsTrigger value="logs" className="flex-shrink-0">Device Log</TabsTrigger>
+          <TabsTrigger value="commands" className="flex-shrink-0">Commands</TabsTrigger>
+          <TabsTrigger value="connection" className="flex-shrink-0">Connection</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
