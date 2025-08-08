@@ -1,0 +1,31 @@
+Fixed Columns:
+├── S.No
+└── Timestamp (DD-MM-YYYY HH:mm)
+
+Drive Parameters:
+├── Input Voltage (V)
+├── Input Current (A) 
+├── Input Power (W)
+├── Frequency (Hz)
+└── Temperature (°C)
+
+Motor & Operations:
+├── Output Voltage (V)
+├── Output Current (A)
+├── Output Power (W)
+├── Fault Code
+├── Status
+└── Flow Rate (L/min)
+
+Today's Data:
+├── Energy (kWh)
+├── Flow (L)
+└── Runtime (h)
+
+Cumulative:
+├── Energy (kWh)
+├── Flow (L)
+└── Runtime (h)
+
+RMS:
+└── Signal Strength (%)

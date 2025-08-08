@@ -317,18 +317,18 @@ const DeviceConnectionInfo = ({ device }) => {
                         Connection Status
                       </p>
                       <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                        device?.status === 'online' 
+                        device?.status === 1 
                           ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' 
-                          : device?.status === 'offline'
+                          : device?.status === 0
                           ? 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300'
                           : 'bg-gray-100 text-gray-800 dark:bg-gray-900/40 dark:text-gray-300'
                       }`}>
-                        {device?.status?.toUpperCase() || 'UNKNOWN'}
+                        {device?.status === 1 ? 'ONLINE' : device?.status === 0 ? 'OFFLINE' : 'UNKNOWN'}
                       </span>
                     </div>
                     <p className="text-sm font-mono text-gray-900 dark:text-gray-100 break-all">
-                      {device?.status === 'online' ? 'Device is connected' : 
-                       device?.status === 'offline' ? 'Device is disconnected' : 
+                      {device?.status === 1 ? 'Device is connected' : 
+                       device?.status === 0 ? 'Device is disconnected' : 
                        'Status information unavailable'}
                     </p>
                   </div>

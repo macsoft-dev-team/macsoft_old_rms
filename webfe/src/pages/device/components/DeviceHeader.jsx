@@ -5,20 +5,23 @@ import { dateF } from '../../../lib/constants/variables';
 import { motion } from 'motion/react';
 
 const statusConfig = {
-  ONLINE: {
+  1: { // ONLINE
     color: 'bg-gradient-to-r from-green-500 to-emerald-500 text-white',
     icon: Wifi,
     pulse: 'animate-pulse',
+    text: 'ONLINE'
   },
-  OFFLINE: {
+  0: { // OFFLINE
     color: 'bg-gradient-to-r from-gray-400 to-slate-500 text-white',
     icon: WifiOff,
     pulse: '',
+    text: 'OFFLINE'
   },
-  FAULT: {
+  2: { // FAULT (keeping as fallback)
     color: 'bg-gradient-to-r from-red-500 to-pink-500 text-white',
     icon: AlertTriangle,
     pulse: 'animate-pulse',
+    text: 'FAULT'
   },
 };
 
@@ -95,9 +98,9 @@ const DeviceHeader = ({ device, navigate }) => {
               transition={{ delay: 0.3, duration: 0.6, type: "spring", bounce: 0.4 }}
               className="flex-shrink-0"
             >
-              <div className={`relative p-2 rounded-xl ${statusConfig[device.status]?.color} shadow-md`}>
-                <StatusIcon className={`w-4 h-4 ${statusConfig[device.status]?.pulse}`} />
-                {device.status === 'ONLINE' && (
+              <div className={`relative p-2 rounded-xl ${statusConfig[device.status]?.color || statusConfig[0].color} shadow-md`}>
+                <StatusIcon className={`w-4 h-4 ${statusConfig[device.status]?.pulse || ''}`} />
+                {device.status === 1 && (
                   <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full animate-ping" />
                 )}
               </div>
@@ -118,11 +121,11 @@ const DeviceHeader = ({ device, navigate }) => {
             >
               <Badge className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/60 dark:border-gray-600/60 text-gray-700 dark:text-gray-200 font-medium rounded-full shadow-sm text-xs">
                 <div className={`w-1.5 h-1.5 rounded-full ${
-                  device.status === 'ONLINE' ? 'bg-green-500 animate-pulse' :
-                  device.status === 'FAULT' ? 'bg-red-500 animate-pulse' :
+                  device.status === 1 ? 'bg-green-500 animate-pulse' :
+                  device.status === 2 ? 'bg-red-500 animate-pulse' :
                   'bg-gray-400'
                 }`} />
-                {device.status}
+                {statusConfig[device.status]?.text || 'UNKNOWN'}
               </Badge>
             </motion.div>
 
@@ -148,7 +151,7 @@ const DeviceHeader = ({ device, navigate }) => {
 
         {/* Bottom Accent Line */}
         <motion.div 
-          className={`h-1 ${statusConfig[device.status]?.color}`}
+          className={`h-1 ${statusConfig[device.status]?.color || statusConfig[0].color}`}
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ delay: 0.7, duration: 0.8, ease: "easeOut" }}

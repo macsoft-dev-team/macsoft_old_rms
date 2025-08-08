@@ -7,6 +7,10 @@ import ev from "./ev.json";
 import spark from "./spark.json";
 import turbo from "./turbo.json";
 import thermo from "./thermometer.json";
+import motor from "./motor.json";
+import settings from "./settings.json";
+import calendar from "./calendar.json";
+import stats from "./stats.json";
 
 export const icons = {
   energizer,
@@ -18,4 +22,8 @@ export const icons = {
   spark,
   turbo,
   thermo,
+  motor,
+  settings,
+  calendar,
+  stats,
  };
