@@ -5,11 +5,10 @@ import { useState } from 'react';
 const DeviceConnectionInfo = ({ device }) => {
   const [copiedField, setCopiedField] = useState(null);
 
-  const imei = device?.imeinumber;
-  
+   
   const connectionInfo = {
     host: device.host,
-    imei: device.imei,
+    imei: device.imeinumber,
     username: device.username,
     password: device.password,
     port: device.port,
