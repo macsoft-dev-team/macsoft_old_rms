@@ -7,6 +7,7 @@ import { Calendar, Search, Download } from 'lucide-react';
 import TitleHead from '../../../components/TitleHead';
 import { useToast } from '../../../hooks/use-toast';
 import { useDevice } from '../../../hooks/useDevice';
+import moment from 'moment';
 
 const DeviceLog = ({ deviceId }) => {
   const { device, deviceLog, fetchDeviceLogs, onDeviceLogPageChange, setDeviceLogFilters } = useDevice();
@@ -270,19 +271,87 @@ const DeviceLog = ({ deviceId }) => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
+              <motion.tr
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7, duration: 0.3 }}
+                className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800"
+              >
+                <th className="p-4 border-r border-gray-200 dark:border-gray-700" />
+                <th className="p-4 border-r border-gray-200 dark:border-gray-700" />
+                <th className="text-center p-4 font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700" colSpan={3}>Drive</th>
+                <th className="p-4 border-r border-gray-200 dark:border-gray-700"></th>
+                <th className="p-4 border-r border-gray-200 dark:border-gray-700"></th>
+                <th className="text-center p-4 font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700" colSpan={3}>Motor</th>
+                <th className="p-4 border-r border-gray-200 dark:border-gray-700" />
+                <th className="p-4 border-r border-gray-200 dark:border-gray-700" />
+                <th className="p-4 border-r border-gray-200 dark:border-gray-700" />
+                <th className="text-center p-4 font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700" colSpan={3}>Today</th>
+                <th className="text-center p-4 font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700" colSpan={3}>Total</th>
+                <th className="p-4" />
+              </motion.tr>
               <motion.tr 
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.4 }}
                 className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 border-b-2 border-gray-200 dark:border-gray-600"
               >
-                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">S.No</th>
-                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Timestamp</th>
-                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Output Voltage</th>
-                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Output Current</th>
-                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Flow</th>
-                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Temperature</th>
-                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">Signal Strength</th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">S.No</th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">Timestamp</th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Voltage<br /><span className="font-normal text-xs text-gray-500">(V)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Current<br /><span className="font-normal text-xs text-gray-500">(A)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Power<br /><span className="font-normal text-xs text-gray-500">(W)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Frequency<br /><span className="font-normal text-xs text-gray-500">(Hz)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Temperature<br /><span className="font-normal text-xs text-gray-500">(°C)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Voltage<br /><span className="font-normal text-xs text-gray-500">(V)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Current<br /><span className="font-normal text-xs text-gray-500">(A)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Power<br /><span className="font-normal text-xs text-gray-500">(W)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Fault Code
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Status
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Flow<br /><span className="font-normal text-xs text-gray-500">(L/min)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  KWH<br /><span className="font-normal text-xs text-gray-500">(kWh)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Flow<br /><span className="font-normal text-xs text-gray-500">(L)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Hours<br /><span className="font-normal text-xs text-gray-500">(h)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  KWH<br /><span className="font-normal text-xs text-gray-500">(kWh)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Flow<br /><span className="font-normal text-xs text-gray-500">(L)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">
+                  Hours<br /><span className="font-normal text-xs text-gray-500">(h)</span>
+                </th>
+                <th className="text-left p-4 text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider">
+                  Signal<br /><span className="font-normal text-xs text-gray-500">(%)</span>
+                </th>
               </motion.tr>
             </thead>
             <tbody>
@@ -348,27 +417,35 @@ const DeviceLog = ({ deviceId }) => {
                      }}
                     className="border-b border-gray-100 dark:border-gray-700 cursor-pointer group"
                   >
-                    <td className="p-4 text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    <td className="p-4 text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors border-r border-gray-200 dark:border-gray-700">
                       {(deviceLog.currentPage - 1) * 10 + index + 1}
                     </td>
-                    <td className="p-4 text-sm text-gray-900 dark:text-gray-100 font-mono group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {new Date(log.timestamp).toLocaleString()}
+                    <td className="p-4 text-sm text-gray-900 dark:text-gray-100 font-mono group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors border-r border-gray-200 dark:border-gray-700">
+                      {moment(log.timestamp).format('DD-MM-YYYY HH:mm:ss')}
                     </td>
-                    <td className="p-4 text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {formatValue(log.outputVoltage)} V
-                    </td>
-                    <td className="p-4 text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {formatValue(log.outputCurrent)} A
-                    </td>
-                    <td className="p-4 text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {formatValue(log.flow)} L/min
-                    </td>
-                    <td className="p-4 text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {formatValue(log.temperature)}°C
-                    </td>
-                    <td className="p-4 text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {formatValue(log.signalStrength)}%
-                    </td>
+                    {/* Drive */}
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.inputVoltage)}</td>
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.inputCurrent)}</td>
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.inputPower)}</td>
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.frequency)}</td>
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.temperature)}</td>
+                    {/* Motor */}
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.outputVoltage)}</td>
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.outputCurrent)}</td>
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.outputPower)}</td>
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.faultCode)}</td>
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.status)}</td>
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.flow)}</td>
+                    {/* Today */}
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.todayKWH)}</td>
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.todayFlow)}</td>
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.todayHrs)}</td>
+                    {/* Total */}
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.cumulativeKWH)}</td>
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.cumulativeFlow)}</td>
+                    <td className="p-4 text-sm font-semibold border-r border-gray-200 dark:border-gray-700">{formatValue(log.cumulativeHours)}</td>
+                    {/* Signal */}
+                    <td className="p-4 text-sm font-semibold">{formatValue(log.signalStrength)}</td>
                   </motion.tr>
                 ))
               )}
