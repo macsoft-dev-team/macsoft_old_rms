@@ -281,7 +281,7 @@ const DeviceLog = ({ deviceId }) => {
                 })}
                 
                 {/* Additional columns */}
-                <th className="p-3">
+                <th className="text-center p-3 font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider border-r border-slate-200 dark:border-slate-600 ">
                   RMS
                 </th>
               </motion.tr>

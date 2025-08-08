@@ -80,11 +80,13 @@ import DeviceLog from './components/DeviceLog';
 
         <TabsContent value="commands">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <CommandButtons deviceName={device.name} />
+            <CommandButtons deviceId={device.id}
+              deviceName={device.name}  />
             <div>
               <ChatInterface
                 deviceId={device.id}
                 deviceName={device.name}
+                status={device.status}
               />
             </div>
           </div>

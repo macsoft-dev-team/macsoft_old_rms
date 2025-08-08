@@ -16,7 +16,7 @@ const getAllCommandsByDeviceId = async (skip, take, filter, deviceId) => {
   const commands = await prisma.command.findMany({
     where: params.where,
     ...params,
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: "asc" },
     include: { device: true },
   });
 
@@ -26,9 +26,9 @@ const getAllCommandsByDeviceId = async (skip, take, filter, deviceId) => {
 const createCommand = async (commandData, user) => {
   try {
     const command = await prisma.command.create({
-      data: { ...commandData, response: "..." },
+      data: { ...commandData, response: "" },
       include: { device: true },
-    });
+     });
     return command;
   } catch (error) {
     console.error("Error creating command:", error);

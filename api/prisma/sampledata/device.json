@@ -13,7 +13,7 @@
     "longitude": "-122.4194",
     "simnumber": "+1-555-0001",
     "pcbsn": "PCB123456",
-    "status": "ONLINE",
+    "status": 1,
     "tablename": "devicelog_1",
     "userId": null,
     "customerId": "a1b2c3d4-1111-2222-3333-444455556666"
@@ -32,7 +32,7 @@
     "longitude": "-74.0060",
     "simnumber": "+1-555-0002",
     "pcbsn": "PCB654321",
-    "status": "ONLINE",
+    "status": 1,
     "tablename": "devicelog_1",
     "userId": null,
     "customerId": "b2c3d4e5-2222-3333-4444-555566667777"
@@ -51,7 +51,7 @@
     "longitude": "-118.2437",
     "simnumber": "+1-555-0003",
     "pcbsn": "PCB789012",
-    "status": "ONLINE",
+    "status": 1,
     "tablename": "devicelog_1",
     "userId": null,
     "customerId": "c3d4e5f6-3333-4444-5555-666677778888"
@@ -70,7 +70,7 @@
     "longitude": "-87.6298",
     "simnumber": "+1-555-0004",
     "pcbsn": "PCB890123",
-    "status": "OFFLINE",
+    "status": 0,
     "tablename": "devicelog_1",
     "userId": null,
     "customerId": "d4e5f6g7-4444-5555-6666-777788889999"
@@ -89,7 +89,7 @@
     "longitude": "-95.3698",
     "simnumber": "+1-555-0005",
     "pcbsn": "PCB901234",
-    "status": "FAULT",
+    "status": 2,
     "tablename": "devicelog_1",
     "userId": null,
     "customerId": "e5f6g7h8-5555-6666-7777-888899990000"
@@ -108,7 +108,7 @@
     "longitude": "-104.9903",
     "simnumber": "+1-555-0006",
     "pcbsn": "PCB012345",
-    "status": "OFFLINE",
+    "status": 0,
     "tablename": "devicelog_1",
     "userId": null,
     "customerId": "f6g7h8i9-6666-7777-8888-999900001111"
@@ -127,7 +127,7 @@
     "longitude": "-80.1918",
     "simnumber": "+1-555-0007",
     "pcbsn": "PCB123457",
-    "status": "ONLINE",
+    "status": 1,
     "tablename": "devicelog_1",
     "userId": null,
     "customerId": "g7h8i9j0-7777-8888-9999-000011112222"
@@ -146,7 +146,7 @@
     "longitude": "-96.7970",
     "simnumber": "+1-555-0008",
     "pcbsn": "PCB234567",
-    "status": "FAULT",
+    "status": 2,
     "tablename": "devicelog_1",
     "userId": null,
     "customerId": "h8i9j0k1-8888-9999-0000-111122223333"
@@ -165,7 +165,7 @@
     "longitude": "-122.3321",
     "simnumber": "+1-555-0009",
     "pcbsn": "PCB345678",
-    "status": "ONLINE",
+    "status": 1,
     "tablename": "devicelog_1",
     "userId": null,
     "customerId": "i9j0k1l2-9999-0000-1111-222233334444"
@@ -184,7 +184,7 @@
     "longitude": "-112.0740",
     "simnumber": "+1-555-0010",
     "pcbsn": "PCB456789",
-    "status": "OFFLINE",
+    "status": 0,
     "tablename": "devicelog_1",
     "userId": null,
     "customerId": "j0k1l2m3-0000-1111-2222-333344445555"
@@ -203,7 +203,7 @@
     "longitude": "-112.0740",
     "simnumber": "+1-555-0010",
     "pcbsn": "PCB456789",
-    "status": "OFFLINE",
+    "status": 0,
     "tablename": "devicelog_1",
     "userId": null,
     "customerId": "j0k1l2m3-0000-1111-2222-333344445555"
@@ -222,7 +222,7 @@
     "longitude": "-112.0740",
     "simnumber": "+1-555-0010",
     "pcbsn": "PCB456789",
-    "status": "OFFLINE",
+    "status": 0,
     "tablename": "devicelog_1",
     "userId": null,
     "customerId": "j0k1l2m3-0000-1111-2222-333344445555"

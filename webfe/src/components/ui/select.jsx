@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import  { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 const Select = ({
@@ -10,6 +10,7 @@ const Select = ({
   disabled = false,
   id,
   name,
+  direction = 'down', // 'down' or 'up'
   ...props
 }) => {
   const [open, setOpen] = useState(false);
@@ -64,7 +65,9 @@ const Select = ({
         <ChevronDown size={20} className="ml-2 text-gray-400 dark:text-gray-500" />
       </div>
       {open && !disabled && (
-        <div className="absolute left-0 mt-1 w-full rounded shadow-lg bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 z-20 max-h-60 overflow-auto whitespace-nowrap">
+        <div className={`absolute left-0 w-full rounded shadow-lg bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 z-20 max-h-60 overflow-auto whitespace-nowrap ${
+          direction === 'up' ? 'bottom-full mb-1' : 'top-full mt-1'
+        }`}>
           {options.length === 0 && (
             <div className="px-4 py-2 text-gray-400 dark:text-gray-500 whitespace-nowrap">No options</div>
           )}

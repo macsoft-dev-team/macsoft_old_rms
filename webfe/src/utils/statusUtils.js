@@ -15,6 +15,8 @@ export const formatStatus = (status) => {
         return 'Offline';
       case 1:
         return 'Online';
+      case 2:
+        return 'Fault';
       default:
         return 'Unknown';
     }

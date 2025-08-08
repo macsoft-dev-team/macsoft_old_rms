@@ -4,27 +4,17 @@
     "action": "READ",
     "address": "0x01A1",
     "value": "01",
-    "response": "22.5C",
+    "response": "",
     "createdAt": "2025-08-06T10:00:00Z",
     "updatedAt": "2025-08-06T10:00:00Z",
     "deviceId": "c3d4e5f6-3333-4444-5555-666677778888"
-  },
-  {
-    "id": "cmd-1-2",
-    "action": "WRITE",
-    "address": "0x01A2",
-    "value": "02",
-    "response": "OK",
-    "createdAt": "2025-08-06T10:01:00Z",
-    "updatedAt": "2025-08-06T10:01:00Z",
-    "deviceId": "c3d4e5f6-3333-4444-5555-666677778888"
-  },
+  }, 
   {
     "id": "cmd-1-3",
     "action": "READ",
     "address": "0x01A3",
     "value": "02",
-    "response": "45%",
+    "response": "READ_SUCCESS",
     "createdAt": "2025-08-06T10:02:00Z",
     "updatedAt": "2025-08-06T10:02:00Z",
     "deviceId": "c3d4e5f6-3333-4444-5555-666677778888"
