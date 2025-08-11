@@ -34,7 +34,7 @@ const Layout = () => {
 
   return (
     <ToastProvider>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 relative">
+      <div className="min-h-screen font-mono bg-gray-50 dark:bg-gray-900 transition-colors duration-300 relative">
         {/* Overlay for mobile when sidebar is open */}
         {isMobile && !sidebarCollapsed && (
           <div

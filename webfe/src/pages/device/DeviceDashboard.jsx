@@ -85,7 +85,7 @@ import DeviceLog from './components/DeviceLog';
             <div>
               <ChatInterface
                 deviceId={device.id}
-                deviceName={device.name}
+                deviceName={device.username}
                 status={device.status}
               />
             </div>

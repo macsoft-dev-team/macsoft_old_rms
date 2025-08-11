@@ -56,7 +56,7 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-cyan-200 via-fuchsia-200 to-yellow-100 relative overflow-hidden">
+    <div className="min-h-screen font-mono flex items-center justify-center bg-gradient-to-br from-cyan-200 via-fuchsia-200 to-yellow-100 relative overflow-hidden">
       {/* Animated background shapes */}
       <div className="absolute -top-40 -left-40 w-[32rem] h-[32rem] bg-blue-300 opacity-20 rounded-full blur-3xl animate-pulse-slow z-0" />
       <div className="absolute -bottom-40 -right-40 w-[32rem] h-[32rem] bg-pink-300 opacity-20 rounded-full blur-3xl animate-pulse-slow z-0" />

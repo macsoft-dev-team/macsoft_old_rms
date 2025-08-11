@@ -31,7 +31,6 @@ const ModbusTemplateModal = ({
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      id: '',
       name: '',
       driveCode: '',
       parameters: []
@@ -42,7 +41,6 @@ const ModbusTemplateModal = ({
     if (open && !isSubmitting) {
       if (template && (isEdit || isView)) {
         const templateData = {
-          id: template.id || '',
           name: template.name || '',
           driveCode: template.driveCode || '',
           parameters: template.parameters || []
@@ -52,8 +50,7 @@ const ModbusTemplateModal = ({
         setJsonText(JSON.stringify(templateData.parameters, null, 2));
       } else if (isCreate) {
         const emptyTemplate = {
-          id: '',
-          name: '',
+           name: '',
           driveCode: '',
           parameters: []
         };
@@ -68,6 +65,7 @@ const ModbusTemplateModal = ({
   }, [template, open, reset, isCreate, isEdit, isView, isSubmitting]);
 
   const onSubmit = (data) => {
+    data.id =undefined;  
     setIsSubmitting(true);
     if (onSave) {
       onSave(data)

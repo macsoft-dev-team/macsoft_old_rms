@@ -30,11 +30,11 @@ const Devices = () => {
     return (
         <div className="space-y-5">
             <TitleHead title="Device Management" description="Monitor and manage all solar pump devices">
-                <DevicesHeader uploadDevice={uploadDevice} loading={loading} />
+                <DevicesHeader uploadDevice={uploadDevice} loading={loading} manufacturerId={manufacturerId} user={user} />
             </TitleHead>
             <DevicesFilters
                 setFilter={setFilter}
-                manufacturers={safeManufacturers}
+                manufacturers={safeManufacturers}               
                 user={user}
             />
             <DevicesBadge count={safeDevices.length} />

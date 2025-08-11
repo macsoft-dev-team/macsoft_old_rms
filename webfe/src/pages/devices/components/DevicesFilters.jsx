@@ -73,7 +73,7 @@ const DevicesFilters = ({
                 {(user?.role === 'MACSOFT_ADMIN' || user?.role === 'MACSOFT_USER') && (
                     <div className="w-full sm:w-48">
                         <Select
-                            options={[{ value: 'all', label: 'All Manufacturers' }, ...manufacturers.map(m => ({ value: m.id, label: m.name }))]}
+                            options={[{ value: '', label: 'All Manufacturers' }, ...manufacturers.map(m => ({ value: m.id, label: m.name }))]}
                             name={'manufacturer'}
                             value={watch('manufacturer')}
                             onChange={e => setValue('manufacturer', e.target.value)}

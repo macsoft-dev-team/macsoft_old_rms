@@ -3,13 +3,7 @@ import { Badge } from '../../../components/ui/badge';
 import { NavLink } from 'react-router-dom';
 import { dateF } from '../../../lib/constants/variables';
 import { formatStatus, getStatusConfig } from '../../../utils/statusUtils';
-
  
-const statusColors = {
-  online: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300',
-  OFFLINE: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
-  FAULT: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300',
-};
 
 const DeviceCard = ({ device, delay = 0, setDevice, fetchDeviceById }) => {
   return (
@@ -17,12 +11,13 @@ const DeviceCard = ({ device, delay = 0, setDevice, fetchDeviceById }) => {
       transition={{ delay }}
       className="bg-white dark:bg-gray-900 max-h-54 rounded-lg shadow border border-gray-200 dark:border-gray-700 flex flex-col space-y-2 transition-all duration-200 hover:shadow-2xl hover:shadow-blue-200/40 dark:hover:shadow-blue-900/40 hover:-translate-y-1 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
     >
-      <div className="flex items-center justify-between p-4 gap-2">
+      <div className="flex flex-col items-start px-4 justify-between pt-4 gap-2">
         <div className="flex flex-col">
           <span className="text-lg font-semibold text-gray-900 tracking-wider dark:text-white uppercase">{device.username}</span>
           <span className="text-xs text-gray-500 dark:text-gray-400">{device.manufacturer}</span>
         </div>
           <Badge
+            size='xsmall'
             className={`text-xs font-semibold px-2 py-1 rounded ${getStatusConfig(device.status).color}`}
           >
             {formatStatus(device.status)}

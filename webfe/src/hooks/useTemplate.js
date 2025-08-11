@@ -97,10 +97,15 @@ const useTemplate = () => {
     [dispatch]
   );
 
+  const fetchTemplatesCallback = useCallback((params) => {
+    dispatch(fetchTemplates(params));
+  }, [dispatch]);
+
   return {
     mode,
     template,
     templates,
+    fetchTemplates: fetchTemplatesCallback,
     loading,
     error,
     setTemplate: setTemplateCallback,

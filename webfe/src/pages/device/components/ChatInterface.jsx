@@ -9,6 +9,7 @@ import { useCommand } from '../../../hooks/useCommand';
 import { useToast } from '../../../hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import { formatStatus, getStatusConfig } from '../../../utils/statusUtils';
+import moment from 'moment';
 
 const ChatInterface = ({ deviceId, deviceName, status }) => {
   const { commands, fetchCommands, postCommand, loading, setCommands, setCommand } = useCommand();
@@ -282,24 +283,22 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
   };
 
   const formatTime = (timestamp) => {
-    return new Date(timestamp).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    return moment(timestamp).format('LL LT');
   };
+  if (!deviceId) return null;
 
   return (
-    <div className="flex flex-col h-[60vh] bg-white dark:bg-gray-900 border border-gray-400 dark:border-gray-700 rounded-lg">
+    <div className="flex flex-col h-[60vh] bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-400 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-t-lg">
+      <div className="flex items-center justify-between p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-blue-500 dark:bg-blue-700 rounded-full flex items-center justify-center">
-            <span className="text-white font-semibold text-sm">
+            <span className="text-white font-semibold text-sm uppercase">
               {deviceName?.charAt(0) || 'D'}
             </span>
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100">{deviceName}</h3>
+            <h3 className="font-semibold uppercase tracking-wider text-gray-900 dark:text-gray-100">{deviceName}</h3>
             <Badge
               className={`text-xs font-semibold px-2 py-1 rounded ${getStatusConfig(status).color}`}
             >
@@ -351,9 +350,9 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
                 className={`flex ${message.type === 'outgoing' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-xs px-3 py-2 rounded-lg ${
+                  className={`max-w-xs min-w-xs px-3 py-2 rounded-lg ${
                     message.type === 'outgoing'
-                      ? 'bg-blue-500 text-white dark:bg-blue-700'
+                      ? 'bg-slate-200 dark:bg-slate-700 text-gray-600 dark:text-gray-200'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
                   }`}
                 >
@@ -361,7 +360,7 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
                   {message.hexContent && (
                     <p className={`text-xs mt-1 font-mono ${
                       message.type === 'outgoing' 
-                        ? 'text-blue-100 dark:text-blue-200 opacity-80' 
+                        ? 'text-green-600 dark:text-green-700 opacity-80' 
                         : 'text-gray-500 dark:text-gray-400'
                     }`}>
                       {message.hexContent}
@@ -373,7 +372,7 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
                   }`}>
                     <span className={`text-xs ${
                       message.type === 'outgoing' 
-                        ? 'text-blue-100 dark:text-blue-200' 
+                        ? 'text-blue-400 dark:text-blue-400' 
                         : 'text-gray-500 dark:text-gray-400'
                     }`}>
                       {formatTime(message.timestamp)}
@@ -425,7 +424,7 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t border-gray-400 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-b-lg">
+      <div className="p-4 border-t border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 rounded-b-lg">
         <div className="space-y-4">
           {/* Command Type Selection */}
           <div>

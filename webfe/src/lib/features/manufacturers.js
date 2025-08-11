@@ -110,6 +110,19 @@ export const manufacturersSlice = createSlice({
       .addCase(fetchManufacturers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch manufacturers";
+      })
+      .addCase(fetchManufacturerById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchManufacturerById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.manufacturer = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchManufacturerById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch manufacturers";
       });
   },
 });
