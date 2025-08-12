@@ -77,8 +77,17 @@ const DevicesMap = ({ deviceLocations = [] }) => {
     popupAnchor: [0, -32],
   });
 
-  // Don't render the map if we don't have valid coordinates
-  if (!deviceLocations.length) {
+  // Filter out devices with missing or invalid coordinates
+  const validDevices = deviceLocations.filter(
+    (device) => {
+      // Accept both 'latitude' and 'lattitude' (API typo)
+      const lat = device.latitude || device.lattitude;
+      const lng = device.longitude;
+      return lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng));
+    }
+  );
+
+  if (!deviceLocations.length || validDevices.length === 0) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -93,7 +102,11 @@ const DevicesMap = ({ deviceLocations = [] }) => {
           <CardContent className="!p-0 h-full flex items-center justify-center">
             <div className="text-center text-gray-500">
               <MapPin className="mx-auto mb-2" size={48} />
-              <p>Location data not available</p>
+              <p>
+                { !deviceLocations.length
+                  ? 'Location data not available'
+                  : 'No valid device coordinates found.' }
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -115,7 +128,10 @@ const DevicesMap = ({ deviceLocations = [] }) => {
         <CardContent className="!p-0 h-full">
           <div className="h-80 relative">
             <MapContainer
-              center={[10.9974, 76.9589]} // Default center, can be adjusted
+              center={[
+                parseFloat(validDevices[0].latitude || validDevices[0].lattitude),
+                parseFloat(validDevices[0].longitude)
+              ]}
               zoom={4}
               className="h-full w-full z-0"
               ref={mapRef}
@@ -125,22 +141,43 @@ const DevicesMap = ({ deviceLocations = [] }) => {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
-              {deviceLocations.map((device, index) => {
-                const position = [10.9974, 76.9589];
+              {validDevices.map((device, index) => {
+                const lat = parseFloat(device.latitude || device.lattitude);
+                const lng = parseFloat(device.longitude);
+                const position = [lat, lng];
+                // Map numeric status to string
+                let statusStr = 'unknown';
+                if (device.status === 1) statusStr = 'online';
+                else if (device.status === 0) statusStr = 'offline';
+                else if (device.status === 2) statusStr = 'fault';
+                const pointerIcon = L.divIcon({
+                  html: renderToStaticMarkup(
+                    <MapPin
+                      className={`${getStatusColor(statusStr)}`}
+                      fill="#fff"
+                      width={32}
+                      height={32}
+                      strokeWidth={2}
+                    />
+                  ),
+                  className: '',
+                  iconSize: [32, 32],
+                  iconAnchor: [16, 32],
+                  popupAnchor: [0, -32],
+                });
                 return (
-                  <Marker key={device.imeinumber} position={position} icon={statusPointerIcon}>
+                  <Marker key={device.imeinumber || index} position={position} icon={pointerIcon}>
                     <Popup>
                       <div className="p-2">
                         <h3 className="font-semibold text-lg">Device Location</h3>
-                        <p className="text-sm">Lat: {position[0]}</p>
-                        <p className="text-sm">Lng: {position[1]}</p>
+                        <p className="text-sm">Lat: {lat}</p>
+                        <p className="text-sm">Lng: {lng}</p>
                         <span
-                          className={`text-xs font-semibold ${getStatusTextColor(
-                            device.status
-                          )}`}
+                          className={`text-xs font-semibold ${getStatusTextColor(statusStr)}`}
                         >
-                          Status: {device.status}
+                          Status: {statusStr}
                         </span>
+                        <p className="text-xs mt-2">IMEI: {device.imeinumber}</p>
                       </div>
                     </Popup>
                   </Marker>

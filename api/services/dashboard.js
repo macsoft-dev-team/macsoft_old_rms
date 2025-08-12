@@ -27,7 +27,7 @@ const getMacsoftDashboard = async () => {
       prisma.customer.count(),
       prisma.notification.count({ where: { createdAt: getTodayDateRange() } }),
       prisma.device.findMany({
-        select: { imeinumber: true, lattitude: true, longitude: true },
+        select: { imeinumber: true, lattitude: true, longitude: true ,status: true },
       }),
       prisma.command.findMany({ orderBy: { createdAt: "desc" }, take: 10 }),
     ]);
