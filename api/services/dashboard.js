@@ -12,9 +12,9 @@ const getTodayDateRange = () => {
 const getDeviceCounts = async (whereClause = {}) => {
   const [total, online, fault, offline] = await Promise.all([
     prisma.device.count({ where: whereClause }),
-    prisma.device.count({ where: { ...whereClause, status: "ONLINE" } }),
-    prisma.device.count({ where: { ...whereClause, status: "FAULT" } }),
-    prisma.device.count({ where: { ...whereClause, status: "OFFLINE" } }),
+    prisma.device.count({ where: { ...whereClause, status: 0} }),
+    prisma.device.count({ where: { ...whereClause, status: 1 } }),
+    prisma.device.count({ where: { ...whereClause, status: 2 } }),
   ]);
 
   return { total, online, fault, offline };
