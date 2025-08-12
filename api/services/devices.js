@@ -11,6 +11,18 @@ const getAllDevices = async (skip, take, filter, user) => {
     if (skip) params.skip = (parseInt(skip) - 1) * parseInt(take) || 0;
     if (take) params.take = parseInt(take);
 
+    const getStatus = (_status) => {
+      switch (_status) {
+        case "OFFLINE":
+          return 0;
+        case "ONLINE":
+          return 1;
+        case "FAULT":
+          return 2;
+        default:
+          return null;
+      }
+    };
     // Build where clause
     let where = {};
     if (filter) {
@@ -22,7 +34,7 @@ const getAllDevices = async (skip, take, filter, user) => {
             { simnumber: { contains: filter.search } },
           ],
         },
-        filter.status && { status: filter.status },
+        filter.status && { status: getStatus(filter.status) },
         filter.manufacturer && { customerId: filter.manufacturer || 0 },
       ].filter(Boolean);
     }
