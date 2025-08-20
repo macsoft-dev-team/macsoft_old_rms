@@ -94,6 +94,16 @@ export const manufacturersSlice = createSlice({
     setFilter: (state, action) => {
       state.filter = action.payload;
     },
+    setMode: (state, action) => {
+      // Reset all modes to false first
+      Object.keys(state.mode).forEach((key) => {
+        state.mode[key] = false;
+      });
+      // Set the specified mode to true if provided
+      if (action.payload) {
+        state.mode[action.payload] = true;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -127,6 +137,6 @@ export const manufacturersSlice = createSlice({
   },
 });
 
-export const { setManufacturer, setFilter } = manufacturersSlice.actions;
+export const { setManufacturer, setFilter, setMode } = manufacturersSlice.actions;
 
 export default manufacturersSlice.reducer;

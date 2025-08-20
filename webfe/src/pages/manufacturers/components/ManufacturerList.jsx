@@ -1,7 +1,7 @@
 import ManufacturerCard from './ManufacturerCard';
 
 
-const ManufacturerList = ({ manufacturers, setDeviceFilter }) => {
+const ManufacturerList = ({ manufacturers, setDeviceFilter, onEdit }) => {
   const safeManufacturers = Array.isArray(manufacturers) ? manufacturers : [];
     const getDeviceStatusCounts = (devices) => {
         return {
@@ -27,7 +27,8 @@ const ManufacturerList = ({ manufacturers, setDeviceFilter }) => {
             devices={devices.length}
             statusCounts={statusCounts}
             index={index}
-                handleDeviceFilter={handleDeviceFilter}
+            handleDeviceFilter={handleDeviceFilter}
+            onEdit={onEdit}
           />
         );
       })}

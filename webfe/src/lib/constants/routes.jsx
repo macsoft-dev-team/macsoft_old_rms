@@ -52,6 +52,7 @@ const BASE_ITEMS = {
     path: '/device/:manufacturerId',
     icon: Monitor,
     label: 'Create Device',
+    hidden: true,
     category: 'main',
     element: <CreateDevice />,
   },
@@ -108,6 +109,7 @@ const BASE_ITEMS = {
   endUserDevices: {
     path: '/devices/:deviceId',
     icon: Monitor,
+    hidden: true,
     label: 'Devices',
     category: 'main',
     element: <DeviceDashboard />,

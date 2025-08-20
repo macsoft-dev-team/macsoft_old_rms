@@ -1,8 +1,13 @@
+
 import {
   fetchManufacturers,
+  fetchManufacturerById,
+  updateManufacturer,
+  deleteManufacturer,
+  uploadManufacturer,
   setManufacturer,
   setFilter,
-  fetchManufacturerById,
+  setMode,
 } from "../lib/features/manufacturers";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useCallback } from "react";
@@ -15,6 +20,7 @@ export const useManufacturer = () => {
     currentPage,
     totalPages,
     filter,
+    mode,
     loading,
   } = useSelector((state) => state.manufacturer);
 
@@ -33,17 +39,39 @@ export const useManufacturer = () => {
     (manufacturer) => dispatch(setManufacturer(manufacturer)),
     [dispatch]
   );
+
   const fetchManufacturersCallback = useCallback(
     (params) => dispatch(fetchManufacturers(params)),
-    [dispatch]
-  );
-  const setFilterCallback = useCallback(
-    (filter) => dispatch(setFilter(filter)),
     [dispatch]
   );
 
   const fetchManufacturerByIdCallback = useCallback(
     (id) => dispatch(fetchManufacturerById(id)),
+    [dispatch]
+  );
+
+  const updateManufacturerCallback = useCallback(
+    (payload) => dispatch(updateManufacturer(payload)),
+    [dispatch]
+  );
+
+  const deleteManufacturerCallback = useCallback(
+    (id) => dispatch(deleteManufacturer(id)),
+    [dispatch]
+  );
+
+  const uploadManufacturerCallback = useCallback(
+    (formData) => dispatch(uploadManufacturer(formData)),
+    [dispatch]
+  );
+
+  const setFilterCallback = useCallback(
+    (filter) => dispatch(setFilter(filter)),
+    [dispatch]
+  );
+
+  const setModeCallback = useCallback(
+    (mode) => dispatch(setMode(mode)),
     [dispatch]
   );
 
@@ -54,10 +82,15 @@ export const useManufacturer = () => {
     totalPages,
     filter,
     loading,
+    mode,
     setManufacturer: setManufacturerCallback,
     fetchManufacturers: fetchManufacturersCallback,
     fetchManufacturerById: fetchManufacturerByIdCallback,
+    updateManufacturer: updateManufacturerCallback,
+    deleteManufacturer: deleteManufacturerCallback,
+    uploadManufacturer: uploadManufacturerCallback,
     setFilter: setFilterCallback,
     onPageChange,
+    setMode: setModeCallback,
   };
 };

@@ -30,6 +30,12 @@ export const manufacturersState = {
   filter: {
     search: "",
   },
+  mode: {
+    create: false,
+    edit: false,
+    view: false,
+    confirmDelete: false,
+  },
   totalPages: 0,
   currentPage: 0,
   loading: false,

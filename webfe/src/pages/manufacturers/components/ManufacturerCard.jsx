@@ -5,7 +5,7 @@ import { Building2, Wifi, WifiOff, AlertCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { NavLink } from 'react-router-dom';
 
-const ManufacturerCard = ({ manufacturer, devices, statusCounts, index, handleDeviceFilter }) => (
+const ManufacturerCard = ({ manufacturer, devices, statusCounts, index, handleDeviceFilter, onEdit }) => (
     <motion.div
         key={manufacturer.id}
         initial={{ opacity: 0, y: 20 }}
@@ -50,18 +50,25 @@ const ManufacturerCard = ({ manufacturer, devices, statusCounts, index, handleDe
                         <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Associated Devices</h4>
                         {devices.length > 0 && <div className='text-gray-600 dark:text-gray-300'>{devices.length}</div>}
                     </div>
-                    <div className="flex space-x-2">
-                        <NavLink to={`/manufacturer/${manufacturer.id}`} className="flex-1">
-                            <Button
-                                onClick={() => handleDeviceFilter(manufacturer.id)}
-                                variant="outline"
-                                className="flex-1 group-hover:bg-blue-50 dark:group-hover:bg-blue-900 transition-colors"
-                            >
-                                <Building2 className="w-4 h-4 mr-2" />
-                                View Devices
-                            </Button>
-                        </NavLink>
-                    </div>
+                                        <div className="flex space-x-2">
+                                                <NavLink to={`/manufacturer/${manufacturer.id}`} className="flex-1">
+                                                        <Button
+                                                                onClick={() => handleDeviceFilter(manufacturer.id)}
+                                                                variant="outline"
+                                                                className="flex-1 group-hover:bg-blue-50 dark:group-hover:bg-blue-900 transition-colors"
+                                                        >
+                                                                <Building2 className="w-4 h-4 mr-2" />
+                                                                View Devices
+                                                        </Button>
+                                                </NavLink>
+                                                <Button
+                                                    variant="ghost"
+                                                    onClick={() => onEdit && onEdit(manufacturer)}
+                                                    className="flex-1"
+                                                >
+                                                    Edit
+                                                </Button>
+                                        </div>
                 </div>
             </CardContent>
         </Card>

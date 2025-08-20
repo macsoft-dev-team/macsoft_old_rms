@@ -23,14 +23,12 @@ const DevicesHeader = ({ uploadDevice, loading, manufacturerId, user }) => {
                 <ExternalLink className="w-4 h-4 mr-2" />
                 <span className='hidden lg:inline'>Export</span>
             </Button>
-            {(manufacturerId || user.role==="CUSTOMER_ADMIN" || user.role==="CUSTOMER_USER") &&
-                <NavLink to={user.role === "CUSTOMER_ADMIN" ? `/device/${user.customerId}` : `/device/${manufacturerId}`} className="flex items-center">
+            {/*       <NavLink to={user.role === "CUSTOMER_ADMIN" ? `/device/${user.customerId}` : `/device/${manufacturerId}`} className="flex items-center">
                     <Button variant='primary'>
                         <Plus className="w-4 h-4 mr-2" />
                         <span className='hidden lg:inline'> Add Device</span>
                     </Button>
-                </NavLink>
-            }
+                </NavLink> */}
             <Button variant="outline" onClick={handleImportClick} >
                 <Download className="w-4 h-4 mr-2" />
                 {loading ? <span className='hidden lg:inline'>Importing...</span> : <span className='hidden lg:inline'>Import Devices</span>}
