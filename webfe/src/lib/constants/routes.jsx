@@ -23,6 +23,7 @@ import Devices from '../../pages/devices/Devices';
 import Manufacturers from '../../pages/manufacturers/Manufacturers';
 import NotFound from '../../pages/NotFound';
 import { createBrowserRouter } from 'react-router-dom';
+import Mappings from '../../pages/mapping/mappings';
 
 // 1️⃣ Base config with both menu + component
 const BASE_ITEMS = {
@@ -79,9 +80,9 @@ const BASE_ITEMS = {
     element: <Devices />,
   },
   modbus: {
-    path: '/templates/modbus',
+    path: '/templates',
     icon: FileText,
-    label: 'Modbus Templates',
+    label: 'Templates',
     category: 'main',
     element: <ModbusTemplates />,
   },
@@ -92,10 +93,17 @@ const BASE_ITEMS = {
     category: 'main',
     element: <ServerTemplates />,
   },
+  mappings: {
+    path: '/mappings',
+    icon: FileText,
+    label: 'Mappings',
+    category: 'main',
+    element: <Mappings />,
+  },
   commands: {
     path: '/commands',
     icon: Server,
-    label: 'MQTT Commands',
+    label: 'Commands',
     category: 'main',
     element: <MQTTCommands />,
   },
@@ -120,6 +128,7 @@ const BASE_ITEMS = {
   MACSOFT_ADMIN: [
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
+    BASE_ITEMS.mappings,
     BASE_ITEMS.deviceDetails,
     BASE_ITEMS.createDevice,
     BASE_ITEMS.manufacturers,
@@ -132,6 +141,7 @@ const BASE_ITEMS = {
   MACSOFT_USER: [
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
+    BASE_ITEMS.mappings,
     BASE_ITEMS.createDevice,
     BASE_ITEMS.deviceDetails,
     BASE_ITEMS.manufacturerDevices,
@@ -142,6 +152,7 @@ const BASE_ITEMS = {
   CUSTOMER_ADMIN: [
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
+    BASE_ITEMS.mappings,
     BASE_ITEMS.deviceDetails,
     BASE_ITEMS.createDevice,
     BASE_ITEMS.users,
@@ -152,6 +163,7 @@ const BASE_ITEMS = {
   CUSTOMER_USER: [
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
+    BASE_ITEMS.mappings,
     BASE_ITEMS.createDevice,
     BASE_ITEMS.deviceDetails,
     BASE_ITEMS.modbus,
