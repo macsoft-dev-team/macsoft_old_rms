@@ -24,7 +24,7 @@ import Manufacturers from '../../pages/manufacturers/Manufacturers';
 import NotFound from '../../pages/NotFound';
 import { createBrowserRouter } from 'react-router-dom';
 import Mappings from '../../pages/mapping/mappings';
-
+  
 // 1️⃣ Base config with both menu + component
 const BASE_ITEMS = {
   dashboard: {

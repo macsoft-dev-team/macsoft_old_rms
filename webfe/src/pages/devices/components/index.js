@@ -6,6 +6,5 @@ export { default as DevicesEmpty } from './DevicesEmpty';
 export { default as DevicesFilters } from './DevicesFilters';
 export { default as DevicesGrid } from './DevicesGrid';
 export { default as DevicesHeader } from './DevicesHeader';
-export { default as MotionDiv } from './MotionDiv';
-export { default as UploadModal } from './UploadModal';
+export { default as MotionDiv } from './MotionDiv'; 
 export { default as EnhancedUploadModal } from './EnhancedUploadModal';

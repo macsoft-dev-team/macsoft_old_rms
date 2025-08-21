@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { Button } from '../../../components/ui/button';
 import { Plus, ExternalLink, Download } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
-import { EnhancedUploadModal, MotionDiv } from '.';
-import UploadModal from './UploadModal';
-
+ import { EnhancedUploadModal, MotionDiv } from '.';
+ 
 const DevicesHeader = ({ uploadDevice, loading, manufacturerId, user }) => {
     const [showUploadModal, setShowUploadModal] = useState(false);
 

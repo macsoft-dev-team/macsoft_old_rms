@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form';
 import { formatStatus, getStatusConfig } from '../../../utils/statusUtils';
 import moment from 'moment';
 
-const ChatInterface = ({ deviceId, deviceName, status }) => {
+const ChatInterface = ({ deviceId, deviceName, device, status }) => {
   const { commands, fetchCommands, postCommand, loading, setCommands, setCommand } = useCommand();
   const { toast } = useToast();
   
@@ -170,7 +170,8 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
       action: commandInfo.action,
       address: commandInfo.address,
       value: commandInfo.value,
-      deviceId: deviceId
+      deviceId: deviceId,
+      imeinumber: device.imeinumber || ''
     };
 
     // Add to chat immediately with pending status

@@ -89,6 +89,22 @@ export const dashboardState = {
   error: null,
 };
 
+export const mappingsState = {
+  mappings: [],
+  mapping: null,
+  mappingId: null,
+  mode: "",
+  filter: {
+    search: "",
+    status: "",
+    manufacturer: "",
+  },
+  totalPages: 0,
+  currentPage: 0,
+  loading: false,
+  error: null,
+};
+
 export const dateF = (date) => {
   return moment(date).format("DD/MM/YYYY HH:mm:ss");
 };

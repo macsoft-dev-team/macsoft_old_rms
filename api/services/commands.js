@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const mqtt = require("mqtt");
 
 const getAllCommandsByDeviceId = async (skip, take, filter, deviceId) => {
   const params = {
@@ -29,6 +30,18 @@ const createCommand = async (commandData, user) => {
       data: { ...commandData, response: "" },
       include: { device: true },
      });
+     const _device= await prisma.device.findUnique({
+       where: { imeinumber: command.imeinumber }, 
+     });
+      const mqtt_server = `mqtt://${creds.host}:${creds.port}`;
+      const creds = {
+        username: _device.username,
+        password: _device.password,
+        clientId: _device.imeinumber,
+      };
+      const client = mqtt.connect(mqtt_server, creds);
+      
+
     return command;
   } catch (error) {
     console.error("Error creating command:", error);

@@ -39,6 +39,7 @@ const MQTTCommands = () => {
             <ChatInterface
               deviceId={device.id}
               deviceName={device.username}
+              device={device}
               status={device.status}
             />
           ) : (

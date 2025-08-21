@@ -3,8 +3,7 @@ const deviceService = require("../services/devices");
 const getAllDevices = async (req, res) => {
   try {
     const { skip, take, filter } = req.query;
-    // destructure user from cookies
-    const user = req.user; // Assuming user is set by authentication middleware
+     const user = req.user; 
     const { devices, count } = await deviceService.getAllDevices(
       skip,
       take,
@@ -63,8 +62,7 @@ const deleteDevice = async (req, res) => {
 };
 
 const getDeviceByImei = async (req, res) => {
-  // Extract imeinumber from query parameters
-  const { imeinumber } = req.query;
+   const { imeinumber } = req.query;
   try {
     const device = await deviceService.getDeviceByImei(imeinumber);
     if (!device) {
