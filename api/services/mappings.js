@@ -48,12 +48,11 @@ const getAllDevices = async (skip, take, filter, user) => {
     params.select = {
       id: true,
       imeinumber: true,
-      snahost: true,
-      snaport: true,
-      snausername: true,
-      snapassword: true,
-      snapubTopicData: true,
-      snasubTopicCmd: true,
+      snamqtturl: true,
+      snamqttusername: true,
+      snamqttpassword: true,
+      snamqttpubTopicData: true,
+      snamqttsubTopicCmd: true,
     };
     const count = await prisma.device.count({ where: params.where });
     const devices = await prisma.device.findMany(params);
@@ -70,12 +69,11 @@ const getDeviceById = async (imeinumber) => {
     select: {
       id: true,
       imeinumber: true,
-      snahost: true,
-      snaport: true,
-      snausername: true,
-      snapassword: true,
-      snapubTopicData: true,
-      snasubTopicCmd: true,
+      snamqtturl: true,
+      snamqttusername: true,
+      snamqttpassword: true,
+      snamqttpubTopicData: true,
+      snamqttsubTopicCmd: true,
     },
   });
 };

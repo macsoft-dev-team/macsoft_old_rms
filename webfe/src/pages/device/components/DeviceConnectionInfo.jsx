@@ -7,15 +7,23 @@ const DeviceConnectionInfo = ({ device }) => {
 
    
   const connectionInfo = {
-    host: device.host,
+    
+    macsoftmqtturl: device.macsoftmqtturl,
     imei: device.imeinumber,
-    username: device.username,
-    password: device.password,
+    macsoftmqttusername: device.macsoftmqttusername,
+    macsoftmqttpassword: device.macsoftmqttpassword,
     port: device.port,
-    pubTopicData: device.pubTopicData,
-    subTopicCmd: device.subTopicCmd,
-    pubTopicCmd: device.pubTopicCmd,
-    serialNumber: device.serialNumber
+    macsoftmqttpubtopicdata: device.macsoftmqttpubtopicdata,
+    macsoftmqttpubtopiccmd: device.macsoftmqttpubtopiccmd,
+    macsoftmqttsubtopiccmd: device.macsoftmqttsubtopiccmd,
+    macsoftmqttsubtopiccmdresponse: device.macsoftmqttsubtopiccmdresponse,
+    serialNumber: device.serialNumber,
+    // SNA MQTT fields
+    snamqtturl: device.snamqtturl,
+    snamqttusername: device.snamqttusername,
+    snamqttpassword: device.snamqttpassword,
+    snamqttpubtopicdata: device.snamqttpubtopicdata,
+    snamqttsubtopiccmd: device.snamqttsubtopiccmd,
   };
 
   const copyToClipboard = async (text, field) => {
@@ -139,13 +147,17 @@ const DeviceConnectionInfo = ({ device }) => {
     </motion.div>
   );
 
+  // Check if SNA details are available
+  const snaAvailable = connectionInfo.snamqtturl || connectionInfo.snamqttusername || connectionInfo.snamqttpassword || connectionInfo.snamqttpubtopicdata || connectionInfo.snamqttsubtopiccmd;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="space-y-6"
+      className="space-y-8"
     >
+      {/* Macsoft MQTT Section */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -162,7 +174,7 @@ const DeviceConnectionInfo = ({ device }) => {
               <WifiIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </motion.div>
             <div>
-              <h3 className="text-md sm:text-xl uppercase tracking-wide text-gray-800 dark:text-gray-100">Device Connection Information</h3>
+              <h3 className="text-md sm:text-xl uppercase tracking-wide text-gray-800 dark:text-gray-100">Macsoft MQTT Connection</h3>
               <p className="text-gray-600 dark:text-gray-300 mt-1 text-sm sm:text-base">MQTT Configuration & Topics</p>
             </div>
           </div>
@@ -217,21 +229,15 @@ const DeviceConnectionInfo = ({ device }) => {
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-       
+      {/* Macsoft MQTT Details */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InfoCard
           icon={Server}
           label="MQTT Host"
-          value={connectionInfo.host}
-          field="host"
+          value={connectionInfo.macsoftmqtturl}
+          field="macsoftmqtturl"
           className="md:col-span-2 lg:col-span-1"
-        />
-        <InfoCard 
-          icon={ArrowUpDown} 
-          label="Port" 
-          value={connectionInfo.port} 
-          field="port"
-        />
+        /> 
         <InfoCard
           icon={Hash}
           label="IMEI Number"
@@ -239,22 +245,20 @@ const DeviceConnectionInfo = ({ device }) => {
           field="imei"
         />
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <InfoCard 
           icon={User} 
           label="Username" 
-          value={connectionInfo.username} 
-          field="username"
+          value={connectionInfo.macsoftmqttusername} 
+          field="macsoftmqttusername"
         />
         <InfoCard 
           icon={Shield} 
           label="Password" 
-          value={connectionInfo.password} 
-          field="password"
+          value={connectionInfo.macsoftmqttpassword} 
+          field="macsoftmqttpassword"
         /> 
       </div>
-
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -270,21 +274,20 @@ const DeviceConnectionInfo = ({ device }) => {
           <ArrowUpDown className="h-5 w-5" />
           <span>MQTT Topics</span>
         </motion.h4>
-        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="space-y-4">
             <TopicCard 
               icon={ArrowUpDown} 
               label="Publish Topic - Data" 
-              topic={connectionInfo.pubTopicData} 
-              field="pubTopicData"
+              topic={connectionInfo.macsoftmqttpubtopicdata} 
+              field="macsoftmqttpubtopicdata"
               type="pub"
             />
             <TopicCard 
               icon={ArrowUpDown} 
               label="Publish Topic - Command Response" 
-              topic={connectionInfo.pubTopicCmd} 
-              field="pubTopicCmd"
+              topic={connectionInfo.macsoftmqttsubtopiccmdresponse} 
+              field="macsoftmqttsubtopiccmdresponse"
               type="pub"
             />
           </div>
@@ -292,8 +295,8 @@ const DeviceConnectionInfo = ({ device }) => {
             <TopicCard 
               icon={ArrowUpDown} 
               label="Subscribe Topic - Commands" 
-              topic={connectionInfo.subTopicCmd} 
-              field="subTopicCmd"
+              topic={connectionInfo.macsoftmqttsubtopiccmd} 
+              field="macsoftmqttsubtopiccmd"
               type="sub"
             />
             <motion.div
@@ -337,6 +340,93 @@ const DeviceConnectionInfo = ({ device }) => {
           </div>
         </div>
       </motion.div>
+
+      {/* SNA MQTT Section */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg p-6 border border-green-200 dark:border-green-700"
+      >
+        <div className="flex items-center space-x-3">
+          <motion.div
+            animate={{ rotate: [0, 360] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="p-2 bg-green-100 dark:bg-green-800/50 rounded-lg"
+          >
+            <WifiIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
+          </motion.div>
+          <div>
+            <h3 className="text-md sm:text-xl uppercase tracking-wide text-gray-800 dark:text-gray-100">SNA MQTT Connection</h3>
+            <p className="text-gray-600 dark:text-gray-300 mt-1 text-sm sm:text-base">SNA MQTT Configuration & Topics</p>
+          </div>
+        </div>
+      </motion.div>
+      {/* SNA MQTT Details */}
+      {snaAvailable ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <InfoCard
+              icon={Server}
+              label="SNA MQTT Host"
+              value={connectionInfo.snamqtturl}
+              field="snamqtturl"
+            />
+            <InfoCard
+              icon={User}
+              label="SNA Username"
+              value={connectionInfo.snamqttusername}
+              field="snamqttusername"
+            />
+            <InfoCard
+              icon={Shield}
+              label="SNA Password"
+              value={connectionInfo.snamqttpassword}
+              field="snamqttpassword"
+            />
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="space-y-4"
+          >
+            <motion.h4 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center space-x-2"
+            >
+              <ArrowUpDown className="h-5 w-5" />
+              <span>SNA MQTT Topics</span>
+            </motion.h4>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <TopicCard
+                  icon={ArrowUpDown}
+                  label="SNA Publish Topic - Data"
+                  topic={connectionInfo.snamqttpubtopicdata}
+                  field="snamqttpubtopicdata"
+                  type="pub"
+                />
+              </div>
+              <div className="space-y-4">
+                <TopicCard
+                  icon={ArrowUpDown}
+                  label="SNA Subscribe Topic - Commands"
+                  topic={connectionInfo.snamqttsubtopiccmd}
+                  field="snamqttsubtopiccmd"
+                  type="sub"
+                />
+              </div>
+            </div>
+          </motion.div>
+        </>
+      ) : (
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700 rounded-lg p-6 text-yellow-800 dark:text-yellow-200 text-center text-base font-medium">
+          SNA details not mapped to this device. Unavailable.
+        </div>
+      )}
     </motion.div>
   );
 };

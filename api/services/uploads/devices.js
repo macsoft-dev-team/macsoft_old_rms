@@ -31,15 +31,15 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
       const imeinumberStr = String(device.imeinumber || '');
       
       return {
-         host: process.env.MQTT_HOST,
-        port: parseInt(process.env.MQTT_PORT),
-        username: `device_${device.imeinumber}`,
-        password: bcrypt.hashSync(imeinumberStr, 10),
-        pubTopicData: `device/${device.imeinumber}/data`,
-        subTopicCmd: `device/${device.imeinumber}/cmd`,
-        pubTopicCmd: `device/${device.imeinumber}/cmd/response`,
+        macsoftmqtturl: `mqtt://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`,
+        macsoftmqttusername: `device_${device.imeinumber}`,
+        macsoftmqttclientid: `device_${device.imeinumber}`,
+        macsoftmqttpassword: bcrypt.hashSync(imeinumberStr, 10),
+        pubtopicdata: `device/${device.imeinumber}/data`,
+        macsoftmqttsubtopiccmd: `device/${device.imeinumber}/cmd`,
+        macsoftmqttpubtopiccmd: `device/${device.imeinumber}/cmd/response`,
         imeinumber: String(device.imeinumber),
-        tablename: tableName,
+        tableName: tableName,
       };
     });
 
@@ -139,14 +139,14 @@ const uploadDeviceWithProgress = async (devicesFromXL, batchSize = 100, progress
       // Ensure imeinumber is a string and not null/undefined
       const imeinumberStr = String(device.imeinumber || '');
       
-      return {
-         host: process.env.MQTT_HOST,
-        port: parseInt(process.env.MQTT_PORT),
-        username: `device_${device.imeinumber}`,
-        password: bcrypt.hashSync(imeinumberStr, 10),
-        pubTopicData: `device/${device.imeinumber}/data`,
-        subTopicCmd: `device/${device.imeinumber}/cmd`,
-        pubTopicCmd: `device/${device.imeinumber}/cmd/response`,
+      return { 
+        macsoftmqtturl: `mqtt://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`,
+        macsoftmqttusername: `device_${device.imeinumber}`,
+        macsoftmqttclientid: `device_${device.imeinumber}`,
+        macsoftmqttpassword: bcrypt.hashSync(imeinumberStr, 10),
+        pubtopicdata: `device/${device.imeinumber}/data`,
+        macsoftmqttsubtopiccmd: `device/${device.imeinumber}/cmd`,
+        macsoftmqttpubtopiccmd: `device/${device.imeinumber}/cmd/response`,
         imeinumber: String(device.imeinumber),
         tableName: tableName,
       };

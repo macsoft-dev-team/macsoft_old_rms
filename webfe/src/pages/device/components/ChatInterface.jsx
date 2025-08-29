@@ -10,79 +10,36 @@ import { useToast } from '../../../hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import { formatStatus, getStatusConfig } from '../../../utils/statusUtils';
 import moment from 'moment';
+import { useDevice } from '../../../hooks/useDevice';
 
-const ChatInterface = ({ deviceId, deviceName, device, status }) => {
+const ChatInterface = ({ deviceId, deviceName, status }) => {
   const { commands, fetchCommands, postCommand, loading, setCommands, setCommand } = useCommand();
+  const { device } = useDevice();
   const { toast } = useToast();
-  
-  // React Hook Form for custom commands
-  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm({
+
+  // Only need payload for custom command
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
     defaultValues: {
-      action: 'READ',
-      address: '',
-      value: '',
+      payload: '',
     },
   });
 
-  const watchedAction = watch('action');
+  // Only three command types
+  const commandTypes = [
+    { value: 'MOTOR_ON', label: 'Motor On' },
+    { value: 'MOTOR_OFF', label: 'Motor Off' },
+    { value: 'CUSTOM', label: 'Custom Command' }
+  ];
+
+  const [selectedCommandType, setSelectedCommandType] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     if (deviceId) {
       fetchCommands({ skip: null, take: null, filter: '', deviceId });
     }
   }, [deviceId, fetchCommands]);
-
-  const [isTyping, setIsTyping] = useState(false);
-  const [selectedCommandType, setSelectedCommandType] = useState('');
-  const messagesEndRef = useRef(null);
-
-  const commandTypes = [
-    { value: 'START_PUMP', label: 'Start Pump' },
-    { value: 'STOP_PUMP', label: 'Stop Pump' },
-    { value: 'SET_FREQ', label: 'Set Frequency' },
-    { value: 'RESET_FAULT', label: 'Reset Fault' },
-    { value: 'GET_STATUS', label: 'Get Status' },
-    { value: 'CUSTOM', label: 'Custom Command' }
-  ];
-
-  // Map command types to predefined commands
-  const getCommandByType = (type) => {
-    const commandMap = {
-      'START_PUMP': { address: "0x01A4", value: "01", action: "WRITE" },
-      'STOP_PUMP': { address: "0x01A8", value: "00", action: "WRITE" },
-      'SET_FREQ': { address: "0x01A6", value: "50", action: "WRITE" },
-      'RESET_FAULT': { address: "0x01A7", value: "01", action: "WRITE" },
-      'GET_STATUS': { address: "0x01A9", value: "", action: "READ" }
-    };
-    return commandMap[type] || null;
-  };
-
-  // Handle refresh button click
-  const handleRefresh = async () => {
-    if (!deviceId) {
-      toast({
-        title: "No Device Selected",
-        description: "Please select a device first",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      await fetchCommands({ skip: null, take: null, filter: '', deviceId });
-      toast({
-        title: "Commands Refreshed",
-        description: "Command history has been updated",
-        variant: "success"
-      });
-    } catch (error) {
-      toast({
-        title: "Refresh Failed",
-        description: "Failed to refresh command history",
-        variant: "destructive"
-      });
-    }
-  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -92,33 +49,27 @@ const ChatInterface = ({ deviceId, deviceName, device, status }) => {
     scrollToBottom();
   }, [commands]);
 
+  // Map command types to payloads
+  const getPayloadByType = (type) => {
+    if (type === 'MOTOR_ON') return '{srun:1}';
+    if (type === 'MOTOR_OFF') return '{srun:0}';
+    return '';
+  };
+
   // Helper function to get command display name
   const getCommandDisplayName = (command) => {
-    const { action, address, value } = command;
-    
-    // Check if this matches any predefined command
-    for (const [type, commandInfo] of Object.entries({
-      'START_PUMP': { address: "0x01A4", value: "01", action: "WRITE" },
-      'STOP_PUMP': { address: "0x01A8", value: "00", action: "WRITE" },
-      'SET_FREQ': { address: "0x01A6", value: "50", action: "WRITE" },
-      'RESET_FAULT': { address: "0x01A7", value: "01", action: "WRITE" },
-      'GET_STATUS': { address: "0x01A9", value: "", action: "read" }
-    })) {
-      if (commandInfo.address === address && 
-          commandInfo.action.toLowerCase() === action.toLowerCase() &&
-          (commandInfo.value === value || (commandInfo.value === "" && !value))) {
-        return {
-          name: type.replace('_', ' '),
-          hex: `${action.toUpperCase()} ${address}${value ? ` : ${value}` : ''}`
-        };
-      }
+    // Only show type and payload
+    if (command.type === 'MOTOR_ON') {
+      return { name: 'Motor On', hex: command.payload };
     }
-    
-    // For custom commands, return the hex format
-    return {
-      name: `${action.toUpperCase()} Command`,
-      hex: `${action.toUpperCase()} ${address}${value ? ` : ${value}` : ''}`
-    };
+    if (command.type === 'MOTOR_OFF') {
+      return { name: 'Motor Off', hex: command.payload };
+    }
+    if (command.type === 'CUSTOM') {
+      return { name: 'Custom Command', hex: command.payload };
+    }
+    // fallback
+    return { name: 'Command', hex: command.payload };
   };
 
   // Create chat messages from commands
@@ -150,10 +101,8 @@ const ChatInterface = ({ deviceId, deviceName, device, status }) => {
     }
   });
 
-  // Handle predefined command selection from dropdown
-  const handlePredefinedCommandSelect = async () => {
-    if (!selectedCommandType || selectedCommandType === 'CUSTOM') return;
-    
+  // Handle refresh button click
+  const handleRefresh = async () => {
     if (!deviceId) {
       toast({
         title: "No Device Selected",
@@ -163,15 +112,42 @@ const ChatInterface = ({ deviceId, deviceName, device, status }) => {
       return;
     }
 
-    const commandInfo = getCommandByType(selectedCommandType);
-    if (!commandInfo) return;
+    try {
+      await fetchCommands({ skip: null, take: null, filter: '', deviceId });
+      toast({
+        title: "Commands Refreshed",
+        description: "Command history has been updated",
+        variant: "success"
+      });
+    } catch (error) {
+      toast({
+        title: "Refresh Failed",
+        description: "Failed to refresh command history",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Handle predefined command selection from dropdown
+  const handlePredefinedCommandSelect = async () => {
+    if (!selectedCommandType || selectedCommandType === 'CUSTOM') return;
+
+    if (!deviceId) {
+      toast({
+        title: "No Device Selected",
+        description: "Please select a device first",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const payload = getPayloadByType(selectedCommandType);
 
     const commandData = {
-      action: commandInfo.action,
-      address: commandInfo.address,
-      value: commandInfo.value,
+      type: selectedCommandType,
+      payload,
       deviceId: deviceId,
-      imeinumber: device.imeinumber || ''
+      imeinumber: device && device.imeinumber ? device.imeinumber : ''
     };
 
     // Add to chat immediately with pending status
@@ -179,29 +155,23 @@ const ChatInterface = ({ deviceId, deviceName, device, status }) => {
       id: Date.now(),
       ...commandData,
       createdAt: new Date().toISOString(),
-      response: "", // Empty response indicates pending
+      response: "",
       status: "pending"
     };
     setCommand(newCommand);
 
-    // Show typing indicator for response
     setIsTyping(true);
 
     try {
-      await postCommand(commandData);
+      postCommand(commandData);
       toast({
         title: "Command Sent",
         description: `${selectedCommandType.replace('_', ' ')} command sent successfully`,
         variant: "success"
       });
-      
-      // Reset selection
+
       setSelectedCommandType('');
-      
-      // Hide typing indicator after a delay (simulating response time)
-      setTimeout(() => {
-        setIsTyping(false);
-      }, 2000);
+      setTimeout(() => setIsTyping(false), 2000);
     } catch (error) {
       setIsTyping(false);
       toast({
@@ -224,39 +194,33 @@ const ChatInterface = ({ deviceId, deviceName, device, status }) => {
     }
 
     const commandData = {
-      ...data,
+      type: 'CUSTOM',
+      payload: data.payload,
       deviceId: deviceId
     };
 
-    // Add to chat immediately with pending status
     const newCommand = {
       id: Date.now(),
       ...commandData,
       createdAt: new Date().toISOString(),
-      response: "", // Empty response indicates pending
+      response: "",
       status: "pending"
     };
     setCommand(newCommand);
 
-    // Show typing indicator for response
     setIsTyping(true);
 
     try {
-      await postCommand(commandData);
+      postCommand(commandData);
       toast({
         title: "Command Sent",
-        description: `${data.action} command sent to ${data.address}`,
+        description: `Custom command sent`,
         variant: "default"
       });
-      
-      // Reset form after successful send
-      reset({ action: data.action, address: '', value: '' });
+
+      reset({ payload: '' });
       setSelectedCommandType('');
-      
-      // Hide typing indicator after a delay
-      setTimeout(() => {
-        setIsTyping(false);
-      }, 2000);
+      setTimeout(() => setIsTyping(false), 2000);
     } catch (error) {
       setIsTyping(false);
       toast({
@@ -435,7 +399,7 @@ const ChatInterface = ({ deviceId, deviceName, device, status }) => {
             <div className="flex gap-2">
               <div className="flex-1">
                 <Select
-                direction='up'
+                  direction='up'
                   placeholder="Choose command type..."
                   options={commandTypes}
                   value={selectedCommandType}
@@ -460,46 +424,14 @@ const ChatInterface = ({ deviceId, deviceName, device, status }) => {
           {selectedCommandType === 'CUSTOM' && (
             <form onSubmit={handleSubmit(onSubmitCustomCommand)} className="space-y-3">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-200 block">
-                Custom Command Details
+                Custom Command Payload
               </label>
               <div className="flex gap-2">
-                <div className="flex-shrink-0">
-                  <Select
-                  direction='up'
-                    placeholder='Action'
-                    className='!w-20'
-                    options={[
-                      { value: 'read', label: 'Read' },
-                      { value: 'WRITE', label: 'Write' }
-                    ]}
-                    value={watchedAction}
-                    {...register('action', { required: 'Action is required' })}
-                  />
-                </div>
-                <div className="flex-1">
-                  <Input 
-                    placeholder="Address (e.g., 0x01A1)" 
-                    {...register('address', { 
-                      required: 'Address is required',
-                      pattern: {
-                        value: /^0x[0-9A-Fa-f]+$/,
-                        message: 'Address must be in hex format (0x...)'
-                      }
-                    })}
-                    className={`dark:bg-gray-800 dark:text-white ${errors.address ? 'border-red-500' : ''}`}
-                  />
-                </div>
-                {watchedAction !== 'read' && (
-                  <div className="flex-1">
-                    <Input 
-                      placeholder="Value" 
-                      {...register('value', { 
-                        required: watchedAction !== 'read' ? 'Value is required for write commands' : false 
-                      })}
-                      className={`dark:bg-gray-800 dark:text-white ${errors.value ? 'border-red-500' : ''}`}
-                    />
-                  </div>
-                )}
+                <Input 
+                  placeholder='Payload (e.g. {TIM:"...",OPV:220.1,...})'
+                  {...register('payload', { required: 'Payload is required' })}
+                  className={`dark:bg-gray-800 dark:text-white ${errors.payload ? 'border-red-500' : ''}`}
+                />
                 <Button 
                   type="submit" 
                   disabled={!deviceId}
@@ -509,11 +441,8 @@ const ChatInterface = ({ deviceId, deviceName, device, status }) => {
                   <span className="hidden sm:inline">Send</span>
                 </Button>
               </div>
-              {errors.address && (
-                <span className="text-xs text-red-500">{errors.address.message}</span>
-              )}
-              {errors.value && (
-                <span className="text-xs text-red-500">{errors.value.message}</span>
+              {errors.payload && (
+                <span className="text-xs text-red-500">{errors.payload.message}</span>
               )}
             </form>
           )}

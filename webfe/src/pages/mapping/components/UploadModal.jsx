@@ -93,7 +93,7 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
 
         try {
             const formData = new FormData();
-            formData.append('device', selectedFile);
+            formData.append('deviceMapping', selectedFile);
 
             await uploadDevice(formData);
 
@@ -169,7 +169,9 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
                             <ul className="text-xs space-y-1">
                                 <li>• Excel files only (.xlsx)</li>
                                 <li>• Maximum file size: 10MB</li>
-                                <li>• Required columns: imeinumber, snahost, snaport, snausername, snapassword, snapubTopicData, snasubTopicCmd</li>
+                                <li>
+                                    • Required columns: imeinumber, snamqtturl, snamqttusername, snamqttpassword, snamqttpubtopicdata, snamqttsubtopiccmd, snamqttsubtopiccmdresponse
+                                </li>
                             </ul>
                         </div>
                     </div>

@@ -19,10 +19,11 @@ async function seedFromFile(modelName, fileName) {
 async function main() {
   // List of [model, file] pairs to seed
   const seeds = [
-    ['customer', 'customer.json'],
-    ['user', 'user.json'],
-    ['device', 'device.json'], 
-    ['command', 'command.json'], 
+    ["customer", "customer.json"],
+    ["user", "user.json"],
+    ["device", "device.json"],
+    /*   ["command", "command.json"],
+     */
   ];
   for (const [model, file] of seeds) {
     await seedFromFile(model, file);

@@ -1,50 +1,21 @@
+import { useState } from 'react';
 import { Button } from '../../../components/ui/button';
-import { Play, StopCircle, Settings2, RotateCcw } from 'lucide-react';
+import { Play, StopCircle, MessageSquare } from 'lucide-react';
+import Input from '../../../components/ui/input';
 import { useCommand } from '../../../hooks/useCommand';
 import { useToast } from '../../../hooks/use-toast';
+import { useDevice } from '../../../hooks/useDevice';
 
-const CommandButtons = ({ deviceName, deviceId }) => {
+const CommandButtons = () => {
   const { postCommand, setCommand } = useCommand();
+  const { device } = useDevice();
   const { toast } = useToast();
 
-  // Predefined commands with their addresses
-  const predefinedCommands = [
-    { 
-      name: "Start Pump", 
-      address: "0x01A4", 
-      value: "01", 
-      action: "WRITE",
-      icon: Play,
-      color: "bg-green-500 hover:bg-green-600"
-    },
-    { 
-      name: "Stop Pump", 
-      address: "0x01A8", 
-      value: "00", 
-      action: "WRITE",
-      icon: StopCircle,
-      color: "bg-red-500 hover:bg-red-600"
-    },
-    { 
-      name: "Set Frequency", 
-      address: "0x01A6", 
-      value: "50", 
-      action: "WRITE",
-      icon: Settings2,
-      color: "bg-blue-500 hover:bg-blue-600"
-    },
-    { 
-      name: "Reset Fault", 
-      address: "0x01A7", 
-      value: "01", 
-      action: "WRITE",
-      icon: RotateCcw,
-      color: "bg-orange-500 hover:bg-orange-600"
-    }
-  ];
+  const [customPayload, setCustomPayload] = useState('');
+  const [showCustom, setShowCustom] = useState(false);
 
-  const handleCommandClick = async (cmd) => {
-    if (!deviceId) {
+  const handleSend = (type) => {
+    if (!device.id) {
       toast({
         title: "No Device Selected",
         description: "Please select a device first",
@@ -53,29 +24,43 @@ const CommandButtons = ({ deviceName, deviceId }) => {
       return;
     }
 
+    let payload = '';
+    if (type === 'MOTOR_ON') payload = '{srun:1}';
+    else if (type === 'MOTOR_OFF') payload = '{srun:0}';
+    else if (type === 'CUSTOM') payload = customPayload;
+
+    if (type === 'CUSTOM' && !customPayload) {
+      toast({
+        title: "Payload Required",
+        description: "Please enter a payload for the custom command",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const commandData = {
-      action: cmd.action,
-      address: cmd.address,
-      value: cmd.value,
-      deviceId: deviceId
+      type,
+      payload,
+      deviceId: device.id,
+      imeinumber: device.imeinumber || ''
     };
 
-    // Add to chat immediately with pending status
     setCommand({
       id: Date.now(),
       ...commandData,
       createdAt: new Date().toISOString(),
-      response: "", // Empty response indicates pending
+      response: "",
       status: "pending"
     });
 
     try {
-      await postCommand(commandData);
+      postCommand(commandData);
       toast({
         title: "Command Sent",
-        description: `${cmd.name} command sent successfully`,
+        description: `${type === 'MOTOR_ON' ? 'Motor On' : type === 'MOTOR_OFF' ? 'Motor Off' : 'Custom'} command sent successfully`,
         variant: "success"
       });
+      if (type === 'CUSTOM') setCustomPayload('');
     } catch (error) {
       toast({
         title: "Command Failed",
@@ -91,26 +76,77 @@ const CommandButtons = ({ deviceName, deviceId }) => {
         Device Command Interface
       </h3>
       <p className="text-gray-600 dark:text-gray-400 mb-6">
-        Send commands to {deviceName} using the command buttons below.
+        Send commands to {device.name} using the command buttons below.
       </p>
       <div className="grid grid-cols-2 gap-3 mb-6">
-        {predefinedCommands.map((cmd, index) => {
-          const IconComponent = cmd.icon;
-          return (
-            <Button 
-              key={index}
-              className="h-12" 
-              variant="outline"
-              onClick={() => handleCommandClick(cmd)}
-              disabled={!deviceId}
-            >
-              <IconComponent className="w-5 h-5 mr-2" />
-              {cmd.name}
-            </Button>
-          );
-        })}
+        <Button
+          className="h-12"
+          variant="outline"
+          onClick={() => handleSend('MOTOR_ON')}
+          disabled={!device.id}
+        >
+          <Play className="w-5 h-5 mr-2" />
+          Motor On
+        </Button>
+        <Button
+          className="h-12"
+          variant="outline"
+          onClick={() => handleSend('MOTOR_OFF')}
+          disabled={!device.id}
+        >
+          <StopCircle className="w-5 h-5 mr-2" />
+          Motor Off
+        </Button>
+        <Button
+          className="h-12 col-span-2"
+          variant="outline"
+          onClick={() => setShowCustom((v) => !v)}
+          disabled={!device.id}
+        >
+          <MessageSquare className="w-5 h-5 mr-2" />
+          Custom Command
+        </Button>
       </div>
-      {!deviceId && (
+      {showCustom && (
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+            Custom Command Payload
+          </label>
+          <textarea
+            className="w-full min-h-80 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-2 text-sm font-mono text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={customPayload}
+            onChange={e => setCustomPayload(e.target.value)}
+            placeholder={`{TIM:"03/07/2020 16:40:59",OPV:220.1,OPC:12.4,DCV:345.2,DCC:12.5,FRQ:123.1,PWR:3.5,FLC:1237,STS:2,TEP:12.2,FLW:32.5,CKW:123454,CWD:5433455,CHR:5434,TKW:43,TWD:433,THR:53,RSI:-101}`}
+          />
+          <div className="flex gap-2 mt-2">
+            <Button
+              onClick={() => handleSend('CUSTOM')}
+              disabled={!device.id}
+              className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-700"
+            >
+              <span>Send</span>
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setCustomPayload('')}
+            >
+              Clear
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setShowCustom(false);
+                setCustomPayload('');
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
+      {!device.id && (
         <p className="text-sm text-gray-500 text-center">
           Select a device to enable command buttons
         </p>

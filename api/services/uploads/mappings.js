@@ -20,14 +20,14 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
    const devicesTransformed = await Promise.all(
      validDevices.map(async (device) => ({
        imeinumber: String(device.imeinumber).trim(),
-       snahost: device.snahost,
-       snaport: device.snaport,
-       snausername: device.snausername,
-       snapassword: device.snapassword
-         ? await bcrypt.hash(device.snapassword, 10)
+       snamqtturl: `mqtt://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`,
+       snamqttusername: `device_${device.imeinumber}`,
+       snamqttclientid: `device_${device.imeinumber}`,
+       snamqttpassword: device.snamqttpassword
+         ? await bcrypt.hash(device.snamqttpassword, 10)
          : null,
-       snapubTopicData: device.snapubTopicData,
-       snasubTopicCmd: device.snasubTopicCmd,
+       snamqttpubTopicData: device.snapubTopicData,
+       snamqttsubTopicCmd: device.snasubTopicCmd,
      }))
    );
 
@@ -51,18 +51,28 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
         batch.map(async (device) => {
           try {
             const result = await prisma.device.upsert({
-              where: { imeinumber: device.imeinumber },
-              update: {
-                snahost: device.snahost,
-                snaport: device.snaport,
-                snausername: device.snausername,
-                snapassword: device.snapassword,
-                snapubTopicData: device.snapubTopicData,
-                snasubTopicCmd: device.snasubTopicCmd,
+              where: {
+                imeinumber: device.imeinumber
               },
-              create: device,
+              update: {
+                snamqtturl: device.snamqtturl ?? undefined,
+                snamqttusername: device.snamqttusername ?? undefined,
+                snamqttpassword: device.snamqttpassword ?? undefined,
+                snamqttpubtopicdata: device.snamqttpubtopicdata ?? undefined,
+                snamqttsubtopiccmd: device.snamqttsubtopiccmd ?? undefined,
+                snamqttsubtopiccmdresponse: device.snamqttsubtopiccmdresponse ?? undefined
+              },
+              create: {
+                imeinumber: device.imeinumber,
+                snamqtturl: device.snamqtturl ?? undefined,
+                snamqttusername: device.snamqttusername ?? undefined,
+                snamqttpassword: device.snamqttpassword ?? undefined,
+                snamqttpubtopicdata: device.snamqttpubtopicdata ?? undefined,
+                snamqttsubtopiccmd: device.snamqttsubtopiccmd ?? undefined,
+                snamqttsubtopiccmdresponse: device.snamqttsubtopiccmdresponse ?? undefined
+              }
             });
-            return { imeinumber: device.imeinumber, status: "upserted" };
+            return result;
           } catch (err) {
             return {
               imeinumber: device.imeinumber,

@@ -47,10 +47,10 @@ function generateSensorData() {
   try {
     console.log('Fetching MQTT credentials...');
     const creds = await fetchMqttCredentials(IMEINUMBER);
-    const mqttUrl = `mqtt://${creds.host}:${creds.port}`;
+    const mqttUrl = creds.macsoftmqtturl;
     const options = {
-      username: creds.username,
-      password: creds.password,
+      username: creds.macsoftmqttusername,
+      password: creds.macsoftmqttpassword,
       clientId: IMEINUMBER,
     };
     const client = mqtt.connect(mqttUrl, options);

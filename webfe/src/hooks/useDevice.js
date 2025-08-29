@@ -14,10 +14,7 @@ export const useDevice = () => {
   const dispatch = useDispatch();
   const { devices, device, deviceId, deviceLog, currentPage, totalPages, filter, loading } =
     useSelector((state) => state.device);
-
-  useEffect(() => {
-    dispatch(fetchDevices({ skip: 0, take: 12, filter }));
-  }, [dispatch, filter]);
+  
 
   const onPageChange = useCallback(
     (skip) => {

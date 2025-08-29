@@ -27,11 +27,6 @@ enum status {
   FAULT
 }
 
-enum cmdStatus {
-  READ
-  WRITE
-}
-
 model user {
   id            String         @id @default(cuid())
   email         String         @unique
@@ -57,56 +52,57 @@ model customer {
 }
 
 model device {
-  id              String    @id @default(cuid())
-  imeinumber      String    @unique
-  serialNumber    Int       @unique @default(autoincrement())
-  tablename       String?
-  host            String?
-  port            Int?
-  username        String?
-  password        String?
-  pubTopicData    String?
-  subTopicCmd     String?
-  pubTopicCmd     String?
-  snahost         String?
-  snaport         Int?
-  snausername     String?
-  snapassword     String?
-  snapubTopicData String?
-  snasubTopicCmd  String?
-  lattitude       String?
-  longitude       String?
-  simnumber       String?
-  pcbsn           String?
-  timestamp       DateTime? @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
-  driveCode       Int?
-  outputVoltage   Float?
-  outputCurrent   Float?
-  inputVoltage    Float?
-  inputCurrent    Float?
-  frequency       Float?
-  outputPower     Float?
-  inputPower      Float?
-  faultCode       Int?
-  status          Int?
-  temperature     Float?
-  flow            Float?
-  cumulativeKWH   Float?
-  cumulativeFlow  Float?
-  cumulativeHours Float?
-  todayKWH        Float?
-  todayFlow       Float?
-  todayHours      Float?
-  signalStrength  Int?
-  lastupdated     DateTime  @updatedAt
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  userId          String?
-  customerId      String?
-  commands        command[]
-  customer        customer? @relation(fields: [customerId], references: [id])
+  id                             String    @id @default(cuid())
+  imeinumber                     String    @unique
+  serialNumber                   Int       @unique @default(autoincrement())
+  tablename                      String?
+  macsoftmqtturl                 String?
+  macsoftmqttclientid            String?
+  macsoftmqttusername            String?
+  macsoftmqttpassword            String?
+  macsoftmqttpubtopicdata        String?
+  macsoftmqttsubtopiccmd         String?
+  macsoftmqttpubtopiccmd         String?
+  macsoftmqttsubtopiccmdresponse String?
+  snamqtturl                     String?
+  snamqttusername                String?
+  snamqttpassword                String?
+  snamqttpubtopicdata            String?
+  snamqttsubtopiccmd             String?
+  snamqttsubtopiccmdresponse     String?
+  lattitude                      String?
+  longitude                      String?
+  simnumber                      String?
+  pcbsn                          String?
+  timestamp                      DateTime? @db.Timestamp(0)
+  firmwareVersion                Float?
+  hardwareVersion                Float?
+  driveCode                      Int?
+  outputVoltage                  Float?
+  outputCurrent                  Float?
+  inputVoltage                   Float?
+  inputCurrent                   Float?
+  frequency                      Float?
+  outputPower                    Float?
+  inputPower                     Float?
+  faultCode                      Int?
+  status                         Int?
+  temperature                    Float?
+  flow                           Float?
+  cumulativeKWH                  Float?
+  cumulativeFlow                 Float?
+  cumulativeHours                Float?
+  todayKWH                       Float?
+  todayFlow                      Float?
+  todayHours                     Float?
+  signalStrength                 Int?
+  lastupdated                    DateTime  @updatedAt
+  createdAt                      DateTime  @default(now())
+  updatedAt                      DateTime  @updatedAt
+  userId                         String?
+  customerId                     String?
+  commands                       command[]
+  customer                       customer? @relation(fields: [customerId], references: [id])
 }
 
 model template {
@@ -117,16 +113,15 @@ model template {
 }
 
 model command {
-  id         String    @id @default(cuid())
-  action     cmdStatus
-  address    String
-  value      String    @db.LongText
-  response   String    @db.LongText
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id         String   @id @default(cuid())
+  payload    String   @db.LongText
+  type       String?
+  response   String   @db.LongText
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   deviceId   String?
   imeinumber String
-  device     device?   @relation(fields: [deviceId], references: [id])
+  device     device?  @relation(fields: [deviceId], references: [id])
 }
 
 model notification {
@@ -135,8 +130,8 @@ model notification {
   message   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId String?
-  user   user?   @relation(fields: [userId], references: [id])
+  userId    String?
+  user      user?    @relation(fields: [userId], references: [id])
 }
 
 model configuration {

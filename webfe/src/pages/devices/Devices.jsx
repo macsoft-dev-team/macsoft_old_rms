@@ -4,21 +4,24 @@ import useAuth from '../../hooks/useAuth';
 import { useDevice } from '../../hooks/useDevice';
 import { useManufacturer } from '../../hooks/useManufacturer';
 import {
-  DevicesHeader,
-  DevicesFilters,
-  DevicesBadge,
-  DevicesGrid,
-  DevicesEmpty
+    DevicesHeader,
+    DevicesFilters,
+    DevicesBadge,
+    DevicesGrid,
+    DevicesEmpty
 } from './components';
 import { useEffect } from 'react';
 
 const Devices = () => {
     const { manufacturerId } = useParams();
     const { user } = useAuth();
-    const { devices, loading, setFilter, setDevice, fetchDeviceById, uploadDevice } = useDevice();
+    const { devices, loading, filter, setFilter, setDevice, fetchDeviceById, uploadDevice, fetchDevices } = useDevice();
     const { manufacturers } = useManufacturer();
     const safeDevices = Array.isArray(devices) ? devices : [];
     const safeManufacturers = Array.isArray(manufacturers) ? manufacturers : [];
+    useEffect(() => {
+        fetchDevices({ skip: 0, take: 12, filter: filter });
+    }, [fetchDevices, filter]);
     useEffect(() => {
         if (manufacturerId) {
             setFilter({ manufacturer: manufacturerId });
@@ -34,7 +37,7 @@ const Devices = () => {
             </TitleHead>
             <DevicesFilters
                 setFilter={setFilter}
-                manufacturers={safeManufacturers}               
+                manufacturers={safeManufacturers}
                 user={user}
             />
             <DevicesBadge count={safeDevices.length} />

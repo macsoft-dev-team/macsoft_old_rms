@@ -78,6 +78,16 @@ const getDeviceByImei = async (imeinumber) => {
       include: {
         customer: true,
       },
+      select: {
+        imeinumber: true,
+        macsoftmqtturl: true,
+        macsoftmqttclientid: true,
+        macsoftmqttusername: true,
+        macsoftmqttpassword: true,
+        macsoftmqttpubtopicdata: true,
+        macsoftmqttsubtopicmd: true,
+        macsoftmqttpubtopiccmd: true,
+      },
     });
     return device;
   } catch (error) {

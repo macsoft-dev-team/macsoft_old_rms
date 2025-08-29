@@ -12,24 +12,29 @@ const client = mqtt.connect(`${process.env.RMS_MQTT_HOST}:${process.env.RMS_MQTT
 });
 
 client.on('connect', async () => {
-  console.log('Connected to MQTT broker');
-  // Fetch all devices and store as { pubTopicData: { subTopicCmd, tablename } }
+  console.log("Connected to MQTT broker");
+  // Fetch all devices and store as { macsoftmqttpubtopicdata: { macsoftmqttsubtopiccmd, tablename } }
   const devicesList = await prisma.device.findMany();
   const devicesMap = {};
-  devicesList.forEach(device => {
-    devicesMap[device.pubTopicData] = {
-      subTopicCmd: device.subTopicCmd,
+  devicesList.forEach((device) => {
+    devicesMap[device.macsoftmqttpubtopicdata] = {
+      macsoftmqttsubtopiccmd: device.macsoftmqttsubtopiccmd,
       tablename: device.tablename,
       imeinumber: device.imeinumber,
     };
     // Subscribe to both data and command topics
-    client.subscribe([device.pubTopicData, device.subTopicCmd], (err) => {
-      if (err) {
-        console.error('Subscription error:', err);
-      } else {
-        console.log(`Subscribed to topics: ${device.pubTopicData}, ${device.subTopicCmd}`);
+    client.subscribe(
+      [device.macsoftmqttpubtopicdata, device.macsoftmqttsubtopiccmd],
+      (err) => {
+        if (err) {
+          console.error("Subscription error:", err);
+        } else {
+          console.log(
+            `Subscribed to topics: ${device.macsoftmqttpubtopicdata}, ${device.macsoftmqttsubtopiccmd}`
+          );
+        }
       }
-    });
+    );
   });
   client.devicesMap = devicesMap;
 });

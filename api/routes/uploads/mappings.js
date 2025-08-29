@@ -4,6 +4,6 @@ const deviceUpload = require("../../controllers/uploads/mappings");
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.post("/", upload.single("device"), deviceUpload.uploadDevices);
+router.post("/", upload.single("deviceMapping"), deviceUpload.uploadDevices);
 
 module.exports = router;

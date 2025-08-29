@@ -6,5 +6,5 @@ const mappingController = require("../controllers/mappings");
 router.get("/", verifyToken, mappingController.getAllDevices);
 router.get("/:imeinumber", verifyToken, mappingController.getDeviceById);
 router.put("/:imeinumber", verifyToken, mappingController.updateDevice);
-
+    
 module.exports = router;
