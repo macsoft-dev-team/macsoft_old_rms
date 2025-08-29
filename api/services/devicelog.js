@@ -7,13 +7,13 @@ const getDeviceLogs = async (skip, take, fromDate, toDate, imeinumber, tablename
   const where = {
     imeinumber,
   };
-  if (fromDate) where.created_at = { gte: new Date(fromDate) };
+  if (fromDate) where.timestamp = { gte: new Date(fromDate) };
   if (toDate) {
-    where.created_at = where.created_at || {};
+    where.timestamp = where.timestamp || {};
     // Make end date inclusive by setting less than next day
     const nextDay = new Date(toDate);
     nextDay.setDate(nextDay.getDate() + 1);
-    where.created_at.lt = nextDay;
+    where.timestamp.lt = nextDay;
   }
 
   let paginationParams = {};
