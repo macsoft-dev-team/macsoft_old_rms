@@ -1,14 +1,13 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Users } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import TitleHead from '../../components/TitleHead';
-import ManufacturerList from './components/ManufacturerList';
-import ManufacturerForm from './components/ManufacturerForm';
+ import ManufacturerForm from './components/ManufacturerForm';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../components/ui/dialog';
 import { useManufacturer } from '../../hooks/useManufacturer';
 import { useDevice } from '../../hooks/useDevice';
-
+import ReusableTable from '../../components/ui/reusableTable';
 
 
 const Manufacturers = () => {
@@ -16,6 +15,10 @@ const Manufacturers = () => {
     manufacturers,
     manufacturer,
     mode,
+    currentPage,
+    totalPages,
+    filter,
+    onPageChange,
     setManufacturer,
     fetchManufacturers,
     updateManufacturer,
@@ -25,39 +28,62 @@ const Manufacturers = () => {
   const { setFilter: setDeviceFilter } = useDevice();
   const [formLoading, setFormLoading] = useState(false);
 
-  // Handler for opening the modal for create
   const handleAdd = () => {
-    setManufacturer(null);
-    setMode('create');
+    setMode({ create: true, edit: false, view: false, confirmDelete: false });
   };
-
-  // Handler for opening the modal for edit
   const handleEdit = (manufacturerObj) => {
     setManufacturer(manufacturerObj);
-    setMode('edit');
+    setMode({ create: false, edit: true, view: false, confirmDelete: false });
   };
 
-  // Handler for form submit (create or update)
-  const handleSubmit = async (data) => {
-    setFormLoading(true);
-    try {
-      if (mode.edit && manufacturer && manufacturer.id) {
-        await updateManufacturer({ manufacturerId: manufacturer.id, data });
-      } else if (mode.create) {
-        // Uncomment and implement createManufacturer in the slice/hook if needed
-        // await createManufacturer(data);
-      }
-      setMode(''); // Reset all modes
-      fetchManufacturers({ skip: 0, take: 10 });
-    } finally {
-      setFormLoading(false);
+  const columns = [
+    { key: 'name', label: 'Name', minWidth: 170 },
+    { key: 'email', label: 'Email', minWidth: 100 },
+    { key: 'userCount', label: 'No. of Users', minWidth: 80 },
+    { key: 'deviceOnline', label: 'Online', minWidth: 60 },
+    { key: 'deviceOffline', label: 'Offline', minWidth: 60 },
+    { key: 'deviceFault', label: 'Fault', minWidth: 60 },
+    { key: 'actions', label: 'Actions', minWidth: 160 },
+  ];
+
+  useEffect(() => {
+    fetchManufacturers({ skip: currentPage, take: 10, filter });
+  }, [filter]);
+
+  const tableData = manufacturers.map((manufacturer) => {
+    let online = 0, offline = 0, fault = 0;
+    if (Array.isArray(manufacturer.devices)) {
+      manufacturer.devices.forEach(device => {
+        if (device.status === 1) online++;
+        else if (device.status === 0) offline++;
+        else if (device.status === 2) fault++;
+      });
+    }
+    return {
+      id: manufacturer.id,
+      name: manufacturer.name,
+      email: manufacturer.email,
+      userCount: manufacturer.users ? manufacturer.users.length : 0,
+      deviceOnline: online,
+      deviceOffline: offline,
+      deviceFault: fault,
+      actions: manufacturer.id,
+    };
+  });
+
+  const onOpenChange = (open) => {
+    if (mode.edit) {
+      setMode({ ...mode, edit: open });
+      setManufacturer(null);
+    } else if (mode.create) {
+      setMode({ ...mode, create: open });
+      setManufacturer(null);
     }
   };
-  
 
   return (
     <div className="space-y-6">
-      <Dialog open={(mode.edit || mode.create)} onOpenChange={() => setMode('')}>
+      <Dialog open={(mode.edit || mode.create)} onOpenChange={onOpenChange}>
         <TitleHead title="Manufacturers" description="Manage pump manufacturer access and devices">
           <DialogTrigger asChild>
             <Button onClick={handleAdd}>
@@ -72,16 +98,56 @@ const Manufacturers = () => {
           </DialogHeader>
           <ManufacturerForm
             initialData={mode.edit ? manufacturer : null}
-            onSubmit={handleSubmit}
             loading={formLoading || loading}
-          />
+           />
           <DialogFooter />
         </DialogContent>
-      </Dialog>
-      <ManufacturerList
-        manufacturers={manufacturers}
-        setDeviceFilter={setDeviceFilter}
-        onEdit={handleEdit}
+      </Dialog> 
+      <ReusableTable
+        columns={columns}
+        data={tableData}
+        headerColor="bg-gray-100 dark:bg-blue-900 "
+        headerTextColor="text-gray-700 dark:text-gray-200"
+        size="sm"
+        SNo={false}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        bordered
+        onPageChange={onPageChange}
+        renderCell={(col, row) => {
+          if (col.key === 'actions') {
+            return (
+              <div className="flex gap-2">
+                <Button
+                  size="small"
+                  variant="outline"
+                  onClick={() => {
+                    window.location.href = `/manufacturer/${row.id}`;
+                  }}
+                >
+                  Users
+                </Button>
+                <Button
+                  size="small"
+                  variant="outline"
+                  onClick={() => {
+                    window.location.href = `/manufacturer/${row.id}`;
+                  }}
+                >
+                  Devices
+                </Button>
+                <Button
+                  size="small"
+                  variant="ghost"
+                  onClick={() => handleEdit(row)}
+                >
+                  Edit
+                </Button>
+              </div>
+            );
+          }
+          return row[col.key];
+        }}
       />
     </div>
   );

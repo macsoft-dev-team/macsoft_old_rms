@@ -1,52 +1,66 @@
-import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import Input from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
+import { useEffect } from "react";
+import { useManufacturer } from "../../../hooks/useManufacturer";
 
-const ManufacturerForm = ({ initialData, onSubmit, loading }) => {
-  const [form, setForm] = useState({
-    name: "",
-    username: "",
-    ...initialData,
+
+const ManufacturerForm = () => {
+
+  const { manufacturer, updateManufacturer, createManufacturer, setMode, setManufacturer, loading } = useManufacturer();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    defaultValues: {
+      email: manufacturer?.email || "",
+      name: manufacturer?.name || "",
+    },
   });
 
   useEffect(() => {
-    setForm({
-      name: initialData?.name || "",
-      username: initialData?.username || "",
+    reset({
+      email: manufacturer?.email || "",
+      name: manufacturer?.name || "",
     });
-  }, [initialData]);
+  }, [manufacturer, reset]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+  const submitForm = (data) => {
+    console.log(data);
+
+    if (manufacturer?.id) {
+      updateManufacturer(data);
+    } else {
+      createManufacturer(data);
+     }
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(form);
+  const onCancel = () => {
+    setMode({ create: false, edit: false, view: false, confirmDelete: false });
+    setManufacturer(null);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit(submitForm)} className="space-y-4 pt-2">
       <Input
-        id="name"
-        name="name"
-        label="Manufacturer Name"
-        value={form.name}
-        onChange={handleChange}
-        required
+        id="email"
+        label="Email"
+        {...register("email", { required: "Email is required" })}
+        error={errors.email?.message}
       />
       <Input
-        id="username"
-        name="username"
-        label="Username"
-        value={form.username}
-        onChange={handleChange}
-        required
+        id="name"
+        label="Manufacturer Name"
+        {...register("name")}
+        error={errors.name?.message}
       />
       <div className="flex justify-end gap-2">
         <Button type="submit" disabled={loading}>
           {loading ? "Saving..." : "Save"}
+        </Button>
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancel
         </Button>
       </div>
     </form>

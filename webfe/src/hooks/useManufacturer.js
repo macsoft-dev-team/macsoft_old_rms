@@ -2,6 +2,7 @@
 import {
   fetchManufacturers,
   fetchManufacturerById,
+  createManufacturer,
   updateManufacturer,
   deleteManufacturer,
   uploadManufacturer,
@@ -23,10 +24,6 @@ export const useManufacturer = () => {
     mode,
     loading,
   } = useSelector((state) => state.manufacturer);
-
-  useEffect(() => {
-    dispatch(fetchManufacturers({ skip: 0, take: 10, filter }));
-  }, [dispatch, filter]);
 
   const onPageChange = useCallback(
     (skip) => {
@@ -51,7 +48,7 @@ export const useManufacturer = () => {
   );
 
   const updateManufacturerCallback = useCallback(
-    (payload) => dispatch(updateManufacturer(payload)),
+    (payload) => dispatch(updateManufacturer({ manufacturerId: manufacturer.id, data: payload })),
     [dispatch]
   );
 
@@ -74,7 +71,10 @@ export const useManufacturer = () => {
     (mode) => dispatch(setMode(mode)),
     [dispatch]
   );
-
+  const createManufacturerCallback = useCallback(
+    (data) => dispatch(createManufacturer(data)),
+    [dispatch]
+  );
   return {
     manufacturers,
     manufacturer,
@@ -89,6 +89,7 @@ export const useManufacturer = () => {
     updateManufacturer: updateManufacturerCallback,
     deleteManufacturer: deleteManufacturerCallback,
     uploadManufacturer: uploadManufacturerCallback,
+    createManufacturer: createManufacturerCallback,
     setFilter: setFilterCallback,
     onPageChange,
     setMode: setModeCallback,
