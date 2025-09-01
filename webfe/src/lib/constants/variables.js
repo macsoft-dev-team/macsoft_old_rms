@@ -105,6 +105,26 @@ export const mappingsState = {
   error: null,
 };
 
+export const usersState ={
+  users: [],
+  user: null,
+  filter: {
+    search: "",
+    status: "",
+    role: "",
+  },
+  mode: {
+    create: false,
+    edit: false,
+    view: false,
+    confirmDelete: false,
+  },
+  totalPages: 0,
+  currentPage: 0,
+  loading: false,
+  error: null,
+}
+
 export const dateF = (date) => {
   return moment(date).format("DD/MM/YYYY HH:mm:ss");
 };

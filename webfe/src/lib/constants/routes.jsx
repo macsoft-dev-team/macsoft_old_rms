@@ -18,12 +18,12 @@ import MQTTCommands from '../../pages/mqttcommands/MQTTCommands';
 import ModbusTemplates from '../../pages/modbustemplates/ModbusTemplates';
 import ServerTemplates from '../../pages/ServerTemplates';
 import SettingsPage from '../../pages/Settings';
-import UsersPage from '../../pages/Users';
 import Devices from '../../pages/devices/Devices';
 import Manufacturers from '../../pages/manufacturers/Manufacturers';
 import NotFound from '../../pages/NotFound';
 import { createBrowserRouter } from 'react-router-dom';
 import Mappings from '../../pages/mapping/mappings';
+import UsersPage from '../../pages/users/Users';
   
 // 1️⃣ Base config with both menu + component
 const BASE_ITEMS = {

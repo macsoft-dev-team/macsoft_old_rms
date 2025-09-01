@@ -6,6 +6,7 @@ export const API_ENDPOINTS = {
   logout: `${API_URL}/auth/logout`,
   upload: `${API_URL}/upload`,
   devices: `${API_URL}/devices`,
+  users: `${API_URL}/users`,
   manufacturers: `${API_URL}/customers`,
   commands: `${API_URL}/commands`,
   templates: `${API_URL}/templates/modbus`,

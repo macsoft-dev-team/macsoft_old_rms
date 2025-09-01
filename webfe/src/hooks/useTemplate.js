@@ -15,14 +15,19 @@ import { extractErrorMessage, createErrorHandler } from "../utils/errorUtils";
 
 const useTemplate = () => {
   const dispatch = useDispatch();
-  const { template, templates, loading, error, mode } = useSelector(
-    (state) => state.template
-  );
+  const {
+    template,
+    templates,
+    filter,
+    currentPage,
+    totalPages,
+    loading,
+    error,
+    mode,
+  } = useSelector((state) => state.template);
   const { addToast } = useToast();
 
-  useEffect(() => {
-    dispatch(fetchTemplates({ skip: 0, take: 10, filter: {} }));
-  }, [dispatch]);
+ 
 
   const setTemplateCallback = useCallback(
     (template) => dispatch(setTemplate(template)),
@@ -35,9 +40,9 @@ const useTemplate = () => {
     },
     [dispatch]
   );
-  
-  const getTemplates = useCallback(() => {
-    dispatch(fetchTemplates({ skip: 0, take: 10, filter: {} }));
+
+  const getTemplates = useCallback((params) => {
+    dispatch(fetchTemplates(params));
   }, [dispatch]);
 
   const updateTemplateCallback = useCallback(
@@ -101,10 +106,18 @@ const useTemplate = () => {
     dispatch(fetchTemplates(params));
   }, [dispatch]);
 
+  const onPageChange = useCallback((page) => {
+    getTemplates({ skip: (page - 1) * 10, take: 10, filter: {} });
+  }, [getTemplates]);
+
   return {
     mode,
     template,
     templates,
+    filter,
+    currentPage,
+    totalPages,
+    onPageChange,
     fetchTemplates: fetchTemplatesCallback,
     loading,
     error,

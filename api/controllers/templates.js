@@ -8,7 +8,7 @@ const getTemplates = async (req, res) => {
       take,
       filter
     );
-    res.status(200).json({ templates, count });
+    res.status(200).json({ templates, totalPages: Math.ceil(count / take), currentPage: parseInt(skip) || 1 });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
