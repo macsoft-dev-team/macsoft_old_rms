@@ -9,11 +9,13 @@ const templates = require("./templates");
 const uploadDevices = require("./uploads/devices");
 const uploadMappings = require("./uploads/mappings");
 const dashboard = require("./dashboard");
+const users =require("./users")
 const { verifyToken } = require("../middleware/auth");
 
 router.use("/auth", auth);
 router.use("/dashboard", verifyToken, dashboard);
 router.use("/devices", devices);
+router.use("/users", verifyToken, users);
 router.use("/mappings", verifyToken, mappings);
 router.use("/customers", verifyToken, customers);
 router.use("/templates/modbus", verifyToken, templates);

@@ -7,17 +7,23 @@ import ModbusTemplateModal from './components/ModbusTemplateModal';
 import ConfirmDeleteDialog from './components/ConfirmDeleteDialog';
 import ModbusTemplatesTable from './components/ModbusTemplatesTable';
 import useTemplate from '../../hooks/useTemplate';
+import { useEffect } from 'react';
 
 const ModbusTemplates = () => {
   const {
     templates,
     template,
     mode,
+    filter,
+    currentPage,
+    totalPages,
+    onPageChange,
     setMode,
     createTemplate,
     updateTemplate,
     deleteTemplate,
     setTemplate,
+    getTemplates,
     loading,
     error
   } = useTemplate();
@@ -80,6 +86,10 @@ const ModbusTemplates = () => {
     }
   };
 
+  useEffect(() => {
+    getTemplates({ skip: currentPage, take: 10, filter: filter });
+  }, [currentPage, filter]);
+
   return (
     <motion.div
       className="space-y-6"
@@ -125,8 +135,7 @@ const ModbusTemplates = () => {
       </TitleHead>
 
       <ModbusTemplatesTable
-        templates={templates}
-        onView={handleOpenView}
+         onView={handleOpenView}
         onEdit={handleOpenEdit}
         onDelete={openConfirmDelete}
         isViewing={mode?.view || false}
