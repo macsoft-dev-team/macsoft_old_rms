@@ -7,7 +7,7 @@ import ChatInterface from '../device/components/ChatInterface';
 import { useEffect } from 'react';
 
 const MQTTCommands = () => {
-  const { devices, device, setDevice: setSelectedDevice, fetchDeviceById } = useDevice();
+  const { devices, device, setDevice: setSelectedDevice, fetchDeviceById ,fetchDevices} = useDevice();
   const { fetchCommands, setCommands } = useCommand();
 
   const getDevices = (value) => {
@@ -22,6 +22,7 @@ const MQTTCommands = () => {
 
   useEffect(() => {
     setSelectedDevice(null)
+    fetchDevices({ skip: 0, take: null, filter: "" });
   }, [])
   return (
     <div className="space-y-6">

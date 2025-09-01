@@ -7,7 +7,7 @@ import { Badge } from '../../../components/ui/badge';
 import Select from '../../../components/ui/select';
 import { useCommand } from '../../../hooks/useCommand';
 import { useToast } from '../../../hooks/use-toast';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { formatStatus, getStatusConfig } from '../../../utils/statusUtils';
 import moment from 'moment';
 import { useDevice } from '../../../hooks/useDevice';
@@ -18,7 +18,7 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
   const { toast } = useToast();
 
   // Only need payload for custom command
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  const { control, register, handleSubmit, reset, formState: { errors } } = useForm({
     defaultValues: {
       payload: '',
     },
@@ -393,31 +393,26 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
         <div className="space-y-4">
           {/* Command Type Selection */}
           <div>
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2 block">
-              Select Command
+            <label className="text-base font-medium text-gray-700 dark:text-blue-100 mb-2 block">
+              Manufacturer
             </label>
-            <div className="flex gap-2">
-              <div className="flex-1">
+            <Controller
+              name="customerId"
+              control={control}
+              render={({ field }) => (
                 <Select
-                  direction='up'
-                  placeholder="Choose command type..."
+                  direction='down'
                   options={commandTypes}
-                  value={selectedCommandType}
-                  onChange={(e) => setSelectedCommandType(e.target.value)}
-                  className="w-full dark:bg-gray-800 dark:text-gray-100"
+                  name={field.name}
+                  value={field.value}
+                  onChange={e => field.onChange(e?.target ? e.target.value : e)}
+                  onBlur={field.onBlur}
+                  placeholder="All Manufacturers"
+                  className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                  disablePortal
                 />
-              </div>
-              {selectedCommandType && selectedCommandType !== 'CUSTOM' && (
-                <Button 
-                  onClick={handlePredefinedCommandSelect}
-                  disabled={!deviceId || !selectedCommandType}
-                  className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 dark:bg-blue-700"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>Send</span>
-                </Button>
               )}
-            </div>
+            />
           </div>
 
           {/* Custom Command Form - Only show when CUSTOM is selected */}
