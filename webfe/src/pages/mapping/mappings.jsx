@@ -12,7 +12,7 @@ import Pagination from "../../components/Pagination";
 
 export default function Mappings() {
     const { mappings, mapping, loading, filter, currentPage, totalPages, fetchMappings, setFilter, uploadMapping, setMapping, setMode, mode } = useMapping();
-    const { manufacturers } = useManufacturer();
+    const { manufacturers, fetchManufacturers } = useManufacturer();
     const { user } = useAuth();
     const handleImportClick = () => {
         setMode("upload");
@@ -22,6 +22,7 @@ export default function Mappings() {
 
     useEffect(() => {
         fetchMappings({ skip: 0, take: 10, filter });
+        fetchManufacturers({ skip: 0, take: null, filter: {} });
     }, [fetchMappings, filter]);
 
     return (

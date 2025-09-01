@@ -16,11 +16,12 @@ const Devices = () => {
     const { manufacturerId } = useParams();
     const { user } = useAuth();
     const { devices, loading, filter, setFilter, setDevice, fetchDeviceById, uploadDevice, fetchDevices } = useDevice();
-    const { manufacturers } = useManufacturer();
+    const { manufacturers, fetchManufacturers } = useManufacturer();
     const safeDevices = Array.isArray(devices) ? devices : [];
     const safeManufacturers = Array.isArray(manufacturers) ? manufacturers : [];
     useEffect(() => {
         fetchDevices({ skip: 0, take: 12, filter: filter });
+        fetchManufacturers({ skip: 0, take: null, filter: {} });
     }, [fetchDevices, filter]);
     useEffect(() => {
         if (manufacturerId) {
@@ -30,6 +31,7 @@ const Devices = () => {
             setFilter({ manufacturer: '' });
         };
     }, [manufacturerId, setFilter]);
+
     return (
         <div className="space-y-5">
             <TitleHead title="Device Management" description="Monitor and manage all solar pump devices">
