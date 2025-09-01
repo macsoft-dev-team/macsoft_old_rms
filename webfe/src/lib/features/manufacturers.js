@@ -37,6 +37,20 @@ export const fetchManufacturerById = createAsyncThunk(
   }
 );
 
+export const createManufacturer = createAsyncThunk(
+  "manufacturers/createManufacturer",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(API_ENDPOINTS.manufacturers, data, {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const updateManufacturer = createAsyncThunk(
   "manufacturers/updateManufacturer",
   async ({ manufacturerId, data }, { rejectWithValue }) => {
@@ -95,14 +109,7 @@ export const manufacturersSlice = createSlice({
       state.filter = action.payload;
     },
     setMode: (state, action) => {
-      // Reset all modes to false first
-      Object.keys(state.mode).forEach((key) => {
-        state.mode[key] = false;
-      });
-      // Set the specified mode to true if provided
-      if (action.payload) {
-        state.mode[action.payload] = true;
-      }
+      state.mode = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -133,6 +140,63 @@ export const manufacturersSlice = createSlice({
       .addCase(fetchManufacturerById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch manufacturers";
+      })
+      .addCase(createManufacturer.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createManufacturer.fulfilled, (state, action) => {
+        state.loading = false;
+        state.manufacturers.push(action.payload);
+        state.error = null;
+        state.mode = { create: false, edit: false, view: false, confirmDelete: false };
+      })
+      .addCase(createManufacturer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to create manufacturer";
+      })
+      .addCase(updateManufacturer.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateManufacturer.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.manufacturers.findIndex((m) => m.id === action.payload.id);
+        if (index !== -1) {
+          state.manufacturers[index] = action.payload;
+        }
+        state.error = null;
+        state.mode = { create: false, edit: false, view: false, confirmDelete: false };
+      })
+      .addCase(updateManufacturer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to update manufacturer";
+      })
+      .addCase(deleteManufacturer.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteManufacturer.fulfilled, (state, action) => {
+        state.loading = false;
+        state.manufacturers = state.manufacturers.filter((m) => m.id !== action.payload.id);
+        state.error = null;
+      })
+      .addCase(deleteManufacturer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to delete manufacturer";
+      })
+      .addCase(uploadManufacturer.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uploadManufacturer.fulfilled, (state, action) => {
+        state.loading = false;
+        state.manufacturer = action.payload;
+        state.error = null;
+      })
+      .addCase(uploadManufacturer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to upload manufacturer";
       });
   },
 });
