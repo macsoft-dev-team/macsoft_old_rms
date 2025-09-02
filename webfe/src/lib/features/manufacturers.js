@@ -87,7 +87,7 @@ export const uploadManufacturer = createAsyncThunk(
   async (formData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${API_ENDPOINTS.manufacturers}/upload`,
+        `${API_ENDPOINTS.upload}/customers`,
         formData,
         { withCredentials: true }
       );

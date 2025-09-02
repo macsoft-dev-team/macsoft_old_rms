@@ -35,11 +35,11 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
         macsoftmqttusername: `device_${device.imeinumber}`,
         macsoftmqttclientid: `device_${device.imeinumber}`,
         macsoftmqttpassword: bcrypt.hashSync(imeinumberStr, 10),
-        pubtopicdata: `device/${device.imeinumber}/data`,
+        macsoftmqttpubtopicdata: `device/${device.imeinumber}/data`,
         macsoftmqttsubtopiccmd: `device/${device.imeinumber}/cmd`,
         macsoftmqttpubtopiccmd: `device/${device.imeinumber}/cmd/response`,
         imeinumber: String(device.imeinumber),
-        tableName: tableName,
+        tablename: tableName,
       };
     });
 

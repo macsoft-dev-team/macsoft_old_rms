@@ -1,27 +1,23 @@
 import { useState } from 'react';
 import TitleHead from '../../components/TitleHead';
 import { Button } from '../../components/ui/button';
-import { Save, Users2 } from 'lucide-react';
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
+import { Download, Users2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import Input from '../../components/ui/input';
 import useUser from '../../hooks/useUser';
 import { useEffect } from 'react';
 import ReusableTable from '../../components/ui/reusableTable';
 
 import UserFormDialog from './components/UserFormDialog';
-
-// Dummy user data
-
+import EnhancedUploadModal from './components/EnhancedUploadModal';
 
 export default function Users() {
-  const { users, user, setUser, currentPage, totalPages, filter, mode, setMode, getUsers, onPageChange } = useUser();
+  const { users, user, setUser, currentPage, totalPages, filter, mode, uploadUser, setMode, getUsers, onPageChange } = useUser();
   const [newUser, setNewUser] = useState({});
-
+  const [showModal, setShowModal] = useState();
 
   const handleCreateUser = () => {
-    // Logic to create a new user
-    console.log('Creating user:', newUser);
-    setMode({ ...mode, create: false });
+     setMode({ ...mode, create: false });
     setNewUser({
       name: '',
       role: '',
@@ -32,8 +28,7 @@ export default function Users() {
   };
 
   const handleEditUser = () => {
-    console.log('Editing user:', user);
-    setMode({ ...mode, edit: false });
+     setMode({ ...mode, edit: false });
     setUser(null);
   };
 
@@ -41,9 +36,7 @@ export default function Users() {
     setMode({ ...mode, view: false });
     setUser(null);
   };
-
-  // Table columns config for ReusableTable
-  const columns = [
+   const columns = [
     { key: 'name', label: 'Name', align: 'left' },
     { key: 'role', label: 'Role', align: 'left' },
     { key: 'status', label: 'Status', align: 'center' },
@@ -51,24 +44,34 @@ export default function Users() {
     { key: 'organisation', label: 'Organisation', align: 'left' },
   ];
 
-  // Mask password for table data
-  const tableData = users.map(u => ({ ...u, password: '****', status: u.isActive ? <div className='text-green-500'>Active</div> : <div className='text-red-500'>Inactive</div> }));
+   const tableData = users.map(u => ({ ...u, password: '****', status: u.isActive ? <div className='text-green-500'>Active</div> : <div className='text-red-500'>Inactive</div> }));
 
 
   useEffect(() => {
     getUsers({ skip: currentPage, take: 10, filter: filter });
   }, [getUsers, filter]);
 
+  const handleImportClick = () => {
+    setShowModal(true)
+  }
+
   return (
     <div className="space-y-6">
       <TitleHead title="User Management" description="Manage your application users here.">
-        <Button
-          className="text-base dark:bg-blue-900 dark:text-blue-100"
-          onClick={() => setMode({ ...mode, create: true })}
-        >
-          <Users2 className="w-5 h-5 mr-2" />
-          Create User
-        </Button>
+        <div className='flex items-center gap-2'>
+
+          <Button
+            className="text-base dark:bg-blue-900 dark:text-blue-100"
+            onClick={() => setMode({ ...mode, create: true })}
+          >
+            <Users2 className="w-5 h-5 mr-2" />
+            Create User
+          </Button>
+          <Button variant='success' onClick={handleImportClick}>
+            <Download className="w-4 h-4 mr-2" />
+            Import
+          </Button>
+        </div>
         <UserFormDialog
           open={mode.create}
           onOpenChange={open => setMode({ ...mode, create: open })}
@@ -147,6 +150,11 @@ export default function Users() {
         pageSize={totalPages}
         bordered
         onPageChange={onPageChange}
+      />
+      <EnhancedUploadModal
+        open={showModal}
+        onOpenChange={setShowModal}
+        uploadDevice={uploadUser}
       />
     </div>
   );

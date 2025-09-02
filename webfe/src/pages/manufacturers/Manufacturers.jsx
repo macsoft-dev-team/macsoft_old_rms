@@ -1,14 +1,13 @@
-
 import { useEffect, useState } from 'react';
-import { Users } from 'lucide-react';
+import { Download, Users } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import TitleHead from '../../components/TitleHead';
- import ManufacturerForm from './components/ManufacturerForm';
+import ManufacturerForm from './components/ManufacturerForm';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../components/ui/dialog';
 import { useManufacturer } from '../../hooks/useManufacturer';
-import { useDevice } from '../../hooks/useDevice';
 import ReusableTable from '../../components/ui/reusableTable';
-
+import EnhancedUploadModal from './components/EnhancedUploadModal';
+ 
 
 const Manufacturers = () => {
   const {
@@ -21,13 +20,11 @@ const Manufacturers = () => {
     onPageChange,
     setManufacturer,
     fetchManufacturers,
-    updateManufacturer,
+    uploadManufacturer,
     loading,
     setMode
   } = useManufacturer();
-  const { setFilter: setDeviceFilter } = useDevice();
-  const [formLoading, setFormLoading] = useState(false);
-
+  const [showModal, setShowModal] = useState();
   const handleAdd = () => {
     setMode({ create: true, edit: false, view: false, confirmDelete: false });
   };
@@ -80,17 +77,25 @@ const Manufacturers = () => {
       setManufacturer(null);
     }
   };
-
+  const handleImportClick = () => {
+    setShowModal(true);
+  };
   return (
     <div className="space-y-6">
       <Dialog open={(mode.edit || mode.create)} onOpenChange={onOpenChange}>
         <TitleHead title="Manufacturers" description="Manage pump manufacturer access and devices">
-          <DialogTrigger asChild>
-            <Button onClick={handleAdd}>
-              <Users className="w-4 h-4 mr-2" />
-              Add Manufacturer
+          <div className='flex items-center gap-2'>
+            <DialogTrigger asChild>
+              <Button onClick={handleAdd}>
+                <Users className="w-4 h-4 mr-2" />
+                Add Manufacturer
+              </Button>
+            </DialogTrigger>
+            <Button variant='success' onClick={handleImportClick}>
+              <Download className="w-4 h-4 mr-2" />
+              Import
             </Button>
-          </DialogTrigger>
+          </div>
         </TitleHead>
         <DialogContent>
           <DialogHeader>
@@ -98,11 +103,11 @@ const Manufacturers = () => {
           </DialogHeader>
           <ManufacturerForm
             initialData={mode.edit ? manufacturer : null}
-            loading={formLoading || loading}
-           />
+            loading={loading}
+          />
           <DialogFooter />
         </DialogContent>
-      </Dialog> 
+      </Dialog>
       <ReusableTable
         columns={columns}
         data={tableData}
@@ -148,6 +153,11 @@ const Manufacturers = () => {
           }
           return row[col.key];
         }}
+      />
+      <EnhancedUploadModal
+        open={showModal}
+        onOpenChange={setShowModal}
+        uploadDevice={uploadManufacturer}
       />
     </div>
   );

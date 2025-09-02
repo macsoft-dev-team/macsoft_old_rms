@@ -1,7 +1,7 @@
 const XLSX = require("xlsx");
-const devicesService = require("../../services/uploads/devices");
+const customersService = require("../../services/uploads/customers");
 
-const uploadDevices = async (req, res) => {
+const uploadCustomers = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
@@ -10,12 +10,12 @@ const uploadDevices = async (req, res) => {
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
-    const devicesFromXL = XLSX.utils.sheet_to_json(worksheet);
+    const customersFromXL = XLSX.utils.sheet_to_json(worksheet);
 
-    if (devicesFromXL.length === 0) {
+    if (customersFromXL.length === 0) {
       return res
         .status(400)
-        .json({ error: "No devices found in the uploaded file" });
+        .json({ error: "No customers found in the uploaded file" });
     }
 
     // Get batch size from query parameter, default to 100
@@ -30,25 +30,25 @@ const uploadDevices = async (req, res) => {
     }
 
     console.log(
-      `Processing ${devicesFromXL.length} devices with batch size: ${batchSize}`
+      `Processing ${customersFromXL.length} customers with batch size: ${batchSize}`
     );
 
-    const result = await devicesService.uploadDevice(devicesFromXL, batchSize);
+    const result = await customersService.uploadCustomer(customersFromXL, batchSize);
 
     if (!result) {
       return res.status(500).json({
-        error: "Failed to upload devices",
+        error: "Failed to upload customers",
         message: "Service returned no result",
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: `Successfully processed ${result.totalProcessed} devices`,
+      message: `Successfully processed ${result.totalProcessed} customers`,
       data: result,
     });
   } catch (error) {
-    console.error("Error in uploadDevices controller:", error);
+    console.error("Error in uploadCustomers controller:", error);
     return res.status(500).json({
       error: "Internal server error",
       message: error.message,
@@ -57,5 +57,5 @@ const uploadDevices = async (req, res) => {
 };
 
 module.exports = {
-  uploadDevices,
+  uploadCustomers,
 };

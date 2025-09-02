@@ -81,6 +81,23 @@ export const deleteUser = createAsyncThunk(
   }
 );
 
+export const uploadUser = createAsyncThunk(
+  "users/uploadUser",
+  async (formData, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await axios.post(
+        `${API_ENDPOINTS.upload}/users`,
+        formData,
+        { withCredentials: true }
+      );
+      dispatch(fetchUsers({ skip: 0, take: 10, filter: null }));
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const usersSlice = createSlice({
   name: "users",
   initialState: usersState,
