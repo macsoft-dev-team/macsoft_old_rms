@@ -15,7 +15,6 @@ import Dashboard from '../../pages/dashboard/Dashboard';
 import DeviceDashboard from '../../pages/device/DeviceDashboard';
 import MQTTCommands from '../../pages/mqttcommands/MQTTCommands';
 import ModbusTemplates from '../../pages/modbustemplates/ModbusTemplates';
-import ServerTemplates from '../../pages/ServerTemplates';
 import SettingsPage from '../../pages/Settings';
 import Devices from '../../pages/devices/Devices';
 import Manufacturers from '../../pages/manufacturers/Manufacturers';
@@ -76,14 +75,7 @@ const BASE_ITEMS = {
     label: 'Templates',
     category: 'main',
     element: <ModbusTemplates />,
-  },
-  serverTemplates: {
-    path: '/templates/server',
-    icon: FileText,
-    label: 'Server Templates',
-    category: 'main',
-    element: <ServerTemplates />,
-  },
+  }, 
   mappings: {
     path: '/mappings',
     icon: FileText,
