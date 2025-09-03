@@ -13,7 +13,6 @@ import ProtectedRoute from '../../components/ProtectedRoute';
 import Login from '../../pages/Login';
 import Dashboard from '../../pages/dashboard/Dashboard';
 import DeviceDashboard from '../../pages/device/DeviceDashboard';
-import CreateDevice from '../../pages/CreateDevice';
 import MQTTCommands from '../../pages/mqttcommands/MQTTCommands';
 import ModbusTemplates from '../../pages/modbustemplates/ModbusTemplates';
 import ServerTemplates from '../../pages/ServerTemplates';
@@ -48,15 +47,7 @@ const BASE_ITEMS = {
     hidden: true,
     category: 'main',
     element: <DeviceDashboard />,
-  },
-  createDevice: {
-    path: '/device/:manufacturerId',
-    icon: Monitor,
-    label: 'Create Device',
-    hidden: true,
-    category: 'main',
-    element: <CreateDevice />,
-  },
+  }, 
   users: {
     path: '/users',
     icon: UserCheck,
@@ -130,8 +121,7 @@ const BASE_ITEMS = {
     BASE_ITEMS.devices,
     BASE_ITEMS.mappings,
     BASE_ITEMS.deviceDetails,
-    BASE_ITEMS.createDevice,
-    BASE_ITEMS.manufacturers,
+     BASE_ITEMS.manufacturers,
     BASE_ITEMS.manufacturerDevices,
     BASE_ITEMS.users,
     BASE_ITEMS.modbus,
@@ -142,7 +132,6 @@ const BASE_ITEMS = {
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
     BASE_ITEMS.mappings,
-    BASE_ITEMS.createDevice,
     BASE_ITEMS.deviceDetails,
     BASE_ITEMS.manufacturerDevices,
     BASE_ITEMS.modbus,
@@ -154,7 +143,6 @@ const BASE_ITEMS = {
     BASE_ITEMS.devices,
     BASE_ITEMS.mappings,
     BASE_ITEMS.deviceDetails,
-    BASE_ITEMS.createDevice,
     BASE_ITEMS.users,
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
@@ -164,7 +152,6 @@ const BASE_ITEMS = {
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
     BASE_ITEMS.mappings,
-    BASE_ITEMS.createDevice,
     BASE_ITEMS.deviceDetails,
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
