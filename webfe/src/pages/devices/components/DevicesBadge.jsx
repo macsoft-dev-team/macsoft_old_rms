@@ -2,6 +2,7 @@ import { MotionDiv } from '.';
 import { Badge } from '../../../components/ui/badge';
 import { DevicePagination } from '.';
 import { useDevice } from '../../../hooks/useDevice';
+import Pagination from '../../../components/ui/pagination';
 
 const DevicesBadge = () => {
     const { devices, currentPage, totalPages, onPageChange } = useDevice();
@@ -21,12 +22,19 @@ const DevicesBadge = () => {
                     ( {count} devices shown )
                 </span>
             </div>
-            <DevicePagination
+          {/*   <DevicePagination
                 page={currentPage}
                 totalPages={totalPages}
                 onPrev={() => onPageChange(currentPage - 1)}
                 onNext={() => onPageChange(currentPage + 1)}
+            /> */}
+            <div className='ms-auto'>
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={onPageChange}
             />
+            </div>
         </MotionDiv>
 
     );
