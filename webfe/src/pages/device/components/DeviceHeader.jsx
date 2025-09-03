@@ -27,7 +27,7 @@ const statusConfig = {
 
 const DeviceHeader = ({ device, navigate }) => {
   const StatusIcon = statusConfig[device.status]?.icon || Wifi;
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -37,7 +37,7 @@ const DeviceHeader = ({ device, navigate }) => {
     >
       {/* Main Header Container */}
       <div className="relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-lg shadow-gray-900/5 dark:shadow-black/20">
-        
+
         {/* Animated Background Pattern */}
         <div className="absolute inset-0 opacity-5 dark:opacity-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]" />
@@ -47,7 +47,7 @@ const DeviceHeader = ({ device, navigate }) => {
         {/* Content */}
         <div className="relative p-3 sm:p-4">
           <div className="flex items-center justify-between gap-3">
-            
+
             {/* Back Button */}
             <motion.div
               initial={{ x: -20, opacity: 0 }}
@@ -60,28 +60,19 @@ const DeviceHeader = ({ device, navigate }) => {
                 variant="outline"
                 size="small"
                 onClick={() => navigate('/devices')}
-               >
+              >
                 <ArrowLeft className="w-3.5 h-3.5 text-gray-700 dark:text-gray-200" />
               </Button>
             </motion.div>
 
             {/* Device Info */}
-            <motion.div 
+            <motion.div
               className="flex-1 min-w-0 text-center"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
             >
-              <motion.h1 
-                className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white bg-clip-text text-transparent leading-tight truncate"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.4 }}
-              >
-                {device.name}
-              </motion.h1>
-              
-              <motion.p 
+              <motion.p
                 className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -89,6 +80,16 @@ const DeviceHeader = ({ device, navigate }) => {
               >
                 Device Monitor
               </motion.p>
+              {/*    <motion.h1 
+                className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white bg-clip-text text-transparent leading-tight truncate"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
+              >
+                {device.imeinumber}
+              </motion.h1>
+               */}
+
             </motion.div>
 
             {/* Status Indicator */}
@@ -108,8 +109,8 @@ const DeviceHeader = ({ device, navigate }) => {
           </div>
 
           {/* Status and Last Update Row */}
-          <motion.div 
-            className="mt-3 flex items-center justify-between gap-3"
+          <motion.div
+            className="flex items-center justify-between gap-3"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.4 }}
@@ -120,26 +121,28 @@ const DeviceHeader = ({ device, navigate }) => {
               transition={{ duration: 0.2 }}
             >
               <Badge className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200/60 dark:border-gray-600/60 text-gray-700 dark:text-gray-200 font-medium rounded-full shadow-sm text-xs">
-                <div className={`w-1.5 h-1.5 rounded-full ${
-                  device.status === 1 ? 'bg-green-500 animate-pulse' :
-                  device.status === 2 ? 'bg-red-500 animate-pulse' :
-                  'bg-gray-400'
-                }`} />
+                <div className={`w-1.5 h-1.5 rounded-full ${device.status === 1 ? 'bg-green-500 animate-pulse' :
+                    device.status === 2 ? 'bg-red-500 animate-pulse' :
+                      'bg-gray-400'
+                  }`} />
                 {statusConfig[device.status]?.text || 'UNKNOWN'}
               </Badge>
             </motion.div>
 
             {/* Last Update */}
-            <motion.div 
+            <motion.div
               className="flex items-center gap-1.5 text-right"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.6, duration: 0.4 }}
             >
-              <Clock className="w-3 h-3 text-gray-400" />
+
               <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium leading-none">
-                  Last Update
+                <div className='text-emerald-700 tracking-widest'>
+                  IMEI : {device.imeinumber}
+                </div>
+                <p className="text-xs flex items-center justify-end gap-2 text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium leading-none">
+                  <Clock className="w-3 h-3 text-gray-400" /> Last Update
                 </p>
                 <p className="text-xs font-semibold text-gray-700 dark:text-gray-200">
                   {dateF(device.lastupdated)}
@@ -150,7 +153,7 @@ const DeviceHeader = ({ device, navigate }) => {
         </div>
 
         {/* Bottom Accent Line */}
-        <motion.div 
+        <motion.div
           className={`h-1 ${statusConfig[device.status]?.color || statusConfig[0].color}`}
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
