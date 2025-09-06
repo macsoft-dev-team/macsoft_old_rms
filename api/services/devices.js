@@ -75,9 +75,6 @@ const getDeviceByImei = async (imeinumber) => {
   try {
     const device = await prisma.device.findUnique({
       where: { imeinumber },
-      include: {
-        customer: true,
-      },
       select: {
         imeinumber: true,
         macsoftmqtturl: true,
@@ -85,7 +82,7 @@ const getDeviceByImei = async (imeinumber) => {
         macsoftmqttusername: true,
         macsoftmqttpassword: true,
         macsoftmqttpubtopicdata: true,
-        macsoftmqttsubtopicmd: true,
+        macsoftmqttsubtopiccmd: true,
         macsoftmqttpubtopiccmd: true,
       },
     });
