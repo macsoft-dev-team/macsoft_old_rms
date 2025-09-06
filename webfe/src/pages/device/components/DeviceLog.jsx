@@ -7,7 +7,6 @@ import { Calendar, Search, Download } from 'lucide-react';
 import TitleHead from '../../../components/TitleHead';
 import { useToast } from '../../../hooks/use-toast';
 import { useDevice } from '../../../hooks/useDevice';
-import moment from 'moment';
 import { deviceLogTableConfig, getColorConfig, getTotalColumns } from '../../../lib/constants/deviceLogTableConfig';
 
 const DeviceLog = ({ deviceId }) => {
@@ -141,6 +140,20 @@ const DeviceLog = ({ deviceId }) => {
   const hasDevice = device && device.imeinumber;
   const hasLogs = deviceLog && deviceLog.logs && Array.isArray(deviceLog.logs) && deviceLog.logs.length > 0;
   const isLoading = deviceLog?.loading;
+
+  // Helper to format date and time from ISO string
+  const formatDateAndTime = (isoString) => {
+    if (!isoString) return { date: '--', time: '--' };
+    // Split at 'T'
+    const [datePart, timePartRaw] = isoString.split('T');
+    if (!datePart || !timePartRaw) return { date: '--', time: '--' };
+    // Format date yyyy-mm-dd -> dd-MM-yyyy
+    const [yyyy, mm, dd] = datePart.split('-');
+    const date = [dd, mm, yyyy].join('-');
+    // Format time: hh:mm:ss from hh:mm:ss.sssZ
+    const time = timePartRaw.slice(0, 8);
+    return { date, time };
+  };
 
   return (
     <motion.div
@@ -390,66 +403,69 @@ const DeviceLog = ({ deviceId }) => {
                   </td>
                 </motion.tr>
               ) : (
-                deviceLog.logs.map((log, index) => (
-                  <motion.tr
-                    key={log.id}
-                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ 
-                      delay: index * 0.05,
-                      duration: 0.3,
-                      ease: "easeOut"
-                    }}
-                    whileHover={{ 
-                      backgroundColor: 'rgba(59, 130, 246, 0.03)',
-                      scale: 1.001
-                    }}
-                    className="hover:shadow-sm transition-all duration-200 group"
-                  >
-                    {/* Fixed columns */}
-                    <td className="p-4 text-center text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors border-r border-slate-100 dark:border-slate-700">
-                      <div className="flex items-center justify-center w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-full text-xs font-bold">
-                        {(deviceLog.currentPage - 1) * 10 + index + 1}
-                      </div>
-                    </td>
-                    <td className="p-4 text-center text-sm text-slate-900 dark:text-slate-100 font-mono border-r border-slate-100 dark:border-slate-700">
-                      <div className="flex flex-col items-center">
-                        <span className="font-semibold">
-                          {moment.parseZone(log.timestamp).local().format('DD-MM-YYYY')}
-                        </span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">
-                          {moment.parseZone(log.timestamp).local().format('HH:mm:ss')}
-                        </span>
-                      </div>
-                    </td>
-                    
-                    {/* Dynamic section columns */}
-                    {deviceLogTableConfig.sections.map((section) => {
-                      const colorConfig = getColorConfig(section.color);
-                      return section.columns.map((column) => (
-                        <td 
-                          key={column.key}
-                          className={`p-4 text-center text-sm font-semibold border-r border-slate-100 dark:border-slate-700 ${colorConfig.bgRow}`}
-                        >
-                          <span className="text-slate-900 dark:text-slate-100">{formatValue(log[column.key])}</span>
-                        </td>
-                      ));
-                    })}
-                    
-                    {/* Signal column */}
-                    <td className="p-4 text-center text-sm font-semibold">
-                      <div className="flex flex-col items-center">
-                        <span className="text-slate-900 dark:text-slate-100 font-bold">{formatValue(log.signalStrength)}%</span>
-                        <div className="w-full max-w-[60px] bg-gray-200 rounded-full h-2 mt-1">
-                          <div 
-                            className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
-                            style={{ width: `${Math.min(100, Math.max(0, log.signalStrength || 0))}%` }}
-                          ></div>
+                deviceLog.logs.map((log, index) => {
+                  const { date, time } = formatDateAndTime(log.timestamp);
+                  return (
+                    <motion.tr
+                      key={log.id}
+                      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ 
+                        delay: index * 0.05,
+                        duration: 0.3,
+                        ease: "easeOut"
+                      }}
+                      whileHover={{ 
+                        backgroundColor: 'rgba(59, 130, 246, 0.03)',
+                        scale: 1.001
+                      }}
+                      className="hover:shadow-sm transition-all duration-200 group"
+                    >
+                      {/* Fixed columns */}
+                      <td className="p-4 text-center text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors border-r border-slate-100 dark:border-slate-700">
+                        <div className="flex items-center justify-center w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-full text-xs font-bold">
+                          {(deviceLog.currentPage - 1) * 10 + index + 1}
                         </div>
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))
+                      </td>
+                      <td className="p-4 text-center text-sm text-slate-900 dark:text-slate-100 font-mono border-r border-slate-100 dark:border-slate-700">
+                        <div className="flex flex-col items-center">
+                          <span className="font-semibold">
+                            {date}
+                          </span>
+                          <span className="text-xs text-slate-500 dark:text-slate-400">
+                            {time}
+                          </span>
+                        </div>
+                      </td>
+                      
+                      {/* Dynamic section columns */}
+                      {deviceLogTableConfig.sections.map((section) => {
+                        const colorConfig = getColorConfig(section.color);
+                        return section.columns.map((column) => (
+                          <td 
+                            key={column.key}
+                            className={`p-4 text-center text-sm font-semibold border-r border-slate-100 dark:border-slate-700 ${colorConfig.bgRow}`}
+                          >
+                            <span className="text-slate-900 dark:text-slate-100">{formatValue(log[column.key])}</span>
+                          </td>
+                        ));
+                      })}
+                      
+                      {/* Signal column */}
+                      <td className="p-4 text-center text-sm font-semibold">
+                        <div className="flex flex-col items-center">
+                          <span className="text-slate-900 dark:text-slate-100 font-bold">{formatValue(log.signalStrength)}%</span>
+                          <div className="w-full max-w-[60px] bg-gray-200 rounded-full h-2 mt-1">
+                            <div 
+                              className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                              style={{ width: `${Math.min(100, Math.max(0, log.signalStrength || 0))}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      </td>
+                    </motion.tr>
+                  );
+                })
               )}
             </tbody>
           </table>
@@ -465,7 +481,7 @@ const DeviceLog = ({ deviceId }) => {
                 <span className="font-semibold text-slate-900 dark:text-slate-100">{deviceLog.totalCount || 0}</span> results
               </div>
               <div className="text-xs text-slate-500 dark:text-slate-400">
-                Last updated: {moment().format('DD-MM-YYYY HH:mm:ss')}
+                Last updated: {new Date().toLocaleString('en-GB')}
               </div>
             </div>
           </div>
