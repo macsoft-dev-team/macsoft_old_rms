@@ -414,8 +414,12 @@ const DeviceLog = ({ deviceId }) => {
                     </td>
                     <td className="p-4 text-center text-sm text-slate-900 dark:text-slate-100 font-mono border-r border-slate-100 dark:border-slate-700">
                       <div className="flex flex-col items-center">
-                        <span className="font-semibold">{moment(log.timestamp).format('DD-MM-YYYY')}</span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">{moment(log.timestamp).format('HH:mm:ss')}</span>
+                        <span className="font-semibold">
+                          {moment.parseZone(log.timestamp).local().format('DD-MM-YYYY')}
+                        </span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          {moment.parseZone(log.timestamp).local().format('HH:mm:ss')}
+                        </span>
                       </div>
                     </td>
                     
