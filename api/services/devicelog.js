@@ -27,7 +27,7 @@ const getDeviceLogs = async (skip, take, fromDate, toDate, imeinumber, tablename
   const [rows, count] = await Promise.all([
     model.findMany({
       where,
-      orderBy: { created_at: 'desc' },
+      orderBy: { timestamp: 'desc' },
       ...paginationParams,
     }),
     model.count({ where }),
