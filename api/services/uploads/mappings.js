@@ -17,20 +17,15 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
       `Starting batch update for ${validDevices.length} devices with batch size: ${batchSize}`
     );
 
-   const devicesTransformed = await Promise.all(
-     validDevices.map(async (device) => ({
-       imeinumber: String(device.imeinumber).trim(),
-       snamqtturl: `mqtt://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`,
-       snamqttusername: `device_${device.imeinumber}`,
-       snamqttclientid: `device_${device.imeinumber}`,
-       snamqttpassword: device.snamqttpassword
-         ? await bcrypt.hash(device.snamqttpassword, 10)
-         : null,
-       snamqttpubTopicData: device.snapubTopicData,
-       snamqttsubTopicCmd: device.snasubTopicCmd,
-     }))
-   );
-
+    const devicesTransformed = await Promise.all(
+      validDevices.map((device) => ({
+        ...device,
+        imeinumber: String(device.imeinumber),
+        snamqttpassword: device.snamqttpassword
+          ? bcrypt.hashSync(device.snamqttpassword, 10)
+          : null,
+      }))
+    );
 
     // Batch processing
     const totalBatches = Math.ceil(devicesTransformed.length / batchSize);
@@ -52,7 +47,7 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
           try {
             const result = await prisma.device.upsert({
               where: {
-                imeinumber: device.imeinumber
+                imeinumber: device.imeinumber,
               },
               update: {
                 snamqtturl: device.snamqtturl ?? undefined,
@@ -60,7 +55,8 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
                 snamqttpassword: device.snamqttpassword ?? undefined,
                 snamqttpubtopicdata: device.snamqttpubtopicdata ?? undefined,
                 snamqttsubtopiccmd: device.snamqttsubtopiccmd ?? undefined,
-                snamqttsubtopiccmdresponse: device.snamqttsubtopiccmdresponse ?? undefined
+                snamqttsubtopiccmdresponse:
+                  device.snamqttsubtopiccmdresponse ?? undefined,
               },
               create: {
                 imeinumber: device.imeinumber,
@@ -69,8 +65,9 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
                 snamqttpassword: device.snamqttpassword ?? undefined,
                 snamqttpubtopicdata: device.snamqttpubtopicdata ?? undefined,
                 snamqttsubtopiccmd: device.snamqttsubtopiccmd ?? undefined,
-                snamqttsubtopiccmdresponse: device.snamqttsubtopiccmdresponse ?? undefined
-              }
+                snamqttsubtopiccmdresponse:
+                  device.snamqttsubtopiccmdresponse ?? undefined,
+              },
             });
             return result;
           } catch (err) {

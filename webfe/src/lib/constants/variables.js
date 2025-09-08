@@ -103,6 +103,14 @@ export const mappingsState = {
   currentPage: 0,
   loading: false,
   error: null,
+  upload: {
+    inProgress: false,
+    progress: 0,
+    currentBatch: null,
+    totalBatches: null,
+    error: null,
+    success: false,
+  },
 };
 
 export const usersState ={

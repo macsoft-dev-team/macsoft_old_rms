@@ -12,7 +12,7 @@ const getAllDevices = async (req, res) => {
     );
     res.status(200).json({
       mappings: devices,
-      totalPages: Math.ceil(count / take),
+      totalPages: Math.ceil(count / parseInt(take)),
       currentPage: parseInt(skip) || 1,
     });
   } catch (err) {
