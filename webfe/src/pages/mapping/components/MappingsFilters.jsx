@@ -7,7 +7,7 @@ import { Button } from '../../../components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
 
-const DevicesFilters = ({
+const MappingsFilters = ({
     manufacturers,
     setFilter,
     user
@@ -57,9 +57,9 @@ const DevicesFilters = ({
                     <Select
                         options={[
                             { value: '', label: 'All Devices' },
-                            { value: 'ONLINE', label: 'Online' },
-                            { value: 'OFFLINE', label: 'Offline' },
-                            { value: 'FAULT', label: 'Fault' },
+                            { value: 1, label: 'Online' },
+                            { value: 0, label: 'Offline' },
+                            { value: 2, label: 'Fault' },
                         ]}
                         name={'status'}
                         value={watch('status')}
@@ -93,4 +93,4 @@ const DevicesFilters = ({
     );
 };
 
-export default DevicesFilters;
+export default MappingsFilters;

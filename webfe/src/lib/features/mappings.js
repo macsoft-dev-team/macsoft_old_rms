@@ -59,18 +59,48 @@ export const uploadMapping = createAsyncThunk(
   "mappings/uploadMapping",
   async (formData, { rejectWithValue, dispatch }) => {
     try {
-      const response = await axios.post(
+      // Step 1: upload file
+      const res = await axios.post(
         `${API_ENDPOINTS.upload}/mappings`,
         formData,
         { withCredentials: true }
       );
-      dispatch(fetchMappings({ skip: 0, take: 12 }));
-      return response.data;
+      const { jobId } = res.data;
+
+      // Step 2: open SSE
+      dispatch(uploadStarted());
+      const evtSource = new EventSource(
+        `${API_ENDPOINTS.upload}/mappings/stream?jobId=${jobId}`,
+        { withCredentials: true }
+      );
+
+      evtSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data.error) {
+          dispatch(uploadError(data.error));
+          evtSource.close();
+        } else if (data.done) {
+          dispatch(uploadSuccess());
+          evtSource.close();
+        } else {
+          // 👇 includes updated items
+          dispatch(uploadProgress(data));
+        }
+      };
+
+      evtSource.onerror = () => {
+        dispatch(uploadError("Upload stream failed"));
+        evtSource.close();
+      };
+
+      return { jobId };
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
+
  
 
 export const mappingsSlice = createSlice({
@@ -85,6 +115,42 @@ export const mappingsSlice = createSlice({
     },
     setMode: (state, action) => {
       state.mode = action.payload;
+    },
+    uploadStarted(state) {
+      state.upload = {
+        inProgress: true,
+        progress: 0,
+        batchNumber: 0,
+        totalBatches: 0,
+        error: null,
+        success: false,
+      };
+    },
+    uploadProgress(state, action) {
+      const { batchNumber, totalBatches, updated } = action.payload;
+      state.upload.batchNumber = batchNumber;
+      state.upload.totalBatches = totalBatches;
+      state.upload.progress = Math.round((batchNumber / totalBatches) * 100);
+      if (Array.isArray(updated)) {
+        updated.forEach((item) => {
+          const idx = state.mappings.findIndex(
+            (m) => m.imeinumber === item.imeinumber
+          );
+          if (idx !== -1) {
+            state.mappings[idx] = { ...state.mappings[idx], ...item };  
+          } else {
+            state.mappings.push(item);  
+          }
+        });
+      }
+    },
+    uploadSuccess(state) {
+      state.upload.inProgress = false;
+      state.upload.success = true;
+    },
+    uploadError(state, action) {
+      state.upload.inProgress = false;
+      state.upload.error = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -138,9 +204,6 @@ export const mappingsSlice = createSlice({
       })
       .addCase(uploadMapping.fulfilled, (state, action) => {
         state.loading = false;
-        if (action.payload.mappings && Array.isArray(action.payload.mappings)) {
-          state.mappings.push(...action.payload.mappings);
-        }
       })
       .addCase(uploadMapping.rejected, (state, action) => {
         state.loading = false;

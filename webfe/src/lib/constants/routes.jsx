@@ -6,6 +6,8 @@ import {
   Monitor,
   UserCheck,
   Server,
+  Network,
+  UsersRound,
 } from 'lucide-react';
 
 import Layout from '../../components/Layout';
@@ -22,7 +24,7 @@ import NotFound from '../../pages/NotFound';
 import { createBrowserRouter } from 'react-router-dom';
 import Mappings from '../../pages/mapping/mappings';
 import UsersPage from '../../pages/users/Users';
-  
+
 // 1️⃣ Base config with both menu + component
 const BASE_ITEMS = {
   dashboard: {
@@ -46,10 +48,10 @@ const BASE_ITEMS = {
     hidden: true,
     category: 'main',
     element: <DeviceDashboard />,
-  }, 
+  },
   users: {
     path: '/users',
-    icon: UserCheck,
+    icon: UsersRound,
     label: 'Users',
     category: 'management',
     element: <UsersPage />,
@@ -75,10 +77,10 @@ const BASE_ITEMS = {
     label: 'Templates',
     category: 'main',
     element: <ModbusTemplates />,
-  }, 
+  },
   mappings: {
     path: '/mappings',
-    icon: FileText,
+    icon: Network,
     label: 'Mappings',
     category: 'main',
     element: <Mappings />,
@@ -107,13 +109,13 @@ const BASE_ITEMS = {
   },
 };
 
- const ROLE_ITEMS = {
+const ROLE_ITEMS = {
   MACSOFT_ADMIN: [
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
     BASE_ITEMS.mappings,
     BASE_ITEMS.deviceDetails,
-     BASE_ITEMS.manufacturers,
+    BASE_ITEMS.manufacturers,
     BASE_ITEMS.manufacturerDevices,
     BASE_ITEMS.users,
     BASE_ITEMS.modbus,
@@ -167,7 +169,7 @@ export const switchRoutes = (role) =>
         </ProtectedRoute>
       ),
       children: (ROLE_ITEMS[role] || ROLE_ITEMS.END_USER).map((item) => ({
-        path: item.path === '/' ? '' : item.path.replace(/^\//, ''), 
+        path: item.path === '/' ? '' : item.path.replace(/^\//, ''),
         index: item.path === '/',
         element: <ProtectedRoute>{item.element}</ProtectedRoute>,
       })),
