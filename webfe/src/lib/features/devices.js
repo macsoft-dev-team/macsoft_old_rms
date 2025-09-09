@@ -58,12 +58,14 @@ export const deleteDevice = createAsyncThunk(
 
 export const uploadDevice= createAsyncThunk(
   "devices/uploadDevice",
-  async (formData, { rejectWithValue ,dispatch}) => {
+  async (jsonData, { rejectWithValue ,dispatch}) => {
     try {
       const response = await axios.post(
         `${API_ENDPOINTS.upload}/devices`,
-        formData,
-        { withCredentials: true }
+        jsonData,
+        { 
+          withCredentials: true, 
+        }
       );
       dispatch(fetchDevices({ skip: 0, take: 12 }));  
       return response.data;

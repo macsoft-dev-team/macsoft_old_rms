@@ -1,39 +1,22 @@
-const XLSX = require("xlsx");
 const devicesService = require("../../services/uploads/devices");
 
-const uploadDevices = async (req, res) => {
+const uploadDevicesJSON = async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
+    const devices = req.body;
 
-    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
-    const devicesFromXL = XLSX.utils.sheet_to_json(worksheet);
-
-    if (devicesFromXL.length === 0) {
-      return res
-        .status(400)
-        .json({ error: "No devices found in the uploaded file" });
-    }
-
-    // Get batch size from query parameter, default to 100
-    const batchSize = parseInt(req.query.batchSize) || 100;
-
-    // Validate batch size
-    if (batchSize < 1 || batchSize > 1000) {
+    if (!devices || !Array.isArray(devices) || devices.length === 0) {
       return res.status(400).json({
-        error: "Invalid batch size",
-        message: "Batch size must be between 1 and 1000",
+        error: "Invalid data format",
+        message: "Expected an array of devices in request body",
       });
     }
 
     console.log(
-      `Processing ${devicesFromXL.length} devices with batch size: ${batchSize}`
+      `Processing ${devices.length} pre-hashed devices from frontend`
     );
 
-    const result = await devicesService.uploadDevice(devicesFromXL, batchSize);
+    // Since passwords are already hashed on frontend, we process all devices at once
+    const result = await devicesService.uploadDevice(devices, devices.length);
 
     if (!result) {
       return res.status(500).json({
@@ -48,7 +31,7 @@ const uploadDevices = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    console.error("Error in uploadDevices controller:", error);
+    console.error("Error in uploadDevicesJSON controller:", error);
     return res.status(500).json({
       error: "Internal server error",
       message: error.message,
@@ -57,5 +40,5 @@ const uploadDevices = async (req, res) => {
 };
 
 module.exports = {
-  uploadDevices,
+  uploadDevicesJSON,
 };
