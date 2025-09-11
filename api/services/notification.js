@@ -19,11 +19,9 @@ const getAllNotifications = async (skip, take, filter, userId) => {
   try {
     const params = {};
     if (userId) {
-      params.include = {
-        recipients: {
-          where: {
-            userId: userId,
-          },
+      params.where = {
+        recipients: { 
+          some: { userId: userId }
         },
       };
     }

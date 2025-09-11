@@ -1,10 +1,10 @@
 const { PrismaClient } = require("@prisma/client");
+const { createNotification } = require("./notification");
 const prisma = new PrismaClient();
 
-
 const getAllCustomers = async (skip, take, filter, user) => {
-  if (!user || user.role !== 'MACSOFT_ADMIN') {
-    const err = new Error('Unauthorized');
+  if (!user || user.role !== "MACSOFT_ADMIN") {
+    const err = new Error("Unauthorized");
     err.status = 403;
     throw err;
   }
@@ -39,57 +39,100 @@ const getAllCustomers = async (skip, take, filter, user) => {
   }
 };
 
-
 const getCustomerById = async (id, user) => {
-  if (!user || user.role !== 'MACSOFT_ADMIN') {
-    const err = new Error('Unauthorized');
-    err.status = 403;
-    throw err;
+  try {
+    if (!user || user.role !== "MACSOFT_ADMIN") {
+      const err = new Error("Unauthorized");
+      err.status = 403;
+      throw err;
+    }
+    const customer = await prisma.customer.findUnique({
+      where: { id: id },
+      include: { devices: true, users: true },
+    });
+    
+    return customer
+  } catch (error) {
+    console.error("Error fetching customer by ID:", error);
+    throw new Error("Could not fetch customer");
   }
-  return prisma.customer.findUnique({
-    where: { id: id },
-    include: { devices: true, users: true },
-  });
 };
-
 
 const createCustomer = async (data, user) => {
-  if (!user || user.role !== 'MACSOFT_ADMIN') {
-    const err = new Error('Unauthorized');
-    err.status = 403;
-    throw err;
+  try {
+    if (!user || user.role !== "MACSOFT_ADMIN") {
+      const err = new Error("Unauthorized");
+      err.status = 403;
+      throw err;
+    }
+    const customer = await prisma.customer.create({ data });
+     const notification = await createNotification({
+       user: user,
+       eventType: "crud",
+       title: "New Customer Created",
+       message: `New customer created - ${customer.name} : ${customer.email}`,
+     });
+    return customer;
+  } catch (error) {
+    console.error("Error creating customer:", error);
+    throw new Error("Could not create customer");
   }
-  return prisma.customer.create({ data });
 };
-
 
 const updateCustomer = async (id, data, user) => {
-  if (!user || user.role !== 'MACSOFT_ADMIN') {
-    const err = new Error('Unauthorized');
-    err.status = 403;
-    throw err;
+  try {
+    if (!user || user.role !== "MACSOFT_ADMIN") {
+      const err = new Error("Unauthorized");
+      err.status = 403;
+      throw err;
+    }
+    const customer = await prisma.customer.update({ where: { id: id }, data });
+    const notification = await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Customer Updated",
+      message: `Customer updated - ${customer.name} : ${customer.email}`,
+    });
+    return customer;
+  } catch (error) {
+    console.error("Error updating customer:", error);
+    throw new Error("Could not update customer");
   }
-  return prisma.customer.update({ where: { id: id }, data });
 };
-
 
 const deleteCustomer = async (id, user) => {
-  if (!user || user.role !== 'MACSOFT_ADMIN') {
-    const err = new Error('Unauthorized');
-    err.status = 403;
-    throw err;
+  try {
+    if (!user || user.role !== "MACSOFT_ADMIN") {
+      const err = new Error("Unauthorized");
+      err.status = 403;
+      throw err;
+    }
+    const customer = await prisma.customer.delete({ where: { id: id } });
+    const notification = await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Customer Deleted",
+      message: `Customer deleted - ${customer.name} : ${customer.email}`,
+    });
+    return customer;
+  } catch (error) {
+    console.error("Error deleting customer:", error);
+    throw new Error("Could not delete customer");
   }
-  return prisma.customer.delete({ where: { id: id } });
 };
 
-
 const getCustomerDevices = async (customerId, user) => {
-  if (!user || user.role !== 'MACSOFT_ADMIN') {
-    const err = new Error('Unauthorized');
-    err.status = 403;
-    throw err;
+  try {
+    if (!user || user.role !== "MACSOFT_ADMIN") {
+      const err = new Error("Unauthorized");
+      err.status = 403;
+      throw err;
+    }
+    return prisma.device.findMany({ where: { customerId } });
+  } catch (error) {
+    console.error("Error fetching customer devices:", error);
+    throw new Error("Could not fetch customer devices");
   }
-  return prisma.device.findMany({ where: { customerId } });
 };
 
 module.exports = {
