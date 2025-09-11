@@ -1,8 +1,9 @@
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
+const { createNotification } = require("../notification");
 const prisma = new PrismaClient();
 
-const uploadDevice = async (devicesFromXL, batchSize = 100) => {
+const uploadDevice = async (devicesFromXL, batchSize = 100,user) => {
   try {
     // Filter out devices with valid imeinumber
     const validDevices = devicesFromXL.filter(
@@ -97,10 +98,18 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
       }
     }
 
+      const notification = await createNotification({
+        user: user,
+        eventType: "crud",
+        title: "Mapping SNA Upload Completed",
+        message: `Mapping SNA upload updated ${totalUpdated} devices`,
+      });
+
     return {
       totalProcessed: devicesTransformed.length,
       totalUpdated,
       totalCreated,
+      notification,
       batchResults: results,
     };
   } catch (error) {

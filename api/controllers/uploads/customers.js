@@ -6,6 +6,7 @@ const uploadCustomers = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
+    const user = req.user;
 
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheetName = workbook.SheetNames[0];
@@ -33,7 +34,7 @@ const uploadCustomers = async (req, res) => {
       `Processing ${customersFromXL.length} customers with batch size: ${batchSize}`
     );
 
-    const result = await customersService.uploadCustomer(customersFromXL, batchSize);
+    const result = await customersService.uploadCustomer(customersFromXL, batchSize,user);
 
     if (!result) {
       return res.status(500).json({

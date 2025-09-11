@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const { createNotification } = require("../notification");
 const prisma = new PrismaClient();
 
-const uploadCustomer = async (customersFromXL, batchSize = 100) => {
+const uploadCustomer = async (customersFromXL, batchSize = 100, user) => {
   try {
     // Filter out customers without valid email
     const validCustomers = customersFromXL.filter(

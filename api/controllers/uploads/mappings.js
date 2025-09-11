@@ -5,6 +5,7 @@ const uploadDevices = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
+    const user = req.user;
 
     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheetName = workbook.SheetNames[0];
@@ -32,7 +33,7 @@ const uploadDevices = async (req, res) => {
       `Processing ${devicesFromXL.length} devices with batch size: ${batchSize}`
     );
 
-    const result = await mappingService.uploadDevice(devicesFromXL, batchSize);
+    const result = await mappingService.uploadDevice(devicesFromXL, batchSize,user);
 
     if (!result) {
       return res.status(500).json({
