@@ -17,27 +17,55 @@ const getNotificationById = async (id, notificationRecipient) => {
 
 const getAllNotifications = async (skip, take, filter, userId) => {
   try {
-    const params = {};
-    if (userId) {
-      params.where = {
-        recipients: { 
-          some: { userId: userId }
+    const params = {
+      include: {
+        recipients: {
+          include: {
+            user: {
+              select: { id: true, name: true, email: true, role: true },
+            },
+          },
         },
+      },
+    };
+
+    // Build where clause
+    params.where = {};
+
+    if (userId) {
+      params.where.recipients = {
+        some: { userId: userId },
       };
     }
-    if (skip) params.skip = (parseInt(skip) - 1) * parseInt(take) || 0;
-    if (take) params.take = parseInt(take);
 
     if (filter) {
       params.where = {
         ...params.where,
-        filter,
+        ...filter,
       };
     }
+
+    // Pagination
+    if (skip) params.skip = (parseInt(skip) - 1) * parseInt(take) || 0;
+    if (take) params.take = parseInt(take);
 
     const count = await prisma.notification.count({ where: params.where });
 
     const notifications = await prisma.notification.findMany(params);
+
+    // If userId is provided, add read status for that specific user
+    if (userId) {
+      const notificationsWithReadStatus = notifications.map((notification) => ({
+        ...notification,
+        isRead: notification.recipients.some(
+          (r) => r.userId === userId && r.readAt !== null
+        ),
+        readAt:
+          notification.recipients.find((r) => r.userId === userId)?.readAt ||
+          null,
+      }));
+      return { notifications: notificationsWithReadStatus, count };
+    }
 
     return { notifications, count };
   } catch (error) {
