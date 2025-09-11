@@ -3,7 +3,7 @@ const devicesService = require("../../services/uploads/devices");
 const uploadDevicesJSON = async (req, res) => {
   try {
     const devices = req.body;
-
+    const user = req.user;
     if (!devices || !Array.isArray(devices) || devices.length === 0) {
       return res.status(400).json({
         error: "Invalid data format",
@@ -16,7 +16,7 @@ const uploadDevicesJSON = async (req, res) => {
     );
 
     // Since passwords are already hashed on frontend, we process all devices at once
-    const result = await devicesService.uploadDevice(devices, devices.length);
+    const result = await devicesService.uploadDevice(devices, user);
 
     if (!result) {
       return res.status(500).json({
