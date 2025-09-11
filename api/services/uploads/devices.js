@@ -1,26 +1,30 @@
 const { PrismaClient } = require("@prisma/client");
+const { createNotification } = require("../notification");
 const prisma = new PrismaClient();
 
-const uploadDevice = async (devicesFromXL) => {
+const uploadDevice = async (devicesFromXL, user) => {
   try {
     let CATCH_COUNT = 1000;
     let PREFIX_TABLE_NAME = "deviceLog_";
 
     const totalDevicesCount = await prisma.device.count();
     const _tableNames = new Set();
-    
+
     // Filter out devices without valid imeinumber
-    const validDevices = devicesFromXL.filter(device => 
-      device.imeinumber && String(device.imeinumber).trim() !== ''
+    const validDevices = devicesFromXL.filter(
+      (device) => device.imeinumber && String(device.imeinumber).trim() !== ""
     );
-    
+
     if (validDevices.length === 0) {
-      throw new Error('No valid devices found with imeinumber');
+      throw new Error("No valid devices found with imeinumber");
     }
 
-    console.log(`Starting upload for ${validDevices.length} devices (passwords pre-hashed on frontend)`);
+    console.log(
+      `Starting upload for ${validDevices.length} devices (passwords pre-hashed on frontend)`
+    );
+    let devicesTransformed = [];
 
-    const devicesTransformed = validDevices.map((device, index) => {
+    devicesTransformed = validDevices.map((device, index) => {
       const tableName =
         PREFIX_TABLE_NAME +
         Math.ceil((totalDevicesCount + index + 1) / CATCH_COUNT);
@@ -39,46 +43,80 @@ const uploadDevice = async (devicesFromXL) => {
       };
     });
 
+    if (user.role === "CUSTOMER_ADMIN" || user.role === "CUSTOMER_USER") {
+      devicesTransformed.forEach((device) => {
+        device.customerId = user.customerId;
+      });
+    }
+
     // Process all devices at once since passwords are already hashed
     let totalProcessed = 0;
     let totalCreated = 0;
-    
-    console.log(`Processing all ${devicesTransformed.length} devices in single operation`);
-    
+
+    console.log(
+      `Processing all ${devicesTransformed.length} devices in single operation`
+    );
+
     try {
-      const result = await prisma.device.createMany({
-        data: devicesTransformed,
-        skipDuplicates: true,
-      });
-      
-      totalCreated = result.count;
+      let result = [];
+      for (const item of devicesTransformed) {
+        try {
+          let res = await prisma.device.upsert({
+            where: { imeinumber: item.imeinumber },
+            update: {
+              ...item,
+            },
+            create: item,
+          });
+          result.push(res);
+        } catch (error) {
+          console.error(
+            `Error processing device ${item.imeinumber}:`,
+            error
+          );
+        }
+      }
+
+      totalCreated = result.length;
       totalProcessed = devicesTransformed.length;
-      
-      console.log(`Upload completed: ${totalCreated} devices created, ${totalProcessed - totalCreated} skipped (duplicates)`);
-      
+
+      console.log(
+        `Upload completed: ${totalCreated} devices created, ${
+          totalProcessed - totalCreated
+        } skipped (duplicates)`
+      );
     } catch (error) {
       console.error(`Error in device upload:`, error);
       throw error;
     }
+    const notification = await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Device Upload Completed",
+      message: `Device upload completed. ${totalCreated} devices created, ${
+        totalProcessed - totalCreated
+      } duplicates skipped.`,
+    });
 
-    return { 
+    return {
       totalProcessed,
       totalCreated,
+      notification,
       totalSkipped: totalProcessed - totalCreated,
       summary: {
         totalDevices: validDevices.length,
         successfulCreations: totalCreated,
         skippedDuplicates: totalProcessed - totalCreated,
-        processingMethod: 'single_operation',
-        passwordsPreHashed: true
-      }
+        processingMethod: "single_operation",
+        passwordsPreHashed: true,
+      },
     };
   } catch (error) {
     console.error("Error uploading device:", error);
     throw error; // Re-throw the error so it can be handled by the controller
   }
 };
- 
+
 module.exports = {
   uploadDevice,
- };
+};

@@ -133,6 +133,29 @@ export const usersState ={
   error: null,
 }
 
+export const notificationsState = {
+  notifications: [],
+  notification: null,
+  filter: {
+    search: "",
+    status: "",
+    role: "",
+    fromDate: "",
+    toDate: "",
+  },
+  mode: {
+    create: false,
+    edit: false,
+    view: false,
+    confirmDelete: false,
+  },
+  totalPages: 0,
+  currentPage: 0,
+  loading: false,
+  error: null,
+}
+
+
 export const dateF = (date) => {
   return moment(date).format("DD/MM/YYYY HH:mm:ss");
 };

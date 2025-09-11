@@ -12,4 +12,5 @@ export const API_ENDPOINTS = {
   templates: `${API_URL}/templates/modbus`,
   dashboard: `${API_URL}/dashboard`,
   mappings: `${API_URL}/mappings`,
+  notifications: `${API_URL}/notifications`,
 };
