@@ -10,7 +10,7 @@ const templates = require("./templates");
 const uploads = require("./uploads");
 const dashboard = require("./dashboard");
 const users = require("./users");
-
+const notifications = require("./notifications");
 router.use("/auth", auth);
 router.use("/dashboard", verifyToken, dashboard);
 router.use("/devices", devices);
@@ -20,5 +20,6 @@ router.use("/customers", verifyToken, customers);
 router.use("/templates/modbus", verifyToken, templates);
 router.use("/commands", verifyToken, commands);
 router.use("/upload", verifyToken, uploads);
+router.use("/notifications", verifyToken, notifications);
 
 module.exports = router;
