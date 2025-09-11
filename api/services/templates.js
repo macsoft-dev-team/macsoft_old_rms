@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const { createNotification } = require("./notification");
 const prisma = new PrismaClient();
 
 const getTemplates = async (skip, take, filter) => {
@@ -36,10 +37,16 @@ const getTemplateById = async (id) => {
   }
 };
 
-const createTemplate = async (templateData) => {
+const createTemplate = async (templateData, user) => {
   try {
     const newTemplate = await prisma.template.create({
       data: templateData,
+    });
+    const notification = await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "New Template Created",
+      message: `New template created - ${newTemplate.name}`,
     });
     return newTemplate;
   } catch (error) {
@@ -47,11 +54,17 @@ const createTemplate = async (templateData) => {
   }
 };
 
-const updateTemplate = async (id, templateData) => {
+const updateTemplate = async (id, templateData, user) => {
   try {
     const updatedTemplate = await prisma.template.update({
       where: { id },
       data: templateData,
+    });
+    const notification = await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Template Updated",
+      message: `Template updated - ${updatedTemplate.name}`,
     });
     return updatedTemplate;
   } catch (error) {
@@ -59,10 +72,16 @@ const updateTemplate = async (id, templateData) => {
   }
 };
 
-const deleteTemplate = async (id) => {
+const deleteTemplate = async (id,user) => {
   try {
-   const deletedTemplate = await prisma.template.delete({
+    const deletedTemplate = await prisma.template.delete({
       where: { id },
+    });
+    const notification = await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Template Deleted",
+      message: `Template deleted - ${deletedTemplate.name}`,
     });
     return deletedTemplate;
   } catch (error) {
