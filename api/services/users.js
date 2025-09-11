@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const { createNotification } = require("./notification");
 const prisma = new PrismaClient();
 
 const getUsers = async (skip, take, filter, user) => {
@@ -46,10 +47,16 @@ const getUserById = async (id) => {
   }
 };
 
-const createUser = async (userData) => {
+const createUser = async (userData, user) => {
   try {
     const newUser = await prisma.user.create({
       data: userData,
+    });
+    const notification = await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "User Created",
+      message: `User created - ${newUser.name} : ${newUser.email}`,
     });
     return newUser;
   } catch (error) {
@@ -57,11 +64,17 @@ const createUser = async (userData) => {
   }
 };
 
-const updateUser = async (id, userData) => {
+const updateUser = async (id, userData, user) => {
   try {
     const updatedUser = await prisma.user.update({
       where: { id },
       data: userData,
+    });
+    const notification = await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "User Updated",
+      message: `User updated - ${updatedUser.name} : ${updatedUser.email}`,
     });
     return updatedUser;
   } catch (error) {
@@ -69,10 +82,16 @@ const updateUser = async (id, userData) => {
   }
 };
 
-const deleteUser = async (id) => {
+const deleteUser = async (id, user) => {
   try {
     const deletedUser = await prisma.user.delete({
       where: { id },
+    });
+    const notification = await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "User Deleted",
+      message: `User deleted - ${deletedUser.name} : ${deletedUser.email}`,
     });
     return deletedUser;
   } catch (error) {
