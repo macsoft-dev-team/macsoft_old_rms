@@ -48,7 +48,7 @@ const createUser = async (req, res) => {
       userData.customerId = user.customerId;
     }
     userData.password = await hashPassword(userData.password);
-    const newUser = await userService.createUser(userData);
+    const newUser = await userService.createUser(userData, user);
     res.status(201).json(newUser);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -64,7 +64,7 @@ const updateUser = async (req, res) => {
       delete userData.customerId;
     }
     userData.password = await hashPassword(userData.password);
-    const updatedUser = await userService.updateUser(id, userData);
+    const updatedUser = await userService.updateUser(id, userData, user);
 
     if (!updatedUser) {
       return res.status(404).json({ error: "User not found" });
@@ -78,7 +78,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   const { id } = req.params;
   try {
-    const deletedUser = await userService.deleteUser(id);
+    const deletedUser = await userService.deleteUser(id, user);
     if (!deletedUser) {
       return res.status(404).json({ error: "User not found" });
     }
