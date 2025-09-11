@@ -1,6 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const mqtt = require("mqtt");
+const { createNotification } = require("./notification");
 
 const getAllCommandsByDeviceId = async (skip, take, filter, deviceId) => {
   const params = {
@@ -29,21 +30,30 @@ const createCommand = async (commandData, user) => {
     const command = await prisma.command.create({
       data: { ...commandData, response: "" },
       include: { device: true },
-     });
-     const _device= await prisma.device.findUnique({
-       where: { imeinumber: command.imeinumber }, 
-     });
-      const mqtt_server = `mqtt://${_device.host}:${_device.port}`;
-      const creds = {
-        username: _device.username,
-        password: _device.password,
-        clientId: _device.imeinumber,
-      };
-      const client = mqtt.connect(mqtt_server, creds);
-      console.log(client);
-       client.on('connect', () => {
-          client.publish(`device/${_device.imeinumber}/cmd`, JSON.stringify(command));
-       });
+    });
+    const _device = await prisma.device.findUnique({
+      where: { imeinumber: command.imeinumber },
+    });
+    const notification = await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "New Command sent to Device",
+      message: ` Command ${command.payload} sent to device ${_device.name} successfully.`,
+    });
+    const mqtt_server = `mqtt://${_device.host}:${_device.port}`;
+    const creds = {
+      username: _device.username,
+      password: _device.password,
+      clientId: _device.imeinumber,
+    };
+    const client = mqtt.connect(mqtt_server, creds);
+    console.log(client);
+    client.on("connect", () => {
+      client.publish(
+        `device/${_device.imeinumber}/cmd`,
+        JSON.stringify(command)
+      );
+    });
 
     return command;
   } catch (error) {
