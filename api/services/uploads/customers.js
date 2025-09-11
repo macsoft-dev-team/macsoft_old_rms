@@ -1,13 +1,13 @@
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
+const { createNotification } = require("../notification");
 const prisma = new PrismaClient();
 
 const uploadCustomer = async (customersFromXL, batchSize = 100) => {
   try {
     // Filter out customers without valid email
     const validCustomers = customersFromXL.filter(
-      (customer) =>
-        customer.email && String(customer.email).trim() !== ""
+      (customer) => customer.email && String(customer.email).trim() !== ""
     );
 
     if (validCustomers.length === 0) {
@@ -26,16 +26,11 @@ const uploadCustomer = async (customersFromXL, batchSize = 100) => {
 
     for (let i = 0; i < totalBatches; i++) {
       const startIndex = i * batchSize;
-      const endIndex = Math.min(
-        startIndex + batchSize,
-        validCustomers.length
-      );
+      const endIndex = Math.min(startIndex + batchSize, validCustomers.length);
       const batch = validCustomers.slice(startIndex, endIndex);
 
       console.log(
-        `Processing batch ${i + 1}/${totalBatches} (${
-          batch.length
-        } customers)`
+        `Processing batch ${i + 1}/${totalBatches} (${batch.length} customers)`
       );
 
       try {
@@ -78,12 +73,20 @@ const uploadCustomer = async (customersFromXL, batchSize = 100) => {
     console.log(
       `Upload completed: ${totalCreated} customers created out of ${totalProcessed} processed`
     );
-
+    const notification = await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Customer Upload Completed",
+      message: `Customer upload completed. ${totalCreated} customers created, ${
+        totalProcessed - totalCreated
+      } duplicates skipped.`,
+    });
     return {
       totalProcessed,
       totalCreated,
       totalSkipped: totalProcessed - totalCreated,
       batchResults: results,
+      notification,
       summary: {
         totalCustomers: validCustomers.length,
         batchSize,
