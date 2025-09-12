@@ -1,8 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userService = require("../services/users");
-const { createNotification } = require("../services/notification");
-
+ 
 //login by email and password
 const login = async (req, res) => {
   try {
@@ -20,15 +19,6 @@ const login = async (req, res) => {
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
       expiresIn: "24h",
     });
-
-    if (token) {
-      const notification = await createNotification({
-        user: user,
-        eventType: "crud",
-        title: "Login Detected",
-        message: `User login detected - ${user.name} : ${user.email}`,
-      });
-    }
 
     // Set httpOnly cookie with the token
     res.cookie("auth_token", token, {
