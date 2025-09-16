@@ -8,6 +8,7 @@ import {
   Server,
   Network,
   UsersRound,
+  Bell,
 } from 'lucide-react';
 
 import Layout from '../../components/Layout';
@@ -24,6 +25,7 @@ import NotFound from '../../pages/NotFound';
 import { createBrowserRouter } from 'react-router-dom';
 import Mappings from '../../pages/mapping/mappings';
 import UsersPage from '../../pages/users/Users';
+import Notification from '../../pages/notification/Notifications';
 
 // 1️⃣ Base config with both menu + component
 const BASE_ITEMS = {
@@ -99,6 +101,13 @@ const BASE_ITEMS = {
     category: 'system',
     element: <SettingsPage />,
   },
+  notifications:{
+    path: '/notifications',
+    icon: Bell,
+    label: 'Notifications',
+    category: 'main',
+    element: <Notification />,
+  },
   endUserDevices: {
     path: '/devices/:deviceId',
     icon: Monitor,
@@ -121,6 +130,7 @@ const ROLE_ITEMS = {
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
     BASE_ITEMS.settings,
+    BASE_ITEMS.notifications,
   ],
   MACSOFT_USER: [
     BASE_ITEMS.dashboard,
@@ -131,6 +141,7 @@ const ROLE_ITEMS = {
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
     BASE_ITEMS.settings,
+    BASE_ITEMS.notifications,
   ],
   CUSTOMER_ADMIN: [
     BASE_ITEMS.dashboard,
@@ -141,6 +152,7 @@ const ROLE_ITEMS = {
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
     BASE_ITEMS.settings,
+    BASE_ITEMS.notifications,
   ],
   CUSTOMER_USER: [
     BASE_ITEMS.dashboard,
@@ -150,6 +162,7 @@ const ROLE_ITEMS = {
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
     BASE_ITEMS.settings,
+    BASE_ITEMS.notifications,
   ],
   END_USER: [BASE_ITEMS.endUserDevices],
 };
