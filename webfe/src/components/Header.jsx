@@ -209,11 +209,10 @@ const Header = () => {
                       return (
                         <div
                           key={notification.id}
-                          className={`p-4 border-b border-gray-100 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 ${
-                            isUnread 
-                              ? 'bg-blue-50 dark:bg-blue-900/20' 
+                          className={`p-4 border-b border-gray-100 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 ${isUnread
+                              ? 'bg-blue-50 dark:bg-blue-900/20'
                               : 'bg-gray-50 dark:bg-gray-700'
-                          }`}
+                            }`}
                         >
                           <div className="flex items-start space-x-3">
                             <span className="text-lg">
@@ -257,9 +256,11 @@ const Header = () => {
                   )}
                 </div>
                 <div className="p-3 border-t border-gray-200 dark:border-gray-600">
-                  <button className="w-full text-center text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                    View all notifications
-                  </button>
+                  <NavLink to="/notifications">
+                    <button className="w-full cursor-pointer text-center text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                      View all notifications
+                    </button>
+                  </NavLink>
                 </div>
               </div>
             )}
