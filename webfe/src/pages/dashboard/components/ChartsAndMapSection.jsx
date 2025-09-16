@@ -6,7 +6,7 @@ const ChartsAndMapSection = ({ deviceLocations, recentActivity, lastUpdated }) =
     <div className="xl:col-span-2">
       <DevicesMap deviceLocations={deviceLocations} />
     </div>
-    <div className="h-96">
+    <div className="min-h-96 max-h-96">
       <RecentActivity recentActivity={recentActivity} lastUpdated={lastUpdated} />
     </div>
   </div>
