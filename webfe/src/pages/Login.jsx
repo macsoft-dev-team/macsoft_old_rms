@@ -39,13 +39,11 @@ const Login = () => {
       } else {
         sessionStorage.removeItem('rememberMe');
       }
-      showNotification('Login successful!', 'success');
-      reset();
+       reset();
     } catch (err) {
       setRHError('email', { type: 'manual', message: 'Invalid email or password' });
       setError('password', { type: 'manual', message: 'Invalid email or password' });
-      showNotification('Login failed. Please try again.', 'error');
-    } finally {
+     } finally {
       setLoading(false);
     }
   };
