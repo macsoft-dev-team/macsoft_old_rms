@@ -17,25 +17,7 @@ L.Icon.Default.mergeOptions({
 
 const DevicesMap = ({ deviceLocations = [] }) => {
   const mapRef = useRef(null);
-
-  const getLocationName = (lat, lng) => {
-    // Simple location naming based on coordinates (you can enhance this with reverse geocoding)
-    const latNum = parseFloat(lat);
-    const lngNum = parseFloat(lng);
-
-    if (latNum > 40 && lngNum < -70) return 'New York Area';
-    if (latNum > 37 && lngNum < -120) return 'California Area';
-    if (latNum > 41 && lngNum < -85) return 'Chicago Area';
-    if (latNum > 29 && lngNum < -90) return 'Houston Area';
-    if (latNum > 32 && lngNum < -95) return 'Dallas Area';
-    if (latNum > 47 && lngNum < -120) return 'Seattle Area';
-    if (latNum > 25 && lngNum < -80) return 'Miami Area';
-    if (latNum > 39 && lngNum < -105) return 'Denver Area';
-    if (latNum > 33 && lngNum < -110) return 'Phoenix Area';
-
-    return 'Unknown Location';
-  };
-
+ 
   const getStatusColor = (status) => {
     switch (status) {
       case 'online':
@@ -60,22 +42,7 @@ const DevicesMap = ({ deviceLocations = [] }) => {
         return 'text-yellow-500';
     }
   };
-
-  const statusPointerIcon = L.divIcon({
-    html: renderToStaticMarkup(
-      <MapPin
-        className={`${getStatusColor(status)}`}
-        fill="#fff"
-        width={32}
-        height={32}
-        strokeWidth={2}
-      />
-    ),
-    className: '',
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32],
-  });
+ 
 
   // Filter out devices with missing or invalid coordinates
   const validDevices = deviceLocations.filter(
@@ -99,8 +66,8 @@ const DevicesMap = ({ deviceLocations = [] }) => {
           <CardHeader className="pb-3">
             <CardTitle>Device Locations</CardTitle>
           </CardHeader>
-          <CardContent className="!p-0 h-full flex items-center justify-center">
-            <div className="text-center text-gray-500">
+          <CardContent className="!p-0 min-h-80 flex items-center justify-center">
+            <div className="text-center text-gray-500 h-full">
               <MapPin className="mx-auto mb-2" size={48} />
               <p>
                 { !deviceLocations.length

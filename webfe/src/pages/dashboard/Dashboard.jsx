@@ -2,24 +2,23 @@ import { Zap, WifiOff, AlertTriangle, Users, TrendingUp, Activity } from 'lucide
 import DashboardHeader from './components/DashboardHeader';
 import StatsGrid from './components/StatsGrid';
 import ChartsAndMapSection from './components/ChartsAndMapSection';
-import DevicesMap from './components/DevicesMap';
-import RecentActivity from './components/RecentActivity';
 import { DASHBOARD_STATS } from '../../lib/constants/dashboard';
 import { useDashboard } from '../../hooks/useDashboard';
- 
+import { useNotification } from '../../hooks/useNotifications';
+
 const Dashboard = () => {
   const { dashboard } = useDashboard();
-  
-  // Calculate trends based on current data
+  const { notifications } = useNotification();
+
   const calculateTrends = (dashboard) => {
     const total = dashboard?.totalDevices || 0;
     const online = dashboard?.onlineDevices || 0;
     const fault = dashboard?.faultDevices || 0;
     const offline = dashboard?.offlineDevices || 0;
-    
+
     const onlinePercentage = total > 0 ? ((online / total) * 100).toFixed(1) : 0;
     const faultPercentage = total > 0 ? ((fault / total) * 100).toFixed(1) : 0;
-    
+
     return {
       totalDevices: { type: 'up', value: `+${total}` },
       onlineDevices: { type: online > fault ? 'up' : 'down', value: `${onlinePercentage}%` },
@@ -31,8 +30,8 @@ const Dashboard = () => {
   };
 
   const trends = calculateTrends(dashboard);
-  
-   const iconMap = {
+
+  const iconMap = {
     Zap,
     Activity,
     AlertTriangle,
@@ -41,7 +40,7 @@ const Dashboard = () => {
     TrendingUp,
   };
 
- 
+
   const stats = DASHBOARD_STATS.map((stat) => ({
     ...stat,
     value: dashboard?.[stat.key] || 0,
@@ -53,12 +52,12 @@ const Dashboard = () => {
     <div className="space-y-4 sm:space-y-6 p-4 sm:p-0">
       <DashboardHeader lastUpdated={dashboard?.lastUpdated} />
       <StatsGrid stats={stats} />
-      <ChartsAndMapSection 
-        deviceLocations={dashboard?.deviceLocations} 
-        recentActivity={dashboard?.recentActivity}
+      <ChartsAndMapSection
+        deviceLocations={dashboard?.deviceLocations}
+        recentActivity={notifications || []}
         lastUpdated={dashboard?.lastUpdated}
       />
-     </div>
+    </div>
   );
 };
 
