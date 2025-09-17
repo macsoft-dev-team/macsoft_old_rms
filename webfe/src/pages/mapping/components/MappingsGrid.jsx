@@ -69,7 +69,7 @@ export default function MappingsGrid() {
                         </div>
                     </div>
 
-                    <div className="space-y-2 text-sm text-gray-700 p-3 px-5 dark:text-gray-200 *:grid *:lg:grid-cols-3 **:even:col-span-2 **:odd:uppercase">
+                    <div className="space-y-2 text-nowrap overflow-hidden text-sm text-gray-700 p-3 px-5 dark:text-gray-200 *:grid *:lg:grid-cols-3 **:even:col-span-2 **:odd:uppercase">
                         <p>
                             <span className="font-semibold text-gray-800 ">MQTT URL</span>
                             {device.snamqtturl || "Not configured"}
