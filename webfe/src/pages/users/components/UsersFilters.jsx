@@ -47,20 +47,15 @@ const UsersFilters = ({
         { value: 'END_USER', label: 'End User' },
     ];
 
-    // Define role options for customer admin
     const customerRoleOptions = [
         { value: '', label: 'All Roles' },
         { value: 'CUSTOMER_ADMIN', label: 'Customer Admin' },
         { value: 'CUSTOMER_USER', label: 'Customer User' },
         { value: 'END_USER', label: 'End User' },
     ];
-
-    // Determine which filters to show based on user role
     const isMacsoftUser = loginUser?.role === 'MACSOFT_ADMIN' || loginUser?.role === 'MACSOFT_USER';
     const isCustomerAdmin = loginUser?.role === 'CUSTOMER_ADMIN';
     const showManufacturerFilter = isMacsoftUser;
-    
-    // Choose the appropriate role options based on user role
     const availableRoleOptions = isCustomerAdmin ? customerRoleOptions : roleOptions;
 
     return (
@@ -82,7 +77,6 @@ const UsersFilters = ({
                         />
                     </div>
                 </div>
-                
                 <div className="w-full sm:w-48">
                     <Select
                         options={[
@@ -97,7 +91,6 @@ const UsersFilters = ({
                         className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600"
                     />
                 </div>
-
                 <div className="w-full sm:w-48">
                     <Select
                         options={availableRoleOptions}
@@ -108,7 +101,6 @@ const UsersFilters = ({
                         className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600"
                     />
                 </div>
-
                 {showManufacturerFilter && (
                     <div className="w-full sm:w-48">
                         <Select
@@ -124,7 +116,6 @@ const UsersFilters = ({
                         />
                     </div>
                 )}
-
                 <div className="flex flex-row gap-2 items-center h-full">
                     <Button type="submit" variant="primary">
                         Apply Filters
