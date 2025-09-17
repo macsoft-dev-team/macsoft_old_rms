@@ -37,6 +37,7 @@ const createCommand = async (commandData, user) => {
     const notification = await createNotification({
       user: user,
       eventType: "crud",
+      operation: "create",
       title: "New Command sent to Device",
       message: ` Command ${command.payload} sent to device ${_device.name} successfully.`,
     });

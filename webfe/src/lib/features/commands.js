@@ -35,6 +35,7 @@ export const postCommand = createAsyncThunk(
       const response = await axios.post(API_ENDPOINTS.commands, data, {
         withCredentials: true,
       });
+      dispatch(fetchCommands({ skip: null, take: null, filter: '', deviceId: data.deviceId }));
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
