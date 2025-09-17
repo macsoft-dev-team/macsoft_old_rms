@@ -120,6 +120,7 @@ export const usersState ={
     search: "",
     status: "",
     role: "",
+    manufacturer: "",
   },
   mode: {
     create: false,

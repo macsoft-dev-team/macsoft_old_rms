@@ -60,10 +60,10 @@ const updateUser = async (req, res) => {
   const user = req.user;
   const userData = req.body;
   try {
-    if (user.role !== "MACSOFT_ADMIN" && user.role !== "MACSOFT_USER") {
-      delete userData.customerId;
+ 
+    if(userData.password) {
+      userData.password = await hashPassword(userData.password);
     }
-    userData.password = await hashPassword(userData.password);
     const updatedUser = await userService.updateUser(id, userData, user);
 
     if (!updatedUser) {
