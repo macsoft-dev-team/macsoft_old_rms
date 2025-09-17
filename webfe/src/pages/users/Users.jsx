@@ -44,7 +44,6 @@ export default function Users() {
     { key: 'name', label: 'Name', align: 'left' },
     { key: 'role', label: 'Role', align: 'left' },
     { key: 'status', label: 'Status', align: 'center' },
-    { key: 'password', label: 'Password', align: 'center', render: () => '****' },
     { key: 'organisation', label: 'Organisation', align: 'left' },
   ];
 
