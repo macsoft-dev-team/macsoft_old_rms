@@ -5,9 +5,9 @@ import { Dialog, DialogTrigger } from '../../components/ui/dialog';
 import TitleHead from '../../components/TitleHead';
 import ModbusTemplateModal from './components/ModbusTemplateModal';
 import ConfirmDeleteDialog from './components/ConfirmDeleteDialog';
-import ModbusTemplatesTable from './components/ModbusTemplatesTable';
 import useTemplate from '../../hooks/useTemplate';
 import { useEffect } from 'react';
+import ReusableTable from '../../components/ui/reusableTable';
 
 const ModbusTemplates = () => {
   const {
@@ -29,26 +29,20 @@ const ModbusTemplates = () => {
   } = useTemplate();
 
   const handleModeChange = (newMode, templateData = null) => {
-    setMode(newMode);
+    if (newMode === null) {
+      setMode(null);
+    } else {
+      setMode(newMode, true);
+    }
     if (templateData !== undefined) {
       setTemplate(templateData);
     }
   };
-
-
-
   const handleDeleteTemplate = (id) => {
     deleteTemplate(id)
       .then(() => {
-         handleModeChange(null, null);
+        handleModeChange(null, null);
       })
-      .catch(() => {
-        // Keep confirmation dialog open on error
-      });
-  };
-
-  const openConfirmDelete = (templateToDelete) => {
-    handleModeChange('confirmDelete', templateToDelete);
   };
 
   const confirmDelete = () => {
@@ -63,7 +57,11 @@ const ModbusTemplates = () => {
   };
 
   const handleOpenView = (viewTemplate) => {
-    handleModeChange('view', viewTemplate);
+    handleModeChange('view', { ...viewTemplate });
+  };
+
+  const handleOpenDelete = (deleteTemplate) => {
+    handleModeChange('confirmDelete', { ...deleteTemplate });
   };
 
   const handleSave = (data) => {
@@ -132,15 +130,35 @@ const ModbusTemplates = () => {
           onSave={handleSave}
           disableSave={false}
         />
+
+        <ModbusTemplateModal
+          open={mode?.view || false}
+          onOpenChange={open => handleModeChange(open ? 'view' : null)}
+          mode="view"
+          template={template || { name: '', driveCode: '', parameters: [] }}
+          onSave={handleSave}
+          disableSave={true}
+        />
       </TitleHead>
 
-      <ModbusTemplatesTable
-         onView={handleOpenView}
+      <ReusableTable
+        data={templates}
+        headerColor="bg-gray-100 dark:bg-blue-900 "
+        headerTextColor="text-gray-700 dark:text-gray-200"
+        columns={[
+          { key: 'name', label: 'Name', align: 'left' },
+          { key: 'driveCode', label: 'Drive Code', align: 'left' },
+        ]}
+        loading={loading}
+        error={error}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+        onRowClick={handleOpenView}
         onEdit={handleOpenEdit}
-        onDelete={openConfirmDelete}
-        isViewing={mode?.view || false}
-        setIsViewing={v => handleModeChange(v ? 'view' : null)}
-        viewTemplate={template}
+        onView={handleOpenView}
+        onDelete={handleOpenDelete}
+        emptyMessage="No templates found. Create a new template to get started."
       />
 
       <ConfirmDeleteDialog
