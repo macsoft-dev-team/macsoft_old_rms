@@ -45,6 +45,7 @@ const createTemplate = async (templateData, user) => {
     const notification = await createNotification({
       user: user,
       eventType: "crud",
+      operation: "create",
       title: "New Template Created",
       message: `New template created - ${newTemplate.name}`,
     });
@@ -63,6 +64,7 @@ const updateTemplate = async (id, templateData, user) => {
     const notification = await createNotification({
       user: user,
       eventType: "crud",
+      operation: "update",
       title: "Template Updated",
       message: `Template updated - ${updatedTemplate.name}`,
     });
@@ -80,6 +82,7 @@ const deleteTemplate = async (id,user) => {
     const notification = await createNotification({
       user: user,
       eventType: "crud",
+      operation: "delete",
       title: "Template Deleted",
       message: `Template deleted - ${deletedTemplate.name}`,
     });
