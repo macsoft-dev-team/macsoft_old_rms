@@ -28,17 +28,18 @@ enum status {
 }
 
 model user {
-  id            String         @id @default(cuid())
-  email         String         @unique
-  name          String?
-  password      String
-  isActive      Boolean        @default(true)
-  role          role           @default(END_USER)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  customerId    String?
-  customer      customer?      @relation(fields: [customerId], references: [id])
-  recipients notificationRecipient[]
+  id           String                  @id @default(cuid())
+  email        String                  @unique
+  name         String?
+  password     String
+  isActive     Boolean                 @default(true)
+  role         role                    @default(END_USER)
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
+  customerId   String?
+  customer     customer?               @relation(fields: [customerId], references: [id])
+  recipients   notificationRecipient[]
+  notification notification[]
 }
 
 model customer {
@@ -125,22 +126,26 @@ model command {
 }
 
 model notification {
-  id        String   @id @default(cuid())
-  title     String
-  message   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String                  @id @default(cuid())
+  title      String
+  message    String
+  type       String
+  createdAt  DateTime                @default(now())
+  updatedAt  DateTime                @updatedAt
+  user       user                    @relation(fields: [userId], references: [id])
+  userId     String
   recipients notificationRecipient[]
 }
 
 model notificationRecipient {
-  id             String      @id @default(cuid())
+  id             String       @id @default(cuid())
   notification   notification @relation(fields: [notificationId], references: [id])
   notificationId String
-  user           user        @relation(fields: [userId], references: [id])
+  user           user         @relation(fields: [userId], references: [id])
   userId         String
-  readAt         DateTime?   // null = unread, set when user reads
-  
+  isRead         Boolean      @default(false)
+  readAt         DateTime? // null = unread, set when user reads
+
   @@unique([notificationId, userId])
 }
 

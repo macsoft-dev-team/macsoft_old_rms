@@ -53,13 +53,14 @@ export const createNotification = createAsyncThunk(
 
 export const updateNotification = createAsyncThunk(
   "notifications/updateNotification",
-  async ({ notificationId, data }, { rejectWithValue }) => {
+  async ({ notificationId, data }, { rejectWithValue ,dispatch }) => {
     try {
       const response = await axios.put(
         `${API_ENDPOINTS.notifications}/${notificationId}/read`,
         data,
         { withCredentials: true }
       );
+      dispatch(fetchNotifications({ skip: 0, take: 10, filter: "" }));
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);

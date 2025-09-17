@@ -92,11 +92,12 @@ const uploadDevice = async (devicesFromXL, user) => {
     const notification = await createNotification({
       user: user,
       eventType: "crud",
+      operation: "BULK_UPLOAD",
       title: "Device Upload Completed",
       message: `Device upload completed. ${totalCreated} devices created, ${
         totalProcessed - totalCreated
       } duplicates skipped.`,
-    });
+    }); 
 
     return {
       totalProcessed,

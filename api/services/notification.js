@@ -27,6 +27,7 @@ const getAllNotifications = async (skip, take, filter, userId) => {
           },
         },
       },
+      orderBy: { createdAt: 'desc' },
     };
 
     // Build where clause
@@ -39,10 +40,31 @@ const getAllNotifications = async (skip, take, filter, userId) => {
     }
 
     if (filter) {
-      params.where = {
-        ...params.where,
-        ...filter,
-      };
+      const parsedFilter = typeof filter === 'string' ? JSON.parse(filter) : filter;
+      
+      // Handle search - search in title and message
+      if (parsedFilter.search) {
+        params.where.OR = [
+          { title: { contains: parsedFilter.search } },
+          { message: { contains: parsedFilter.search } }
+        ];
+      }
+      
+      // Handle type filter
+      if (parsedFilter.type) {
+        params.where.type = parsedFilter.type;
+      }
+      
+      // Handle date range filtering
+      if (parsedFilter.fromDate || parsedFilter.toDate) {
+        params.where.createdAt = {};
+        if (parsedFilter.fromDate) {
+          params.where.createdAt.gte = new Date(parsedFilter.fromDate);
+        }
+        if (parsedFilter.toDate) {
+          params.where.createdAt.lte = new Date(parsedFilter.toDate);
+        }
+      }
     }
 
     // Pagination
@@ -92,16 +114,14 @@ const NOTIFICATION_RULES = {
   },
 };
 
-const createNotification = async ({ user, eventType, title, message }) => {
-  // 1. Determine recipient roles
-  const userRole = user.role;
+const createNotification = async ({ user, eventType, title, message ,operation}) => {
+   const userRole = user.role;
   const rule = NOTIFICATION_RULES[userRole] || {};
   const recipientRoles = rule[eventType] || [];
 
   if (recipientRoles.length === 0) return null;
 
-  // 2. Find all users with those roles (excluding the actor)
-  const recipients = await prisma.user.findMany({
+   const recipients = await prisma.user.findMany({
     where: {
       role: { in: recipientRoles },
       id: { not: user.id },
@@ -116,6 +136,8 @@ const createNotification = async ({ user, eventType, title, message }) => {
     data: {
       title,
       message,
+      userId: user.id,
+      type: operation,
       recipients: {
         create: recipients.map((u) => ({
           user: { connect: { id: u.id } },
@@ -137,7 +159,7 @@ const markNotificationAsRead = async (userId, notificationId) => {
           userId: userId,
         },
       },
-      data: { readAt: new Date() },
+      data: { readAt: new Date() ,isRead: true },
     });
     const notification = await getNotificationById(
       notificationId,

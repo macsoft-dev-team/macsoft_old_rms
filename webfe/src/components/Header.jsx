@@ -130,8 +130,7 @@ const Header = () => {
   const handleMarkAsRead = (notificationId) => {
     try {
       updateNotification({ notificationId });
-      // Refresh notifications after marking as read
-      fetchNotifications({ skip: 0, take: 0 });
+      
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }

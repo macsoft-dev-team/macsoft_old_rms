@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import {
   fetchUserById,
   fetchUsers,
@@ -7,18 +7,19 @@ import {
   createUser,
   deleteUser,
   setMode,
+  setFilter,
 } from "../lib/features/users";
 import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "../components/ui/toast";
-import { extractErrorMessage, createErrorHandler } from "../utils/errorUtils";
+import { createErrorHandler } from "../utils/errorUtils";
 
 const useUser = () => {
   const dispatch = useDispatch();
-  const { user, users, filter, loading, error, mode } = useSelector(
+  const { user, users, filter, loading, error, mode, currentPage, totalPages } = useSelector(
     (state) => state.user
   );
   const { addToast } = useToast();
- 
+
   const setUserCallback = useCallback(
     (user) => dispatch(setUser(user)),
     [dispatch]
@@ -31,15 +32,18 @@ const useUser = () => {
     [dispatch]
   );
 
-  const getUsers = useCallback((params) => {
-    dispatch(fetchUsers(params));
-  }, [dispatch]);
+  const getUsers = useCallback(
+    (params) => {
+      dispatch(fetchUsers(params));
+    },
+    [dispatch]
+  );
 
   const updateUserCallback = useCallback(
     (user) => {
       const { id, ...userData } = user;
       return dispatch(updateUser({ id, userData }))
-        .unwrap() // This unwraps the promise and throws on rejection
+        .unwrap()
         .then((result) => {
           addToast({
             title: "Success!",
@@ -93,6 +97,11 @@ const useUser = () => {
     [dispatch]
   );
 
+  const setFilterCallback = useCallback(
+    (filterData) => dispatch(setFilter(filterData)),
+    [dispatch]
+  );
+
   const fetchUsersCallback = useCallback(
     (params) => {
       dispatch(fetchUsers(params));
@@ -102,8 +111,7 @@ const useUser = () => {
 
   const onPageChange = useCallback(
     (page) => {
-      dispatch(setCurrentPage(page));
-      getUsers({ skip: page, take: 10, filter: filter });
+       getUsers({ skip: page, take: 10, filter: filter });
     },
     [dispatch, getUsers, filter]
   );
@@ -113,6 +121,8 @@ const useUser = () => {
     user,
     users,
     filter,
+    currentPage,
+    totalPages,
     fetchUsers: fetchUsersCallback,
     loading,
     error,
@@ -123,7 +133,8 @@ const useUser = () => {
     createUser: createUserCallback,
     deleteUser: deleteUserCallback,
     setMode: setModeCallback,
-    onPageChange
+    setFilter: setFilterCallback,
+    onPageChange,
   };
 };
 
