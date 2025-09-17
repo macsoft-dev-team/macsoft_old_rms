@@ -18,24 +18,16 @@ const uploadDevice = async (devicesFromXL, batchSize = 100,user) => {
       `Starting batch update for ${validDevices.length} devices with batch size: ${batchSize}`
     );
 
-    const devicesTransformed = await Promise.all(
-      validDevices.map((device) => ({
-        ...device,
-        imeinumber: String(device.imeinumber),
-        snamqttpassword: device.snamqttpassword
-          ? bcrypt.hashSync(device.snamqttpassword, 10)
-          : null,
-      }))
-    );
+  
 
     // Batch processing
-    const totalBatches = Math.ceil(devicesTransformed.length / batchSize);
+    const totalBatches = Math.ceil(validDevices.length / batchSize);
     const results = [];
     let totalUpdated = 0;
     let totalCreated = 0;
 
     for (let i = 0; i < totalBatches; i++) {
-      const batch = devicesTransformed.slice(
+      const batch = validDevices.slice(
         i * batchSize,
         (i + 1) * batchSize
       );
@@ -48,7 +40,7 @@ const uploadDevice = async (devicesFromXL, batchSize = 100,user) => {
           try {
             const result = await prisma.device.upsert({
               where: {
-                imeinumber: device.imeinumber,
+                imeinumber: String(device.imeinumber),
               },
               update: {
                 snamqtturl: device.snamqtturl ?? undefined,
@@ -60,7 +52,7 @@ const uploadDevice = async (devicesFromXL, batchSize = 100,user) => {
                   device.snamqttsubtopiccmdresponse ?? undefined,
               },
               create: {
-                imeinumber: device.imeinumber,
+                imeinumber: String(device.imeinumber),
                 snamqtturl: device.snamqtturl ?? undefined,
                 snamqttusername: device.snamqttusername ?? undefined,
                 snamqttpassword: device.snamqttpassword ?? undefined,
@@ -101,12 +93,13 @@ const uploadDevice = async (devicesFromXL, batchSize = 100,user) => {
       const notification = await createNotification({
         user: user,
         eventType: "crud",
+        operation: "sna mapping upload",
         title: "Mapping SNA Upload Completed",
         message: `Mapping SNA upload updated ${totalUpdated} devices`,
       });
 
     return {
-      totalProcessed: devicesTransformed.length,
+      totalProcessed: validDevices.length,
       totalUpdated,
       totalCreated,
       notification,

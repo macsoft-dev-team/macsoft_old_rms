@@ -59,42 +59,14 @@ export const uploadMapping = createAsyncThunk(
   "mappings/uploadMapping",
   async (formData, { rejectWithValue, dispatch }) => {
     try {
-      // Step 1: upload file
-      const res = await axios.post(
+       const res = await axios.post(
         `${API_ENDPOINTS.upload}/mappings`,
         formData,
         { withCredentials: true }
-      );
-      const { jobId } = res.data;
+      ); 
+      dispatch(fetchMappings({ skip: 0, take: 12, filter: "" }));
 
-      // Step 2: open SSE
-      dispatch(uploadStarted());
-      const evtSource = new EventSource(
-        `${API_ENDPOINTS.upload}/mappings/stream?jobId=${jobId}`,
-        { withCredentials: true }
-      );
-
-      evtSource.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-
-        if (data.error) {
-          dispatch(uploadError(data.error));
-          evtSource.close();
-        } else if (data.done) {
-          dispatch(uploadSuccess());
-          evtSource.close();
-        } else {
-          // 👇 includes updated items
-          dispatch(uploadProgress(data));
-        }
-      };
-
-      evtSource.onerror = () => {
-        dispatch(uploadError("Upload stream failed"));
-        evtSource.close();
-      };
-
-      return { jobId };
+      return res.data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
