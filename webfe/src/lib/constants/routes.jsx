@@ -9,6 +9,7 @@ import {
   Network,
   UsersRound,
   Bell,
+  AlertTriangle,
 } from 'lucide-react';
 
 import Layout from '../../components/Layout';
@@ -20,6 +21,7 @@ import MQTTCommands from '../../pages/mqttcommands/MQTTCommands';
 import ModbusTemplates from '../../pages/modbustemplates/ModbusTemplates';
 import SettingsPage from '../../pages/Settings';
 import Devices from '../../pages/devices/Devices';
+import FaultyDevices from '../../pages/faultyDevices/FaultyDevices';
 import Manufacturers from '../../pages/manufacturers/Manufacturers';
 import NotFound from '../../pages/NotFound';
 import { createBrowserRouter } from 'react-router-dom';
@@ -42,6 +44,13 @@ const BASE_ITEMS = {
     label: 'Devices',
     category: 'main',
     element: <Devices />,
+  },
+  faultyDevices: {
+    path: '/faulty-devices',
+    icon: AlertTriangle,
+    label: 'Faulty Devices',
+    category: 'main',
+    element: <FaultyDevices />,
   },
   deviceDetails: {
     path: '/devices/:deviceId',
@@ -122,6 +131,7 @@ const ROLE_ITEMS = {
   MACSOFT_ADMIN: [
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
+    BASE_ITEMS.faultyDevices,
     BASE_ITEMS.mappings,
     BASE_ITEMS.deviceDetails,
     BASE_ITEMS.manufacturers,
@@ -130,11 +140,12 @@ const ROLE_ITEMS = {
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
     BASE_ITEMS.settings,
-    BASE_ITEMS.notifications,
+    BASE_ITEMS.notifications
   ],
   MACSOFT_USER: [
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
+    BASE_ITEMS.faultyDevices,
     BASE_ITEMS.mappings,
     BASE_ITEMS.deviceDetails,
     BASE_ITEMS.manufacturerDevices,
@@ -146,6 +157,7 @@ const ROLE_ITEMS = {
   CUSTOMER_ADMIN: [
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
+    BASE_ITEMS.faultyDevices,
     BASE_ITEMS.mappings,
     BASE_ITEMS.deviceDetails,
     BASE_ITEMS.users,
@@ -157,12 +169,14 @@ const ROLE_ITEMS = {
   CUSTOMER_USER: [
     BASE_ITEMS.dashboard,
     BASE_ITEMS.devices,
+    BASE_ITEMS.faultyDevices,
     BASE_ITEMS.mappings,
     BASE_ITEMS.deviceDetails,
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
     BASE_ITEMS.settings,
     BASE_ITEMS.notifications,
+
   ],
   END_USER: [BASE_ITEMS.endUserDevices],
 };
