@@ -148,6 +148,7 @@ const ROLE_ITEMS = {
     BASE_ITEMS.faultyDevices,
     BASE_ITEMS.mappings,
     BASE_ITEMS.deviceDetails,
+    BASE_ITEMS.manufacturers,
     BASE_ITEMS.manufacturerDevices,
     BASE_ITEMS.modbus,
     BASE_ITEMS.commands,
