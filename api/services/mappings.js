@@ -46,7 +46,13 @@ const getAllDevices = async (skip, take, filter, user) => {
     const devices = await prisma.device.findMany(params);
     return { devices, count };
   } catch (error) {
-    console.error("Error fetching devices:", error);
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Fetch Devices Failed",
+      operation: "fetch",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Could not fetch devices");
   }
 };

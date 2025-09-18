@@ -55,8 +55,8 @@ export default function Notifications() {
     { key: 'title', label: 'Title', align: 'left' },
     { key: 'message', label: 'Message', align: 'left' },
     { key: 'type', label: 'Type', align: 'left' },
-    { key: 'status', label: 'Status', align: 'center' },
-    { key: 'createdAt', label: 'Created At', align: 'left', dataType: 'date' },
+/*     { key: 'status', label: 'Status', align: 'center' },
+ */    { key: 'createdAt', label: 'Created At', align: 'left', dataType: 'date' },
   ];
 
   const tableData = notifications.map(n => ({ 
@@ -81,7 +81,7 @@ export default function Notifications() {
   return (
     <div className="space-y-6">
       <TitleHead title="Notifications" description="View and manage your notifications here.">
-        <div className='flex items-center gap-2'>
+        {/* <div className='flex items-center gap-2'>
           {unreadCount > 0 && (
             <Button
               variant="outline"
@@ -92,7 +92,7 @@ export default function Notifications() {
               Mark All as Read ({unreadCount})
             </Button>
           )}
-        </div>
+        </div> */}
 
         <NotificationFormDialog
           open={mode.view}
@@ -113,7 +113,7 @@ export default function Notifications() {
         onView={handleViewNotification}
         SNo={false}
         currentPage={currentPage}
-        pageSize={totalPages}
+        totalPages={totalPages}
         bordered
         onPageChange={onPageChange}
         loading={loading}

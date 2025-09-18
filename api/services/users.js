@@ -62,6 +62,13 @@ const getUsers = async (skip, take, filter, user) => {
 
     return { users: usersWithCustomer, count };
   } catch (error) {
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      operation: "fetch",
+      title: "Fetch Users Failed",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Error fetching users: " + error.message);
   }
 };
@@ -87,7 +94,7 @@ const createUser = async (userData, user) => {
         },
       },
     });
-    const notification = await createNotification({
+    await createNotification({
       user: user,
       eventType: "crud",
       operation: "CREATE",
@@ -96,6 +103,13 @@ const createUser = async (userData, user) => {
     });
     return newUser;
   } catch (error) {
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      operation: "CREATE",
+      title: "User Creation Failed",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Error creating user");
   }
 };
@@ -111,7 +125,7 @@ const updateUser = async (id, userData, user) => {
         },
       },
     });
-    const notification = await createNotification({
+    await createNotification({
       user: user,
       eventType: "crud",
       operation: "UPDATE",
@@ -120,6 +134,13 @@ const updateUser = async (id, userData, user) => {
     });
     return updatedUser;
   } catch (error) {
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      operation: "UPDATE",
+      title: "User Update Failed",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Error updating user");
   }
 };
@@ -134,7 +155,7 @@ const deleteUser = async (id, user) => {
         },
       },
     });
-    const notification = await createNotification({
+    await createNotification({
       user: user,
       eventType: "crud",
       operation: "DELETE",
@@ -143,6 +164,13 @@ const deleteUser = async (id, user) => {
     });
     return deletedUser;
   } catch (error) {
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      operation: "DELETE",
+      title: "User Deletion Failed",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Error deleting user");
   }
 };

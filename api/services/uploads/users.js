@@ -95,8 +95,14 @@ const uploadUsers = async (usersFromXL, batchSize = 100) => {
       },
     };
   } catch (error) {
-    console.error("Error uploading user:", error);
-    throw error;  
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      operation: "upload",
+      title: "User Upload Failed",
+      message: `Error - ${error.message}`,
+    });
+    throw error;
   }
 };
 

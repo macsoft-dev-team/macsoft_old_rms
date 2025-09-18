@@ -34,7 +34,13 @@ const getAllCustomers = async (skip, take, filter, user) => {
     });
     return { customers, count };
   } catch (error) {
-    console.error("Error fetching customers:", error);
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Fetch Customers Failed",
+      operation: "fetch",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Could not fetch customers");
   }
 };
@@ -50,10 +56,16 @@ const getCustomerById = async (id, user) => {
       where: { id: id },
       include: { devices: true, users: true },
     });
-    
-    return customer
+
+    return customer;
   } catch (error) {
-    console.error("Error fetching customer by ID:", error);
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Fetch Customer Failed",
+      operation: "fetch",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Could not fetch customer");
   }
 };
@@ -66,15 +78,22 @@ const createCustomer = async (data, user) => {
       throw err;
     }
     const customer = await prisma.customer.create({ data });
-     const notification = await createNotification({
-       user: user,
-       eventType: "crud",
-       title: "New Customer Created",
-       message: `New customer created - ${customer.name} : ${customer.email}`,
-     });
+   await createNotification({
+     user: user,
+     eventType: "crud",
+     operation: "create",
+     title: "New Customer Created",
+     message: `Error - ${error.message}`,
+   });
     return customer;
   } catch (error) {
-    console.error("Error creating customer:", error);
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Customer Creation Failed",
+      operation: "create",
+      message: `Failed to create customer - ${data.name} : ${data.email}`,
+    });
     throw new Error("Could not create customer");
   }
 };
@@ -87,15 +106,22 @@ const updateCustomer = async (id, data, user) => {
       throw err;
     }
     const customer = await prisma.customer.update({ where: { id: id }, data });
-    const notification = await createNotification({
+    await createNotification({
       user: user,
       eventType: "crud",
       title: "Customer Updated",
+      operation: "update",
       message: `Customer updated - ${customer.name} : ${customer.email}`,
     });
     return customer;
   } catch (error) {
-    console.error("Error updating customer:", error);
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Customer Update Failed",
+      operation: "update",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Could not update customer");
   }
 };
@@ -108,15 +134,22 @@ const deleteCustomer = async (id, user) => {
       throw err;
     }
     const customer = await prisma.customer.delete({ where: { id: id } });
-    const notification = await createNotification({
+    await createNotification({
       user: user,
       eventType: "crud",
       title: "Customer Deleted",
+      operation: "delete",
       message: `Customer deleted - ${customer.name} : ${customer.email}`,
     });
     return customer;
   } catch (error) {
-    console.error("Error deleting customer:", error);
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Customer Deletion Failed",
+      operation: "delete",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Could not delete customer");
   }
 };
@@ -130,7 +163,13 @@ const getCustomerDevices = async (customerId, user) => {
     }
     return prisma.device.findMany({ where: { customerId } });
   } catch (error) {
-    console.error("Error fetching customer devices:", error);
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Fetch Customer Devices Failed",
+      operation: "fetch",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Could not fetch customer devices");
   }
 };
