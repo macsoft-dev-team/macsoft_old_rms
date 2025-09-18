@@ -32,6 +32,7 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showAccountDialog, setShowAccountDialog] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [hasRefetched, setHasRefetched] = useState(false);
 
   const [formData, setFormData] = useState({
     name: user?.name || '',
@@ -47,6 +48,7 @@ const Header = () => {
 
   useEffect(() => {
     fetchNotifications({ skip: 0, take: 0 });
+    setHasRefetched(true);
   }, [user]);
 
   useEffect(() => {
@@ -127,14 +129,7 @@ const Header = () => {
     }
   };
 
-  const handleMarkAsRead = (notificationId) => {
-    try {
-      updateNotification({ notificationId });
-      
-    } catch (error) {
-      console.error('Error marking notification as read:', error);
-    }
-  };
+
 
   const formatNotificationTime = (timestamp) => {
     if (!timestamp) return '';
@@ -188,7 +183,7 @@ const Header = () => {
               className="relative cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-700"
             >
               <Bell className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              {unreadCount > 0 && (
+              {hasRefetched && unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                   {unreadCount}
                 </span>
@@ -204,14 +199,10 @@ const Header = () => {
                 <div className="max-h-80 overflow-y-auto">
                   {notifications && notifications.length > 0 ? (
                     notifications.map((notification) => {
-                      const isUnread = notification.recipients?.some(r => !r.readAt) || false;
                       return (
                         <div
                           key={notification.id}
-                          className={`p-4 border-b border-gray-100 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 ${isUnread
-                              ? 'bg-blue-50 dark:bg-blue-900/20'
-                              : 'bg-gray-50 dark:bg-gray-700'
-                            }`}
+                          className="p-4 border-b border-gray-100 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
                         >
                           <div className="flex items-start space-x-3">
                             <span className="text-lg">
@@ -228,22 +219,8 @@ const Header = () => {
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
                                   {formatNotificationTime(notification.createdAt)}
                                 </p>
-                                {isUnread && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleMarkAsRead(notification.id);
-                                    }}
-                                    className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-800 px-2 py-1 rounded dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50 transition-colors"
-                                  >
-                                    Mark as Read
-                                  </button>
-                                )}
                               </div>
                             </div>
-                            {isUnread && (
-                              <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                            )}
                           </div>
                         </div>
                       );
