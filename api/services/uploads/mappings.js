@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const { createNotification } = require("../notification");
 const prisma = new PrismaClient();
 
-const uploadDevice = async (devicesFromXL, batchSize = 100,user) => {
+const uploadDevice = async (devicesFromXL, batchSize = 100, user) => {
   try {
     // Filter out devices with valid imeinumber
     const validDevices = devicesFromXL.filter(
@@ -18,8 +18,6 @@ const uploadDevice = async (devicesFromXL, batchSize = 100,user) => {
       `Starting batch update for ${validDevices.length} devices with batch size: ${batchSize}`
     );
 
-  
-
     // Batch processing
     const totalBatches = Math.ceil(validDevices.length / batchSize);
     const results = [];
@@ -27,10 +25,7 @@ const uploadDevice = async (devicesFromXL, batchSize = 100,user) => {
     let totalCreated = 0;
 
     for (let i = 0; i < totalBatches; i++) {
-      const batch = validDevices.slice(
-        i * batchSize,
-        (i + 1) * batchSize
-      );
+      const batch = validDevices.slice(i * batchSize, (i + 1) * batchSize);
 
       console.log(`Processing batch ${i + 1}/${totalBatches}`);
 
@@ -90,13 +85,13 @@ const uploadDevice = async (devicesFromXL, batchSize = 100,user) => {
       }
     }
 
-      const notification = await createNotification({
-        user: user,
-        eventType: "crud",
-        operation: "sna mapping upload",
-        title: "Mapping SNA Upload Completed",
-        message: `Mapping SNA upload updated ${totalUpdated} devices`,
-      });
+    const notification = await createNotification({
+      user: user,
+      eventType: "crud",
+      operation: "sna mapping upload",
+      title: "Mapping SNA Upload Completed",
+      message: `Mapping SNA upload updated ${totalUpdated} devices`,
+    });
 
     return {
       totalProcessed: validDevices.length,
@@ -106,7 +101,13 @@ const uploadDevice = async (devicesFromXL, batchSize = 100,user) => {
       batchResults: results,
     };
   } catch (error) {
-    console.error("Error uploading device:", error);
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      operation: "upload",
+      title: "Mapping SNA Upload Failed",
+      message: `Error - ${error.message}`,
+    });
     throw error;
   }
 };

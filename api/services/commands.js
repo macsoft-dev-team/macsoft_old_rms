@@ -4,25 +4,36 @@ const mqtt = require("mqtt");
 const { createNotification } = require("./notification");
 
 const getAllCommandsByDeviceId = async (skip, take, filter, deviceId) => {
-  const params = {
-    where: {},
-  };
-  if (skip) params.skip = (parseInt(skip) - 1) * parseInt(take) || 0;
-  if (take) params.take = parseInt(take);
-  if (deviceId) {
-    params.where.deviceId = deviceId;
-  }
-  const count = await prisma.command.count({
-    where: params.where,
-  });
-  const commands = await prisma.command.findMany({
-    where: params.where,
-    ...params,
-    orderBy: { createdAt: "asc" },
-    include: { device: true },
-  });
+  try {
+    const params = {
+      where: {},
+    };
+    if (skip) params.skip = (parseInt(skip) - 1) * parseInt(take) || 0;
+    if (take) params.take = parseInt(take);
+    if (deviceId) {
+      params.where.deviceId = deviceId;
+    }
+    const count = await prisma.command.count({
+      where: params.where,
+    });
+    const commands = await prisma.command.findMany({
+      where: params.where,
+      ...params,
+      orderBy: { createdAt: "asc" },
+      include: { device: true },
+    });
 
-  return { commands, count };
+    return { commands, count };
+  } catch (error) {
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Fetch Commands Failed",
+      operation: "fetch",
+      message: `Error - ${error.message}`,
+    });
+    throw new Error("Could not fetch commands");
+  }
 };
 
 const createCommand = async (commandData, user) => {
@@ -58,7 +69,13 @@ const createCommand = async (commandData, user) => {
 
     return command;
   } catch (error) {
-    console.error("Error creating command:", error);
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Create Command Failed",
+      operation: "create",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Could not create command");
   }
 };

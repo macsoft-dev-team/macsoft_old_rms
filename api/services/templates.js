@@ -22,6 +22,13 @@ const getTemplates = async (skip, take, filter) => {
     const templates = await prisma.template.findMany(params);
     return { templates, count };
   } catch (error) {
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      title: "Fetch Templates Failed",
+      operation: "fetch",
+      message: `Failed to fetch templates`,
+    });
     throw new Error("Error fetching templates");
   }
 };
@@ -51,6 +58,13 @@ const createTemplate = async (templateData, user) => {
     });
     return newTemplate;
   } catch (error) {
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      operation: "create",
+      title: "Create Template Failed",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Error creating template");
   }
 };
@@ -70,6 +84,13 @@ const updateTemplate = async (id, templateData, user) => {
     });
     return updatedTemplate;
   } catch (error) {
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      operation: "update",
+      title: "Update Template Failed",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Error updating template");
   }
 };
@@ -88,6 +109,13 @@ const deleteTemplate = async (id,user) => {
     });
     return deletedTemplate;
   } catch (error) {
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      operation: "delete",
+      title: "Delete Template Failed",
+      message: `Error - ${error.message}`,
+    });
     throw new Error("Error deleting template");
   }
 };

@@ -70,10 +70,7 @@ const uploadDevice = async (devicesFromXL, user) => {
           });
           result.push(res);
         } catch (error) {
-          console.error(
-            `Error processing device ${item.imeinumber}:`,
-            error
-          );
+          console.error(`Error processing device ${item.imeinumber}:`, error);
         }
       }
 
@@ -97,7 +94,7 @@ const uploadDevice = async (devicesFromXL, user) => {
       message: `Device upload completed. ${totalCreated} devices created, ${
         totalProcessed - totalCreated
       } duplicates skipped.`,
-    }); 
+    });
 
     return {
       totalProcessed,
@@ -113,8 +110,14 @@ const uploadDevice = async (devicesFromXL, user) => {
       },
     };
   } catch (error) {
-    console.error("Error uploading device:", error);
-    throw error; // Re-throw the error so it can be handled by the controller
+    await createNotification({
+      user: user,
+      eventType: "crud",
+      operation: "upload",
+      title: "Device Upload Failed",
+      message: `Error - ${error.message}`,
+    });
+    throw error; 
   }
 };
 

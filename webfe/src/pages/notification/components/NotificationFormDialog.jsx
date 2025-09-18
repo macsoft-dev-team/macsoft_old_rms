@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
 import { Button } from '../../../components/ui/button';
-import { CheckCheck, FileText, MessageSquare, Tag, Eye, Calendar, Clock } from 'lucide-react';
+import { CheckCheck, FileText, MessageSquare, Tag, Eye, Calendar, Clock, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function NotificationFormDialog({
@@ -157,12 +157,58 @@ export default function NotificationFormDialog({
               </div>
             </motion.div>
 
+            {/* Recipients */}
+            {notification.recipients && notification.recipients.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <label className="text-base font-medium text-gray-700 dark:text-blue-100 mb-2 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-cyan-500" />
+                  Recipients ({notification.recipients.length})
+                </label>
+                <div className="px-4 py-3 space-y-2">
+                  {notification.recipients.map((recipient, index) => (
+                    <motion.div 
+                      key={recipient.id}
+                      className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6 + (index * 0.1) }}
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-gray-800 dark:text-blue-100 text-sm font-medium">
+                          {recipient.user?.name || 'Unknown User'}
+                        </span>
+                        <span className="text-gray-600 dark:text-blue-200 text-xs">
+                          {recipient.user?.email || 'No email'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          recipient.isRead 
+                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
+                            : 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400'
+                        }`}>
+                          {recipient.isRead ? 'Read' : 'Unread'}
+                        </span>
+                        {recipient.isRead && (
+                          <CheckCheck className="w-3 h-3 text-green-500" />
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
             {/* Actions */}
             <motion.div 
               className="flex justify-end space-x-2 pt-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.7 }}
             >
               {!notification.isRead && onMarkAsRead && (
                 <motion.div

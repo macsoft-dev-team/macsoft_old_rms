@@ -15,7 +15,7 @@ const getNotificationById = async (id, notificationRecipient) => {
   }
 };
 
-const getAllNotifications = async (skip, take, filter, userId) => {
+/* const getAllNotifications = async (skip, take, filter, userId) => {
   try {
     const params = {
       include: {
@@ -94,6 +94,64 @@ const getAllNotifications = async (skip, take, filter, userId) => {
     console.error("Error fetching notifications:", error);
     throw error;
   }
+}; */
+
+//get the notification respective to the user created
+const getAllNotifications = async (skip, take, filter, userId) => {
+  try {
+    const params = {
+      include: {
+        recipients: {
+          include: {
+            user: {
+              select: { id: true, name: true, email: true, role: true },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    };
+    // Build where clause
+    params.where = {};
+    if (userId) {
+      params.where.userId = userId;
+    }
+    if (filter) {
+      const parsedFilter =
+        typeof filter === "string" ? JSON.parse(filter) : filter;
+      // Handle search - search in title and message
+      if (parsedFilter.search) {
+        params.where.OR = [
+          { title: { contains: parsedFilter.search } },
+          { message: { contains: parsedFilter.search } },
+        ];
+      }
+      // Handle type filter
+      if (parsedFilter.type) {
+        params.where.type = parsedFilter.type;
+      }
+      // Handle date range filtering
+      if (parsedFilter.fromDate || parsedFilter.toDate) {
+        params.where.createdAt = {};
+        if (parsedFilter.fromDate) {
+          params.where.createdAt.gte = new Date(parsedFilter.fromDate);
+        }
+        if (parsedFilter.toDate) {
+          params.where.createdAt.lte = new Date(parsedFilter.toDate);
+        }
+      }
+    }
+    // Pagination
+    if (skip) params.skip = (parseInt(skip) - 1) * parseInt(take) || 0;
+    if (take) params.take = parseInt(take);
+    const count = await prisma.notification.count({ where: params.where });
+    const notifications = await prisma.notification.findMany(params);
+
+    return { notifications, count };
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    throw error;
+  }
 };
 
 const NOTIFICATION_RULES = {
@@ -114,14 +172,20 @@ const NOTIFICATION_RULES = {
   },
 };
 
-const createNotification = async ({ user, eventType, title, message ,operation}) => {
-   const userRole = user.role;
+const createNotification = async ({
+  user,
+  eventType,
+  title,
+  message,
+  operation,
+}) => {
+  const userRole = user.role;
   const rule = NOTIFICATION_RULES[userRole] || {};
   const recipientRoles = rule[eventType] || [];
 
   if (recipientRoles.length === 0) return null;
 
-   const recipients = await prisma.user.findMany({
+  const recipients = await prisma.user.findMany({
     where: {
       role: { in: recipientRoles },
       id: { not: user.id },
@@ -159,7 +223,7 @@ const markNotificationAsRead = async (userId, notificationId) => {
           userId: userId,
         },
       },
-      data: { readAt: new Date() ,isRead: true },
+      data: { readAt: new Date(), isRead: true },
     });
     const notification = await getNotificationById(
       notificationId,
