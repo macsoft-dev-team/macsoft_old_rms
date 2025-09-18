@@ -43,7 +43,7 @@ const Sidebar = () => {
   const renderMenuItem = (item) => {
     const Icon = item.icon;
     const isActive = location.pathname === item.path;
-    if (item.hidden) return null; 
+    if (item.hidden) return null;
     return (
       <Link
         key={item.path}
@@ -147,7 +147,7 @@ const Sidebar = () => {
           )}
         </nav>
 
-         <div className="border-t border-gray-200 p-4 dark:border-gray-700">       
+      {/*   <div className="border-t border-gray-200 p-4 dark:border-gray-700">
           <button
             onClick={handleLogout}
             className={`flex items-center w-full px-1 py-2 text-gray-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors dark:text-gray-300 dark:hover:bg-red-900/20 dark:hover:text-red-400 ${sidebarCollapsed ? 'justify-center' : ''
@@ -156,7 +156,7 @@ const Sidebar = () => {
             <LogOut className={`${sidebarCollapsed ? 'lg:min-w-[20px] lg:min-h-[20px] w-5 h-5 ' : 'mr-3 w-5 h-5 '}`} />
             {!sidebarCollapsed && <span>Logout</span>}
           </button>
-        </div>
+        </div> */}
       </aside>
     </>
   );
