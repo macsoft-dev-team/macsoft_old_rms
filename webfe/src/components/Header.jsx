@@ -183,11 +183,11 @@ const Header = () => {
               className="relative cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-700"
             >
               <Bell className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              {hasRefetched && unreadCount > 0 && (
+             {/*  {hasRefetched && unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                   {unreadCount}
                 </span>
-              )}
+              )} */}
             </button>
 
             {/* Notifications Dropdown */}

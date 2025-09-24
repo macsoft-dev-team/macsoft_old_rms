@@ -101,7 +101,7 @@ export default function NotificationFormDialog({
                 </div>
               </motion.div>
               
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
@@ -132,33 +132,35 @@ export default function NotificationFormDialog({
                     )}
                   </motion.div>
                 </div>
+              </motion.div> */}
+              {/* Created At */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <label className="text-base font-medium text-gray-700 dark:text-blue-100 mb-2 flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-indigo-500" />
+                  Created At
+                </label>
+                <div className="flex items-center gap-3 px-4 py-3">
+                  <motion.div
+                    className="text-gray-800 dark:text-blue-100 text-base"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    {notification.createdAt ? new Date(notification.createdAt).toLocaleString() : 'Unknown date'}
+                  </motion.div>
+                </div>
               </motion.div>
             </div>
 
-            {/* Created At */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <label className="text-base font-medium text-gray-700 dark:text-blue-100 mb-2 flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-indigo-500" />
-                Created At
-              </label>
-              <div className="flex items-center gap-3 px-4 py-3">
-                <motion.div 
-                  className="text-gray-800 dark:text-blue-100 text-base"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  {notification.createdAt ? new Date(notification.createdAt).toLocaleString() : 'Unknown date'}
-                </motion.div>
-              </div>
-            </motion.div>
+           
+          
 
             {/* Recipients */}
-            {notification.recipients && notification.recipients.length > 0 && (
+            {/* {notification.recipients && notification.recipients.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -201,7 +203,7 @@ export default function NotificationFormDialog({
                   ))}
                 </div>
               </motion.div>
-            )}
+            )} */}
 
             {/* Actions */}
             <motion.div 
@@ -210,7 +212,7 @@ export default function NotificationFormDialog({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
             >
-              {!notification.isRead && onMarkAsRead && (
+              {/* {!notification.isRead && onMarkAsRead && (
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -226,7 +228,7 @@ export default function NotificationFormDialog({
                     Mark as Read
                   </Button>
                 </motion.div>
-              )}
+              )} */}
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
