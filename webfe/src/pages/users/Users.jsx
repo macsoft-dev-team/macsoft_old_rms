@@ -7,16 +7,12 @@ import Input from '../../components/ui/input';
 import useUser from '../../hooks/useUser';
 import { useEffect } from 'react';
 import ReusableTable from '../../components/ui/reusableTable';
+
 import UserFormDialog from './components/UserFormDialog';
 import EnhancedUploadModal from './components/EnhancedUploadModal';
-import UsersFilters from './components/UsersFilters';
-import useAuth from '../../hooks/useAuth';
-import { useManufacturer } from '../../hooks/useManufacturer';
 
 export default function Users() {
-  const { users, user, setUser, currentPage, totalPages, filter, mode, uploadUser, setMode, setFilter, getUsers, onPageChange } = useUser();
-  const { manufacturers, fetchManufacturers } = useManufacturer();
-  const { user: currentUser } = useAuth();
+  const { users, user, setUser, currentPage, totalPages, filter, mode, uploadUser, setMode, getUsers, onPageChange } = useUser();
   const [newUser, setNewUser] = useState({});
   const [showModal, setShowModal] = useState();
 
@@ -44,6 +40,7 @@ export default function Users() {
     { key: 'name', label: 'Name', align: 'left' },
     { key: 'role', label: 'Role', align: 'left' },
     { key: 'status', label: 'Status', align: 'center' },
+    { key: 'password', label: 'Password', align: 'center', render: () => '****' },
     { key: 'organisation', label: 'Organisation', align: 'left' },
   ];
 
@@ -53,13 +50,6 @@ export default function Users() {
   useEffect(() => {
     getUsers({ skip: currentPage, take: 10, filter: filter });
   }, [getUsers, filter]);
-
-  useEffect(() => {
-    // Only fetch manufacturers if user is MACSOFT_ADMIN or MACSOFT_USER
-    if (currentUser?.role === 'MACSOFT_ADMIN' || currentUser?.role === 'MACSOFT_USER') {
-      fetchManufacturers({ skip: 0, take: 100 }); // Fetch all manufacturers for filter
-    }
-  }, [fetchManufacturers, currentUser?.role]);
 
   const handleImportClick = () => {
     setShowModal(true)
@@ -147,13 +137,6 @@ export default function Users() {
           </DialogContent>
         </Dialog>
       </TitleHead>
-      
-      <UsersFilters
-        manufacturers={manufacturers}
-        setFilter={setFilter}
-        user={currentUser}
-      />
-      
       <ReusableTable
         columns={columns}
         data={tableData}
@@ -164,7 +147,7 @@ export default function Users() {
         onView={row => { setUser({ ...row, status: undefined, password: users.find(u => u.id === row.id)?.password || '' }); setMode({ ...mode, view: true }); }}
         SNo={false}
         currentPage={currentPage}
-        totalPages={totalPages}
+        pageSize={totalPages}
         bordered
         onPageChange={onPageChange}
       />

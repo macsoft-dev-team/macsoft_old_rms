@@ -6,9 +6,8 @@ import manufacturersSlice from "../features/manufacturers";
 import commandSlice from "../features/commands";
 import templatesSlice from "../features/template";
 import dashboardSlice from "../features/dashboard";
-import mappingsSlice from "../features/mappings";
+import  mappingsSlice  from "../features/mappings";
 import userSlice from "../features/users";
-import notificationSlice from "../features/notifications";
 export const store = configureStore({
   reducer: {
     ui: uiSlice,
@@ -21,7 +20,6 @@ export const store = configureStore({
     dashboard: dashboardSlice,
     mapping: mappingsSlice,
     user: userSlice,
-    notification: notificationSlice,
   },
 });
 

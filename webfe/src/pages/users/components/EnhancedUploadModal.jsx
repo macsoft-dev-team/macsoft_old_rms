@@ -157,7 +157,7 @@ const EnhancedUploadModal = ({ open, onOpenChange, uploadDevice }) => {
                 <DialogHeader>
                     <DialogTitle className="dark:text-gray-100 flex items-center space-x-2">
                         <FileSpreadsheet className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        <span>Upload User Data</span>
+                        <span>Upload Device Data</span>
                     </DialogTitle>
                 </DialogHeader>
 
@@ -374,7 +374,7 @@ const EnhancedUploadModal = ({ open, onOpenChange, uploadDevice }) => {
                         ) : (
                             <>
                                 <Upload className="w-4 h-4 mr-2" />
-                                Upload Users
+                                Upload Devices
                             </>
                         )}
                     </Button>

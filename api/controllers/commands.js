@@ -24,9 +24,8 @@ const getAllCommandsByDeviceId = async (req, res) => {
 
 const createCommand = async (req, res) => {
   const data = req.body;
-  const user = req.user;
   try {
-    const command = await commandService.createCommand(data, user);
+    const command = await commandService.createCommand(data);
     res.status(201).json(command);
   } catch (error) {
     console.error("Error creating command:", error);

@@ -29,10 +29,8 @@ const getTemplateById = async (req, res) => {
 
 const createTemplate = async (req, res) => {
   const templateData = req.body;
-  const user = req.user;
-
   try {
-    const newTemplate = await templateService.createTemplate(templateData, user);
+    const newTemplate = await templateService.createTemplate(templateData);
     res.status(201).json(newTemplate);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -42,13 +40,10 @@ const createTemplate = async (req, res) => {
 const updateTemplate = async (req, res) => {
   const { id } = req.params;
   const templateData = req.body;
-  const user = req.user;
-
   try {
     const updatedTemplate = await templateService.updateTemplate(
       id,
-      templateData,
-      user
+      templateData
     );
     if (!updatedTemplate) {
       return res.status(404).json({ error: "Template not found" });
@@ -61,9 +56,8 @@ const updateTemplate = async (req, res) => {
 
 const deleteTemplate = async (req, res) => {
   const { id } = req.params;
-  const user = req.user;
   try {
-    const deletedTemplate = await templateService.deleteTemplate(id, user);
+    const deletedTemplate = await templateService.deleteTemplate(id);
     if (!deletedTemplate) {
       return res.status(404).json({ error: "Template not found" });
     }

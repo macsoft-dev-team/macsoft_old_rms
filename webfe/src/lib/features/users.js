@@ -39,12 +39,11 @@ export const fetchUserById = createAsyncThunk(
 
 export const createUser = createAsyncThunk(
   "users/createUser",
-  async (userData, { rejectWithValue,dispatch }) => {
+  async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(API_ENDPOINTS.users, userData, {
         withCredentials: true,
       });
-      dispatch(fetchUsers({ skip: 0, take: 10, filter: null }));
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -54,14 +53,13 @@ export const createUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   "users/updateUser",
-  async ({ id, userData }, { rejectWithValue ,dispatch}) => {
+  async ({ id, userData }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
         `${API_ENDPOINTS.users}/${id}`,
         userData,
         { withCredentials: true }
       );
-      dispatch(fetchUsers({ skip: 0, take: 10, filter: null }));
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -71,12 +69,11 @@ export const updateUser = createAsyncThunk(
 
 export const deleteUser = createAsyncThunk(
   "users/deleteUser",
-  async (id, { rejectWithValue, dispatch }) => {
+  async (id, { rejectWithValue }) => {
     try {
       const response = await axios.delete(`${API_ENDPOINTS.users}/${id}`, {
         withCredentials: true,
       });
-      dispatch(fetchUsers({ skip: 0, take: 10, filter: null }));
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -115,9 +112,6 @@ const usersSlice = createSlice({
       if (action.payload) {
         state.mode = action.payload;
       }
-    },
-    setFilter: (state, action) => {
-      state.filter = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -186,6 +180,6 @@ const usersSlice = createSlice({
   },
 });
 
-export const { setUsers, setUser, setMode, setFilter } = usersSlice.actions;
+export const { setUsers, setUser, setMode } = usersSlice.actions;
 
 export default usersSlice.reducer;

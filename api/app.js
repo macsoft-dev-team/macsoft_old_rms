@@ -5,21 +5,25 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
 const indexRouter = require("./routes/index");
-
+ 
 var app = express();
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://rms.macsoftautomations.in"],
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'https://rms.macsoftautomations.in'
+    ],
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
   })
 );
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
 app.use(logger("dev"));
-app.use(express.json({ limit: "150mb" }));
+app.use(express.json());
 app.use(express.urlencoded({ extended: false, limit: "150mb" }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));

@@ -11,6 +11,7 @@ const ModbusTemplateModal = ({
   onOpenChange,
   mode,
   template,
+  setTemplate,
   onSave,
   disableSave
 }) => {
@@ -26,6 +27,7 @@ const ModbusTemplateModal = ({
     handleSubmit,
     reset,
     setValue,
+    formState: { errors }
   } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -48,7 +50,7 @@ const ModbusTemplateModal = ({
         setJsonText(JSON.stringify(templateData.parameters, null, 2));
       } else if (isCreate) {
         const emptyTemplate = {
-          name: '',
+           name: '',
           driveCode: '',
           parameters: []
         };
@@ -63,12 +65,7 @@ const ModbusTemplateModal = ({
   }, [template, open, reset, isCreate, isEdit, isView, isSubmitting]);
 
   const onSubmit = (data) => {
-    if (isCreate) {
-      data.id = undefined;
-    } else if (isEdit && template) {
-      data.id = template.id;
-    }
-
+    data.id =undefined;  
     setIsSubmitting(true);
     if (onSave) {
       onSave(data)
@@ -146,6 +143,8 @@ const ModbusTemplateModal = ({
                     onChange={(e) => {
                       const textValue = e.target.value;
                       setJsonText(textValue);
+
+                      // Try to parse and update form field
                       try {
                         const val = JSON.parse(textValue);
                         if (Array.isArray(val)) {

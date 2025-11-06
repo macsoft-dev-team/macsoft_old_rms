@@ -92,19 +92,13 @@ const templatesSlice = createSlice({
       state.template = action.payload;
     },
     setMode: (state, action) => {
-      const { mode, value = true } = action.payload || {};
-      if (mode) {
-        // Reset all modes to false first
-        Object.keys(state.mode).forEach(key => {
-          state.mode[key] = false;
-        });
-        // Set the specific mode
-        state.mode[mode] = value;
-      } else if (action.payload === null) {
-        // Reset all modes to false when payload is null
-        Object.keys(state.mode).forEach(key => {
-          state.mode[key] = false;
-        });
+      // Reset all modes to false first
+      Object.keys(state.mode).forEach(key => {
+        state.mode[key] = false;
+      });
+      // Set the specified mode to true if provided
+      if (action.payload) {
+        state.mode[action.payload] = true;
       }
     },
   },

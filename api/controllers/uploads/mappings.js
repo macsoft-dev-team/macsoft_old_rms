@@ -2,16 +2,16 @@ const XLSX = require("xlsx");
 const mappingService = require("../../services/uploads/mappings");
 const uploadDevices = async (req, res) => {
   try {
-    const user = req.user;
-    const data = req.body;
-    if (!data || !Array.isArray(data) || data.length === 0) {
-      return res.status(400).json({
-        error: "Invalid data format",
-        message: "Expected an array of devices in request body",
-      });
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
     }
 
-    if (data.length === 0) {
+    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const devicesFromXL = XLSX.utils.sheet_to_json(worksheet);
+
+    if (devicesFromXL.length === 0) {
       return res
         .status(400)
         .json({ error: "No devices found in the uploaded file" });
@@ -29,10 +29,10 @@ const uploadDevices = async (req, res) => {
     }
 
     console.log(
-      `Processing ${data.length} devices with batch size: ${batchSize}`
+      `Processing ${devicesFromXL.length} devices with batch size: ${batchSize}`
     );
 
-    const result = await mappingService.uploadDevice(data, batchSize, user);
+    const result = await mappingService.uploadDevice(devicesFromXL, batchSize);
 
     if (!result) {
       return res.status(500).json({

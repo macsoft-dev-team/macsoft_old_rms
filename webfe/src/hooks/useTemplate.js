@@ -98,13 +98,7 @@ const useTemplate = () => {
   );
 
   const setModeCallback = useCallback(
-    (modeKey, value = true) => {
-      if (modeKey === null) {
-        dispatch(setMode(null));
-      } else {
-        dispatch(setMode({ mode: modeKey, value }));
-      }
-    },
+    (modeKey) => dispatch(setMode(modeKey)),
     [dispatch]
   );
 

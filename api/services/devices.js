@@ -50,75 +50,25 @@ const getAllDevices = async (skip, take, filter, user) => {
     const devices = await prisma.device.findMany(params);
     return { devices, count };
   } catch (error) {
-    await createNotification({
-      user: user,
-      eventType: "crud",
-      title: "Fetch Devices Failed",
-      operation: "fetch",
-      message: `Error - ${error.message}`,
-    });
+    console.error("Error fetching devices:", error);
     throw new Error("Could not fetch devices");
   }
 };
 
-const getDeviceById = async (id, user) => {
-  try {
-    return prisma.device.findUnique({ where: { id } });
-  } catch (error) {
-    await createNotification({
-      user: user,
-      eventType: "crud",
-      title: "Fetch Device Failed",
-      operation: "fetch",
-      message: `Error - ${error.message}`,
-    });
-    throw new Error("Could not fetch device");
-  }
+const getDeviceById = async (id) => {
+  return prisma.device.findUnique({ where: { id } });
 };
 
-const createDevice = async (data, user) => {
-  try {
-    return prisma.device.create({ data });
-  } catch (error) {
-    await createNotification({
-      user: user,
-      eventType: "crud",
-      title: "Create Device Failed",
-      operation: "create",
-      message: `Error - ${error.message}`,
-    });
-    throw new Error("Could not create device");
-  }
+const createDevice = async (data) => {
+  return prisma.device.create({ data });
 };
 
-const updateDevice = async (id, data, user) => {
-  try {
-    return prisma.device.update({ where: { id }, data });
-  } catch (error) {
-    await createNotification({
-      user: user,
-      eventType: "crud",
-      title: "Update Device Failed",
-      operation: "update",
-      message: `Error - ${error.message}`,
-    });
-    throw new Error("Could not update device");
-  }
+const updateDevice = async (id, data) => {
+  return prisma.device.update({ where: { id }, data });
 };
 
-const deleteDevice = async (id, user) => {
-  try {
-    return prisma.device.delete({ where: { id } });
-  } catch (error) {
-    await createNotification({
-      user: user,
-      eventType: "crud",
-      title: "Delete Device Failed",
-      operation: "delete",
-      message: `Error - ${error.message}`,
-    });
-    throw new Error("Could not delete device");
-  }
+const deleteDevice = async (id) => {
+  return prisma.device.delete({ where: { id } });
 };
 
 const getDeviceByImei = async (imeinumber) => {

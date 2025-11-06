@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userService = require("../services/users");
- 
+
 //login by email and password
 const login = async (req, res) => {
   try {
@@ -72,9 +72,7 @@ const verifyToken = async (req, res, next) => {
       req.user = user;
       next();
     } catch (dbErr) {
-      return res
-        .status(500)
-        .json({ message: "Error fetching user", error: dbErr.message });
+      return res.status(500).json({ message: "Error fetching user", error: dbErr.message });
     }
   });
 };

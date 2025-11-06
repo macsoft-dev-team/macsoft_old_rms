@@ -48,7 +48,7 @@ const createUser = async (req, res) => {
       userData.customerId = user.customerId;
     }
     userData.password = await hashPassword(userData.password);
-    const newUser = await userService.createUser(userData, user);
+    const newUser = await userService.createUser(userData);
     res.status(201).json(newUser);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -60,11 +60,11 @@ const updateUser = async (req, res) => {
   const user = req.user;
   const userData = req.body;
   try {
- 
-    if(userData.password) {
-      userData.password = await hashPassword(userData.password);
+    if (user.role !== "MACSOFT_ADMIN" && user.role !== "MACSOFT_USER") {
+      delete userData.customerId;
     }
-    const updatedUser = await userService.updateUser(id, userData, user);
+    userData.password = await hashPassword(userData.password);
+    const updatedUser = await userService.updateUser(id, userData);
 
     if (!updatedUser) {
       return res.status(404).json({ error: "User not found" });
@@ -78,7 +78,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   const { id } = req.params;
   try {
-    const deletedUser = await userService.deleteUser(id, user);
+    const deletedUser = await userService.deleteUser(id);
     if (!deletedUser) {
       return res.status(404).json({ error: "User not found" });
     }

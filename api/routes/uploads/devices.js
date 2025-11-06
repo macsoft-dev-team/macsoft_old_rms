@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const deviceUpload = require("../../controllers/uploads/devices");
-  
-  
-// JSON upload route (new)
-router.post("/", deviceUpload.uploadDevicesJSON);
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage() });
 
- 
+router.post("/", upload.single("device"), deviceUpload.uploadDevices);
+
 module.exports = router;

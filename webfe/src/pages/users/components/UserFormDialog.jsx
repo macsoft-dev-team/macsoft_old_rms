@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
 import Input from '../../../components/ui/input';
 import { Button } from '../../../components/ui/button';
-import { Save, Edit, Lock } from 'lucide-react';
+import { Save } from 'lucide-react';
 import useUser from '../../../hooks/useUser';
 import Select from '../../../components/ui/select';
 import { useForm, Controller } from 'react-hook-form';
@@ -14,21 +14,12 @@ export default function UserFormDialog({
   onOpenChange,
   onSubmit,
   onCancel,
-  mode: dialogMode,
 }) {
-  const { user, setUser, updateUser, createUser } = useUser();
+  const { user, mode, setUser, updateUser, createUser } = useUser();
   const { user: loginUser } = useAuth();
-  const { manufacturers = [], fetchManufacturers } = useManufacturer();
-  const isEdit = dialogMode === 'edit';
-  const formUser = isEdit ? user : null;
-  
-  const isEndUser = formUser?.role === 'END_USER';
-  
-  const canEditEndUser = isEndUser && formUser?.customerId === loginUser?.customerId;
-  
-  const shouldDisableForm = isEdit && isEndUser && !canEditEndUser;
-  
-  const [isPasswordEditable, setIsPasswordEditable] = useState(!isEdit);
+  const { manufacturers = [] } = useManufacturer();
+  const isEdit = mode.edit;
+  const formUser = isEdit ? user : {};
 
   const {
     control,
@@ -37,67 +28,51 @@ export default function UserFormDialog({
     reset,
   } = useForm({
     defaultValues: {
-      name: '',
-      email: '',
-      customerId: '',
-      role: '',
-      isActive: '',
-      password: '',
+      name: formUser?.name ?? '',
+      email: formUser?.email ?? '',
+      // keep as string for stable Select matching
+      customerId: formUser?.customerId != null ? String(formUser.customerId) : '',
+      role: formUser?.role ?? '',
+      // store '', 'true', 'false' -> convert on submit
+      isActive:
+        formUser?.isActive === true ? 'true'
+          : formUser?.isActive === false ? 'false'
+            : '',
+      password: formUser?.password ?? '',
     },
   });
 
   useEffect(() => {
     if (open) {
-      setIsPasswordEditable(!isEdit);
-      
-      if (isEdit && formUser) {
-        reset({
-          name: formUser.name ?? '',
-          email: formUser.email ?? '',
-          customerId: formUser.customerId != null ? String(formUser.customerId) : '',
-          role: formUser.role ?? '',
-          isActive:
-            formUser.isActive === true ? 'true'
-              : formUser.isActive === false ? 'false'
-                : '',
-          password: '',
-        });
-      } else {
-        reset({
-          name: '',
-          email: '',
-          customerId: '',
-          role: '',
-          isActive: '',
-          password: '',
-        });
-      }
+      reset({
+        name: formUser?.name ?? '',
+        email: formUser?.email ?? '',
+        customerId: formUser?.customerId != null ? String(formUser.customerId) : '',
+        role: formUser?.role ?? '',
+        isActive:
+          formUser?.isActive === true ? 'true'
+            : formUser?.isActive === false ? 'false'
+              : '',
+        password: formUser?.password ?? '',
+      });
     }
-  }, [open, reset, formUser, isEdit]);
+  }, [open, reset]);
 
   const internalSubmit = (data) => {
     const next = {
       ...data,
-      customerId: data.customerId || null,
+      customerId: data.customerId ? Number(data.customerId) : null,
       isActive:
         data.isActive === 'true' ? true
           : data.isActive === 'false' ? false
             : null,
     };
 
-    if (loginUser?.role === 'CUSTOMER_ADMIN' || loginUser?.role === 'CUSTOMER_USER') {
-      next.customerId = loginUser.customerId;
-    }
-
-    if (isEdit && (!isPasswordEditable || !data.password.trim())) {
-      delete next.password;
-    }
-
     if (isEdit) {
       next.id = user?.id
       updateUser(next);
     } else {
-      setUser(next);
+      setUser((prev) => ({ ...prev, ...next }));
       createUser(next);
     }
 
@@ -118,7 +93,6 @@ export default function UserFormDialog({
       { value: 'MACSOFT_USER', label: 'Macsoft User' },
       { value: 'CUSTOMER_ADMIN', label: 'Customer Admin' },
       { value: 'CUSTOMER_USER', label: 'Customer User' },
-      { value: 'END_USER', label: 'End User' },
     ],
     []
   );
@@ -127,16 +101,9 @@ export default function UserFormDialog({
     () => [
       { value: 'CUSTOMER_ADMIN', label: 'Admin' },
       { value: 'CUSTOMER_USER', label: 'User' },
-      { value: 'END_USER', label: 'End User' },
     ],
     []
   );
-
-  useEffect(() => {
-    if ((loginUser?.role === 'MACSOFT_ADMIN' || loginUser?.role === 'MACSOFT_USER') && open) {
-      fetchManufacturers({ skip: 0, take: 1000, filter: '' });
-    }
-  }, [loginUser, fetchManufacturers, open]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -145,18 +112,6 @@ export default function UserFormDialog({
           <DialogTitle className="text-lg dark:text-blue-100">
             {isEdit ? 'Edit User' : 'Create User'}
           </DialogTitle>
-          {isEdit && isEndUser && !canEditEndUser && (
-            <div className="bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-400 dark:border-yellow-600 text-yellow-800 dark:text-yellow-200 px-3 py-2 rounded mt-2">
-              <p className="text-sm font-medium">⚠️ END_USER role cannot be edited</p>
-              <p className="text-xs">This user type is protected and cannot be modified.</p>
-            </div>
-          )}
-          {isEdit && isEndUser && canEditEndUser && (
-            <div className="bg-green-100 dark:bg-green-900/20 border border-green-400 dark:border-green-600 text-green-800 dark:text-green-200 px-3 py-2 rounded mt-2">
-              <p className="text-sm font-medium">✓ END_USER editing allowed</p>
-              <p className="text-xs">You can edit this user because they belong to your organization.</p>
-            </div>
-          )}
         </DialogHeader>
 
         <form autoComplete="off" className="space-y-4" onSubmit={handleSubmit(internalSubmit)}>
@@ -175,8 +130,7 @@ export default function UserFormDialog({
                     {...field}
                     autoComplete="off"
                     placeholder="Enter name..."
-                    disabled={shouldDisableForm}
-                    className="dark:bg-gray-800 dark:text-blue-100 text-base disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="dark:bg-gray-800 dark:text-blue-100 text-base"
                   />
                 )}
               />
@@ -205,8 +159,7 @@ export default function UserFormDialog({
                     {...field}
                     autoComplete="off"
                     placeholder="Enter email..."
-                    disabled={shouldDisableForm}
-                    className="dark:bg-gray-800 dark:text-blue-100 text-base disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="dark:bg-gray-800 dark:text-blue-100 text-base"
                   />
                 )}
               />
@@ -228,12 +181,12 @@ export default function UserFormDialog({
                     <Select
                       options={manufacturerOptions}
                       name={field.name}
-                      value={field.value}                           
+                      value={field.value}                          // '' or '123'
                       onChange={(e) => field.onChange(e?.target ? e.target.value : e)}
                       onBlur={field.onBlur}
                       placeholder="All Manufacturers"
-                      disabled={shouldDisableForm}
-                      className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600 disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                      disablePortal                                  // avoids dialog stacking issues
                     />
                   )}
                 />
@@ -257,8 +210,8 @@ export default function UserFormDialog({
                       onChange={(e) => field.onChange(e?.target ? e.target.value : e)}
                       onBlur={field.onBlur}
                       placeholder="Select Role"
-                      disabled={shouldDisableForm}
-                      className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600 disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                      disablePortal
                     />
                   )}
                 />
@@ -277,8 +230,8 @@ export default function UserFormDialog({
                     onChange={(e) => field.onChange(e?.target ? e.target.value : e)}
                     onBlur={field.onBlur}
                     placeholder="Select Role"
-                    disabled={shouldDisableForm}
-                    className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600 disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                    disablePortal
                   />
                 )}
               />
@@ -301,12 +254,12 @@ export default function UserFormDialog({
                       { value: 'false', label: 'Inactive' },
                     ]}
                     name={field.name}
-                    value={field.value}
+                    value={field.value}                              // '', 'true', 'false'
                     onChange={(e) => field.onChange(e?.target ? e.target.value : e)}
                     onBlur={field.onBlur}
                     placeholder="Select Status"
-                    disabled={shouldDisableForm}
-                    className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600 disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                    disablePortal
                   />
                 )}
               />
@@ -315,47 +268,20 @@ export default function UserFormDialog({
 
           {/* Password */}
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="text-base font-medium text-gray-700 dark:text-blue-100">
-                Password
-              </label>
-              {isEdit && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsPasswordEditable(!isPasswordEditable)}
-                  disabled={shouldDisableForm}
-                  className="text-xs dark:bg-gray-800 dark:text-blue-100 dark:border-gray-600 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {isPasswordEditable ? (
-                    <>
-                      <Lock className="w-3 h-3 mr-1" />
-                      Keep Current
-                    </>
-                  ) : (
-                    <>
-                      <Edit className="w-3 h-3 mr-1" />
-                      Change Password
-                    </>
-                  )}
-                </Button>
-              )}
-            </div>
+            <label className="text-base font-medium text-gray-700 dark:text-blue-100 mb-2 block">
+              Password
+            </label>
             <Controller
               name="password"
               control={control}
-              rules={{ 
-                required: !isEdit ? 'Password is required' : (isPasswordEditable ? 'Password is required when changing' : false)
-              }}
+              rules={{ required: 'Password is required' }}
               render={({ field }) => (
                 <Input
                   {...field}
                   type="password"
                   autoComplete="new-password"
-                  placeholder={isEdit && !isPasswordEditable ? "Password unchanged" : "Enter password..."}
-                  disabled={(isEdit && !isPasswordEditable) || shouldDisableForm}
-                  className="dark:bg-gray-800 dark:text-blue-100 text-base disabled:opacity-60 disabled:cursor-not-allowed"
+                  placeholder="Enter password..."
+                  className="dark:bg-gray-800 dark:text-blue-100 text-base"
                 />
               )}
             />
@@ -376,8 +302,8 @@ export default function UserFormDialog({
             </Button>
             <Button
               type="submit"
-              disabled={!!Object.keys(errors).length || shouldDisableForm}
-              className="text-base dark:bg-blue-900 dark:text-blue-100 disabled:opacity-60 disabled:cursor-not-allowed"
+              disabled={!!Object.keys(errors).length}
+              className="text-base dark:bg-blue-900 dark:text-blue-100"
             >
               <Save className="w-5 h-5 mr-2" />
               {isEdit ? 'Save Changes' : 'Create User'}

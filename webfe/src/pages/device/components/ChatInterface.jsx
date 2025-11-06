@@ -7,7 +7,7 @@ import { Badge } from '../../../components/ui/badge';
 import Select from '../../../components/ui/select';
 import { useCommand } from '../../../hooks/useCommand';
 import { useToast } from '../../../hooks/use-toast';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { formatStatus, getStatusConfig } from '../../../utils/statusUtils';
 import moment from 'moment';
 import { useDevice } from '../../../hooks/useDevice';
@@ -37,15 +37,9 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
 
   useEffect(() => {
     if (deviceId) {
-      // Clear previous commands when switching devices
-      setCommands([]);
-      // Fetch commands for the new device
-      refetchCommands(deviceId);
-    } else {
-      // Clear commands when no device is selected
-      setCommands([]);
+      fetchCommands({ skip: null, take: null, filter: '', deviceId });
     }
-  }, [deviceId, setCommands]); // Removed fetchCommands from deps since refetchCommands handles it
+  }, [deviceId, fetchCommands]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -54,15 +48,6 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
   useEffect(() => {
     scrollToBottom();
   }, [commands]);
-
-  // Helper function to refetch commands with error handling
-  const refetchCommands = async (deviceId) => {
-    try {
-      await fetchCommands({ skip: null, take: null, filter: '', deviceId });
-    } catch (error) {
-      console.error('Failed to fetch commands:', error);
-    }
-  };
 
   // Map command types to payloads
   const getPayloadByType = (type) => {
@@ -128,7 +113,7 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
     }
 
     try {
-      await refetchCommands(deviceId);
+      await fetchCommands({ skip: null, take: null, filter: '', deviceId });
       toast({
         title: "Commands Refreshed",
         description: "Command history has been updated",
@@ -178,7 +163,7 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
     setIsTyping(true);
 
     try {
-      await postCommand(commandData);
+      postCommand(commandData);
       toast({
         title: "Command Sent",
         description: `${selectedCommandType.replace('_', ' ')} command sent successfully`,
@@ -186,12 +171,7 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
       });
 
       setSelectedCommandType('');
-      
-      // Fetch commands after successful send with a small delay
-      setTimeout(() => {
-        refetchCommands(deviceId);
-        setIsTyping(false);
-      }, 1000);
+      setTimeout(() => setIsTyping(false), 2000);
     } catch (error) {
       setIsTyping(false);
       toast({
@@ -231,7 +211,7 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
     setIsTyping(true);
 
     try {
-      await postCommand(commandData);
+      postCommand(commandData);
       toast({
         title: "Command Sent",
         description: `Custom command sent`,
@@ -240,12 +220,7 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
 
       reset({ payload: '' });
       setSelectedCommandType('');
-      
-      // Fetch commands after successful send with a small delay
-      setTimeout(() => {
-        refetchCommands(deviceId);
-        setIsTyping(false);
-      }, 1000);
+      setTimeout(() => setIsTyping(false), 2000);
     } catch (error) {
       setIsTyping(false);
       toast({
@@ -419,33 +394,26 @@ const ChatInterface = ({ deviceId, deviceName, status }) => {
           {/* Command Type Selection */}
           <div>
             <label className="text-base font-medium text-gray-700 dark:text-blue-100 mb-2 block">
-              Select Command Type
+              Manufacturer
             </label>
-            <Select
-              direction='down'
-              options={commandTypes}
-              value={selectedCommandType}
-              onChange={(e) => setSelectedCommandType(e.target.value)}
-              placeholder="Select a command..."
-              className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600"
-              disablePortal
+            <Controller
+              name="customerId"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  direction='down'
+                  options={commandTypes}
+                  name={field.name}
+                  value={field.value}
+                  onChange={e => field.onChange(e?.target ? e.target.value : e)}
+                  onBlur={field.onBlur}
+                  placeholder="All Manufacturers"
+                  className="w-full dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                  disablePortal
+                />
+              )}
             />
           </div>
-
-          {/* Send Button for Predefined Commands */}
-          {selectedCommandType && selectedCommandType !== 'CUSTOM' && (
-            <div className="flex justify-end">
-              <Button 
-                type="button"
-                onClick={handlePredefinedCommandSelect}
-                disabled={!deviceId || loading}
-                className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 dark:bg-blue-700"
-              >
-                <Send className="w-4 h-4" />
-                Send {commandTypes.find(cmd => cmd.value === selectedCommandType)?.label}
-              </Button>
-            </div>
-          )}
 
           {/* Custom Command Form - Only show when CUSTOM is selected */}
           {selectedCommandType === 'CUSTOM' && (

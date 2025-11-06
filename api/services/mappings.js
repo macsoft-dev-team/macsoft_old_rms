@@ -11,6 +11,18 @@ const getAllDevices = async (skip, take, filter, user) => {
     if (skip) params.skip = (parseInt(skip) - 1) * parseInt(take) || 0;
     if (take) params.take = parseInt(take);
 
+    const getStatus = (_status) => {
+      switch (_status) {
+        case "OFFLINE":
+          return 0;
+        case "ONLINE":
+          return 1;
+        case "FAULT":
+          return 2;
+        default:
+          return null;
+      }
+    };
     // Build where clause
     let where = {};
     if (filter) {
@@ -18,11 +30,11 @@ const getAllDevices = async (skip, take, filter, user) => {
         filter.search && {
           OR: [
             { imeinumber: { contains: filter.search } },
-            { snamqttusername: { contains: filter.search } },
+            { snausername: { contains: filter.search } },
             { simnumber: { contains: filter.search } },
           ],
         },
-        filter.status && { status: parseInt(filter.status) || undefined },
+        filter.status && { status: getStatus(filter.status) },
         filter.manufacturer && { customerId: filter.manufacturer || 0 },
       ].filter(Boolean);
     }
@@ -39,20 +51,14 @@ const getAllDevices = async (skip, take, filter, user) => {
       snamqtturl: true,
       snamqttusername: true,
       snamqttpassword: true,
-      snamqttpubtopicdata: true,
-      snamqttsubtopiccmd: true,
+      snamqttpubTopicData: true,
+      snamqttsubTopicCmd: true,
     };
     const count = await prisma.device.count({ where: params.where });
     const devices = await prisma.device.findMany(params);
     return { devices, count };
   } catch (error) {
-    await createNotification({
-      user: user,
-      eventType: "crud",
-      title: "Fetch Devices Failed",
-      operation: "fetch",
-      message: `Error - ${error.message}`,
-    });
+    console.error("Error fetching devices:", error);
     throw new Error("Could not fetch devices");
   }
 };

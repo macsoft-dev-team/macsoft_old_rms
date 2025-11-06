@@ -103,14 +103,6 @@ export const mappingsState = {
   currentPage: 0,
   loading: false,
   error: null,
-  upload: {
-    inProgress: false,
-    progress: 0,
-    currentBatch: null,
-    totalBatches: null,
-    error: null,
-    success: false,
-  },
 };
 
 export const usersState ={
@@ -120,7 +112,6 @@ export const usersState ={
     search: "",
     status: "",
     role: "",
-    manufacturer: "",
   },
   mode: {
     create: false,
@@ -133,29 +124,6 @@ export const usersState ={
   loading: false,
   error: null,
 }
-
-export const notificationsState = {
-  notifications: [],
-  notification: null,
-  filter: {
-    search: "",
-    status: "",
-    role: "",
-    fromDate: "",
-    toDate: "",
-  },
-  mode: {
-    create: false,
-    edit: false,
-    view: false,
-    confirmDelete: false,
-  },
-  totalPages: 0,
-  currentPage: 0,
-  loading: false,
-  error: null,
-}
-
 
 export const dateF = (date) => {
   return moment(date).format("DD/MM/YYYY HH:mm:ss");

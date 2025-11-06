@@ -4,26 +4,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../compo
 import { Button } from '../../../components/ui/button';
 import { Upload, FileText, X, CheckCircle, AlertCircle, FileSpreadsheet, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { readExcelAsJSON } from '../../../utils/excelUtils';
-import { hashSnaDevicePasswords } from '../../../utils/passwordHasher';
-import { useToast } from '../../../hooks/use-toast';
 
 const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
-    const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadStatus, setUploadStatus] = useState(null);
     const [uploadMessage, setUploadMessage] = useState('');
     const [uploadProgress, setUploadProgress] = useState(0);
-    const [hashingProgress, setHashingProgress] = useState(null);
-    const [passwordsHashed, setPasswordsHashed] = useState(false);
-    const [processedDevices, setProcessedDevices] = useState(null);
-    const [isProcessing, setIsProcessing] = useState(false);
     const [isDragOver, setIsDragOver] = useState(false);
-    const [recordCount, setRecordCount] = useState(0);
-    const [showLargeFileWarning, setShowLargeFileWarning] = useState(false);
     const fileInputRef = useRef(null);
-    const cancelRef = useRef(false);
 
     const handleFileSelect = (e) => {
         const file = e.target.files[0];
@@ -36,11 +25,6 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
         if (!file.name.match(/\.(xlsx|xls)$/i)) {
             setUploadStatus('error');
             setUploadMessage('Please select a valid Excel file (.xlsx or .xls)');
-            toast({
-                title: "Invalid File Type",
-                description: "Please select a valid Excel file (.xlsx or .xls)",
-                variant: "destructive"
-            });
             return;
         }
 
@@ -48,11 +32,6 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
         if (file.size > maxSize) {
             setUploadStatus('error');
             setUploadMessage('File size must be less than 10MB');
-            toast({
-                title: "File Too Large",
-                description: "File size must be less than 10MB",
-                variant: "destructive"
-            });
             return;
         }
 
@@ -60,151 +39,6 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
         setUploadStatus(null);
         setUploadMessage('');
         setUploadProgress(0);
-        setPasswordsHashed(false);
-        setProcessedDevices(null);
-        setRecordCount(0);
-        setShowLargeFileWarning(false);
-        cancelRef.current = false;
-    };
-
-    const processFileAndHashPasswords = async () => {
-        if (!selectedFile || passwordsHashed) return;
-
-        // Show processing time warning for large files before starting
-        if (recordCount > 1000) {
-            const timeEstimate = calculateProcessingTime(recordCount);
-
-            toast({
-                title: "Large File Processing Warning",
-                description: `Processing ${recordCount} records may take approximately ${timeEstimate}. Please be patient and do not close this window.`,
-                variant: "default"
-            });
-        }
-
-        setIsSubmitting(true);
-        setIsProcessing(true);
-        cancelRef.current = false;
-        setUploadStatus(null);
-        setUploadProgress(0);
-        setHashingProgress(null);
-
-        try {
-            // Step 1: Read Excel file (5% of total progress)
-            if (cancelRef.current) throw new Error('Process cancelled by user');
-            setUploadMessage('Reading Excel file...');
-            setUploadProgress(5);
-
-            const json = await readExcelAsJSON(selectedFile);
-            if (!json || json.length === 0) {
-                throw new Error('No valid data found in the Excel file');
-            }
-
-            // Set record count and check for large files
-            setRecordCount(json.length);
-            if (json.length > 1000) {
-                setShowLargeFileWarning(true);
-                const timeEstimate = calculateProcessingTime(json.length);
-
-                toast({
-                    title: "Large File Detected",
-                    description: `File contains ${json.length} records. Processing may take approximately ${timeEstimate}. Consider uploading 1,000 records or less in batches for faster processing.`,
-                    variant: "default"
-                });
-            } else {
-                setShowLargeFileWarning(false);
-            }
-
-            // Check for cancellation
-            if (cancelRef.current) throw new Error('Process cancelled by user');
-
-            // Step 2: Format the data (10% of total progress)
-            setUploadMessage('Formatting SNA mapping data...');
-            setUploadProgress(10);
-
-            // Check for cancellation before processing
-            if (cancelRef.current) throw new Error('Process cancelled by user');
-
-            // Step 3: Process SNA mapping data with progress tracking (15% to 95% of total progress)
-            setUploadMessage('Processing SNA mapping data...');
-            setUploadProgress(15);
-
-            const processedData = await hashSnaDevicePasswords(
-                json,
-                (progress) => {
-                    setHashingProgress(progress);
-                    setUploadMessage(`Processing SNA mappings... ${progress.current}/${progress.total} records`);
-
-                    // Map processing progress (0-100%) to overall progress (15-95%)
-                    const processProgressPercent = (progress.percentage / 100) * 80;
-                    const totalProgress = 15 + processProgressPercent;
-                    setUploadProgress(Math.round(totalProgress));
-                },
-                10, // saltRounds for password hashing
-                () => cancelRef.current // shouldCancel function
-            );
-
-            // Final check for cancellation
-            if (cancelRef.current) throw new Error('Process cancelled by user');
-
-            // Step 4: Finalize (100%)
-            setUploadMessage('Finalizing...');
-            setUploadProgress(98);
-
-            // Small delay to show finalization
-            await new Promise(resolve => setTimeout(resolve, 200));
-
-            setProcessedDevices(processedData);
-            setPasswordsHashed(true);
-            setUploadProgress(100);
-            setUploadStatus('ready');
-            setUploadMessage(`${processedData.length} SNA mappings processed and ready to upload!`);
-            setHashingProgress(null);
-
-        } catch (error) {
-            if (error.message === 'Process cancelled by user') {
-                setUploadStatus(null);
-                setUploadMessage('');
-                setUploadProgress(0);
-                setHashingProgress(null);
-            } else {
-                setUploadStatus('error');
-
-                // Check if it's a scientific notation validation error
-                if (error.message.includes('Scientific notation detected')) {
-                    toast({
-                        title: "Upload Validation Failed",
-                        description: "Excel file contains scientific notation (E notation) values. Please format these cells as text or numbers without scientific notation.",
-                        variant: "destructive"
-                    });
-                    setUploadMessage('Scientific notation detected in Excel file. Please check and fix the data format.');
-                } else {
-                    // Format error message for better display
-                    const errorMessage = error.message || 'Failed to process file. Please try again.';
-                    setUploadMessage(errorMessage);
-
-                    // Show toast for other errors too
-                    toast({
-                        title: "Processing Failed",
-                        description: errorMessage.split('\n')[0], // First line for toast
-                        variant: "destructive"
-                    });
-                }
-
-                setUploadProgress(0);
-                setHashingProgress(null);
-            }
-            setPasswordsHashed(false);
-            setProcessedDevices(null);
-        } finally {
-            setIsSubmitting(false);
-            setIsProcessing(false);
-            cancelRef.current = false;
-        }
-    };
-
-    const handleCancelProcessing = () => {
-        cancelRef.current = true;
-        setUploadMessage('Cancelling process...');
     };
 
     const handleDragOver = (e) => {
@@ -230,11 +64,23 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
         }
     };
 
- 
+    const simulateProgress = () => {
+        const interval = setInterval(() => {
+            setUploadProgress(prev => {
+                if (prev >= 90) {
+                    clearInterval(interval);
+                    return 90;
+                }
+                return prev + Math.random() * 15;
+            });
+        }, 200);
+        return interval;
+    };
+
     const handleSubmit = async () => {
-        if (!processedDevices || !passwordsHashed) {
+        if (!selectedFile) {
             setUploadStatus('error');
-            setUploadMessage('Please process the file first');
+            setUploadMessage('Please select a file to upload');
             return;
         }
 
@@ -242,75 +88,45 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
         setUploadStatus(null);
         setUploadProgress(0);
 
+        // Start progress simulation
+        const progressInterval = simulateProgress();
+
         try {
-            setUploadMessage('Preparing upload...');
-            setUploadProgress(10);
+            const formData = new FormData();
+            formData.append('deviceMapping', selectedFile);
 
-            // Small delay to show preparation
-            await new Promise(resolve => setTimeout(resolve, 200));
+            await uploadDevice(formData);
 
-            setUploadMessage('Uploading SNA mappings to server...');
-            setUploadProgress(30);
-            uploadDevice(processedDevices);
-            setUploadMessage('Upload successful!');
+            clearInterval(progressInterval);
             setUploadProgress(100);
-            setUploadStatus('success');
-            setUploadMessage(`Successfully uploaded ${processedDevices.length} SNA mappings with processed data!`);
 
-            // Show success toast
-            toast({
-                title: "Upload Successful",
-                description: `Successfully uploaded ${processedDevices.length} SNA mappings with processed data!`,
-                variant: "default"
-            });
+            setUploadStatus('success');
+            setUploadMessage('Devices uploaded successfully! Processing data...');
 
             setTimeout(() => {
                 setSelectedFile(null);
                 setUploadStatus(null);
                 setUploadMessage('');
                 setUploadProgress(0);
-                setHashingProgress(null);
-                setPasswordsHashed(false);
-                setProcessedDevices(null);
-                setRecordCount(0);
-                setShowLargeFileWarning(false);
                 onOpenChange(false);
             }, 3000);
 
         } catch (error) {
+            clearInterval(progressInterval);
             setUploadStatus('error');
             setUploadMessage(error.message || 'Upload failed. Please try again.');
             setUploadProgress(0);
-
-            // Show error toast
-            toast({
-                title: "Upload Failed",
-                description: error.message || 'Upload failed. Please try again.',
-                variant: "destructive"
-            });
         } finally {
             setIsSubmitting(false);
         }
     };
 
     const handleCancel = () => {
-        if (isProcessing) {
-            handleCancelProcessing();
-            return;
-        }
-
         if (!isSubmitting) {
             setSelectedFile(null);
             setUploadStatus(null);
             setUploadMessage('');
             setUploadProgress(0);
-            setHashingProgress(null);
-            setPasswordsHashed(false);
-            setProcessedDevices(null);
-            setIsProcessing(false);
-            setRecordCount(0);
-            setShowLargeFileWarning(false);
-            cancelRef.current = false;
             setIsDragOver(false);
             onOpenChange(false);
         }
@@ -321,13 +137,6 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
         setUploadStatus(null);
         setUploadMessage('');
         setUploadProgress(0);
-        setHashingProgress(null);
-        setPasswordsHashed(false);
-        setProcessedDevices(null);
-        setIsProcessing(false);
-        setRecordCount(0);
-        setShowLargeFileWarning(false);
-        cancelRef.current = false;
     };
 
     const formatFileSize = (bytes) => {
@@ -340,16 +149,6 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
 
     const formatLastModified = (timestamp) => {
         return new Date(timestamp).toLocaleDateString();
-    };
-
-    const calculateProcessingTime = (recordCount) => {
-        const estimatedMinutes = Math.ceil(recordCount / 500);
-        if (estimatedMinutes < 1) return 'less than 1 minute';
-        if (estimatedMinutes < 60) {
-            return `${estimatedMinutes} minute${estimatedMinutes > 1 ? 's' : ''}`;
-        }
-        const hours = Math.ceil(estimatedMinutes / 60);
-        return `${hours} hour${hours > 1 ? 's' : ''}`;
     };
 
     return (
@@ -373,42 +172,16 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
                                 <li>
                                     • Required columns: imeinumber, snamqtturl, snamqttusername, snamqttpassword, snamqttpubtopicdata, snamqttsubtopiccmd, snamqttsubtopiccmdresponse
                                 </li>
-                                <li>• No scientific notation (E notation) allowed</li>
-                                <li>• <span className="font-medium text-orange-700 dark:text-orange-400">Recommended: Upload 1,000 records or less for faster processing</span></li>
                             </ul>
                         </div>
                     </div>
 
-                    {/* Large File Warning */}
-                    <AnimatePresence>
-                        {showLargeFileWarning && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="flex items-start space-x-3 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800"
-                            >
-                                <AlertCircle className="w-4 h-4 text-orange-600 dark:text-orange-400 mt-0.5 flex-shrink-0" />
-                                <div className="text-sm text-orange-800 dark:text-orange-300">
-                                    <p className="font-medium mb-1">Large File Notice:</p>
-                                    <p className="text-xs">
-                                        Your file contains {recordCount} records. Processing may take approximately{' '}
-                                        <span className="font-medium">
-                                            {calculateProcessingTime(recordCount)}
-                                        </span>.
-                                        For optimal performance, consider uploading in smaller batches of 1,000 records or less.
-                                    </p>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
                     <div
                         className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${isDragOver
-                            ? 'border-blue-400 bg-blue-50 dark:border-blue-500 dark:bg-blue-900/30'
-                            : selectedFile
-                                ? 'border-blue-300 bg-blue-50 dark:border-blue-600 dark:bg-blue-900/20'
-                                : 'border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                                ? 'border-blue-400 bg-blue-50 dark:border-blue-500 dark:bg-blue-900/30'
+                                : selectedFile
+                                    ? 'border-blue-300 bg-blue-50 dark:border-blue-600 dark:bg-blue-900/20'
+                                    : 'border-gray-300 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800/50'
                             }`}
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
@@ -441,14 +214,6 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
                                             <span>{formatFileSize(selectedFile.size)}</span>
                                             <span>•</span>
                                             <span>{formatLastModified(selectedFile.lastModified)}</span>
-                                            {recordCount > 0 && (
-                                                <>
-                                                    <span>•</span>
-                                                    <span className={recordCount > 1000 ? 'text-orange-600 dark:text-orange-400 font-medium' : ''}>
-                                                        {recordCount} records
-                                                    </span>
-                                                </>
-                                            )}
                                         </div>
                                     </div>
                                     {!isSubmitting && (
@@ -471,8 +236,8 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
                                 >
                                     <div className="flex items-center justify-center w-14 h-14 mx-auto bg-gray-100 dark:bg-gray-800 rounded-full">
                                         <Upload className={`w-7 h-7 transition-colors ${isDragOver
-                                            ? 'text-blue-600 dark:text-blue-400'
-                                            : 'text-gray-400 dark:text-gray-500'
+                                                ? 'text-blue-600 dark:text-blue-400'
+                                                : 'text-gray-400 dark:text-gray-500'
                                             }`} />
                                     </div>
                                     <div>
@@ -507,15 +272,8 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
                                 className="space-y-2"
                             >
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-gray-700 dark:text-gray-300">
-                                        {hashingProgress ?
-                                            `Processing ${hashingProgress.currentDevice}...` :
-                                            'Processing...'
-                                        }
-                                    </span>
-                                    <span className="text-blue-600 dark:text-blue-400 font-medium">
-                                        {Math.round(uploadProgress)}%
-                                    </span>
+                                    <span className="text-gray-700 dark:text-gray-300">Uploading...</span>
+                                    <span className="text-blue-600 dark:text-blue-400 font-medium">{Math.round(uploadProgress)}%</span>
                                 </div>
                                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
                                     <motion.div
@@ -525,11 +283,6 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
                                         transition={{ duration: 0.3, ease: 'easeOut' }}
                                     />
                                 </div>
-                                {hashingProgress && (
-                                    <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                                        {hashingProgress.current} of {hashingProgress.total} records processed
-                                    </div>
-                                )}
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -542,19 +295,14 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
                                 exit={{ opacity: 0, y: -10 }}
                                 className={`flex items-start space-x-3 p-4 rounded-lg ${uploadStatus === 'success'
                                         ? 'bg-green-50 border border-green-200 dark:bg-green-900/20 dark:border-green-800'
-                                        : uploadStatus === 'ready'
-                                            ? 'bg-blue-50 border border-blue-200 dark:bg-blue-900/20 dark:border-blue-800'
-                                            : uploadStatus === 'error'
-                                                ? 'bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-800'
-                                                : 'bg-blue-50 border border-blue-200 dark:bg-blue-900/20 dark:border-blue-800'
+                                        : uploadStatus === 'error'
+                                            ? 'bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-800'
+                                            : 'bg-blue-50 border border-blue-200 dark:bg-blue-900/20 dark:border-blue-800'
                                     }`}
                             >
                                 <div className="flex-shrink-0 mt-0.5">
                                     {uploadStatus === 'success' && (
                                         <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
-                                    )}
-                                    {uploadStatus === 'ready' && (
-                                        <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                                     )}
                                     {uploadStatus === 'error' && (
                                         <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
@@ -563,28 +311,15 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
                                 <div className="flex-1">
                                     <p className={`text-sm font-medium ${uploadStatus === 'success'
                                             ? 'text-green-800 dark:text-green-400'
-                                            : uploadStatus === 'ready'
-                                                ? 'text-blue-800 dark:text-blue-400'
-                                                : uploadStatus === 'error'
-                                                    ? 'text-red-800 dark:text-red-400'
-                                                    : 'text-blue-800 dark:text-blue-400'
+                                            : uploadStatus === 'error'
+                                                ? 'text-red-800 dark:text-red-400'
+                                                : 'text-blue-800 dark:text-blue-400'
                                         }`}>
-                                        {uploadStatus === 'error' ? (
-                                            <div className="whitespace-pre-line">
-                                                {uploadMessage}
-                                            </div>
-                                        ) : (
-                                            uploadMessage
-                                        )}
+                                        {uploadMessage}
                                     </p>
                                     {uploadStatus === 'success' && (
                                         <p className="text-xs text-green-600 dark:text-green-500 mt-1">
                                             You can close this dialog or it will close automatically.
-                                        </p>
-                                    )}
-                                    {uploadStatus === 'ready' && (
-                                        <p className="text-xs text-blue-600 dark:text-blue-500 mt-1">
-                                            Click "Upload SNA Mappings" to upload to the server.
                                         </p>
                                     )}
                                 </div>
@@ -610,63 +345,41 @@ const UploadModal = ({ open, onOpenChange, uploadDevice }) => {
                 </div>
 
                 <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    {!isSubmitting && (
+                        <Button
+                            variant="outline"
+                            onClick={handleCancel}
+                            disabled={isSubmitting}
+                            className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+                        >
+                            Cancel
+                        </Button>
+                    )}
                     <Button
-                        variant="outline"
-                        onClick={handleCancel}
-                        disabled={isSubmitting && !isProcessing}
-                        className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+                        onClick={handleSubmit}
+                        disabled={!selectedFile || isSubmitting || uploadStatus === 'success'}
+                        className={`min-w-[120px] ${uploadStatus === 'success'
+                                ? 'bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600'
+                                : 'dark:bg-blue-700 dark:hover:bg-blue-600'
+                            }`}
                     >
-                        {isProcessing ? 'Cancel Processing' : 'Cancel'}
+                        {isSubmitting ? (
+                            <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                Uploading...
+                            </>
+                        ) : uploadStatus === 'success' ? (
+                            <>
+                                <CheckCircle className="w-4 h-4 mr-2" />
+                                Uploaded
+                            </>
+                        ) : (
+                            <>
+                                <Upload className="w-4 h-4 mr-2" />
+                                Upload
+                            </>
+                        )}
                     </Button>
-
-                    {selectedFile && !passwordsHashed && !isProcessing && (
-                        <Button
-                            onClick={processFileAndHashPasswords}
-                            disabled={isSubmitting || passwordsHashed}
-                            className="min-w-[120px] dark:bg-orange-700 dark:hover:bg-orange-600"
-                        >
-                            <FileText className="w-4 h-4 mr-2" />
-                            Process File
-                        </Button>
-                    )}
-
-                    {isProcessing && (
-                        <Button
-                            disabled
-                            className="min-w-[120px] dark:bg-orange-700"
-                        >
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            Processing...
-                        </Button>
-                    )}
-
-                    {passwordsHashed && !isProcessing && (
-                        <Button
-                            onClick={handleSubmit}
-                            disabled={!passwordsHashed || isSubmitting || uploadStatus === 'success'}
-                            className={`min-w-[120px] ${uploadStatus === 'success'
-                                    ? 'bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600'
-                                    : 'dark:bg-blue-700 dark:hover:bg-blue-600'
-                                }`}
-                        >
-                            {isSubmitting ? (
-                                <>
-                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                    Uploading...
-                                </>
-                            ) : uploadStatus === 'success' ? (
-                                <>
-                                    <CheckCircle className="w-4 h-4 mr-2" />
-                                    Uploaded
-                                </>
-                            ) : (
-                                <>
-                                    <Upload className="w-4 h-4 mr-2" />
-                                    Upload SNA Mappings
-                                </>
-                            )}
-                        </Button>
-                    )}
                 </div>
             </DialogContent>
         </Dialog>

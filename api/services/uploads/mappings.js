@@ -1,9 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
-const { createNotification } = require("../notification");
 const prisma = new PrismaClient();
 
-const uploadDevice = async (devicesFromXL, batchSize = 100, user) => {
+const uploadDevice = async (devicesFromXL, batchSize = 100) => {
   try {
     // Filter out devices with valid imeinumber
     const validDevices = devicesFromXL.filter(
@@ -18,14 +17,32 @@ const uploadDevice = async (devicesFromXL, batchSize = 100, user) => {
       `Starting batch update for ${validDevices.length} devices with batch size: ${batchSize}`
     );
 
+   const devicesTransformed = await Promise.all(
+     validDevices.map(async (device) => ({
+       imeinumber: String(device.imeinumber).trim(),
+       snamqtturl: `mqtt://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`,
+       snamqttusername: `device_${device.imeinumber}`,
+       snamqttclientid: `device_${device.imeinumber}`,
+       snamqttpassword: device.snamqttpassword
+         ? await bcrypt.hash(device.snamqttpassword, 10)
+         : null,
+       snamqttpubTopicData: device.snapubTopicData,
+       snamqttsubTopicCmd: device.snasubTopicCmd,
+     }))
+   );
+
+
     // Batch processing
-    const totalBatches = Math.ceil(validDevices.length / batchSize);
+    const totalBatches = Math.ceil(devicesTransformed.length / batchSize);
     const results = [];
     let totalUpdated = 0;
     let totalCreated = 0;
 
     for (let i = 0; i < totalBatches; i++) {
-      const batch = validDevices.slice(i * batchSize, (i + 1) * batchSize);
+      const batch = devicesTransformed.slice(
+        i * batchSize,
+        (i + 1) * batchSize
+      );
 
       console.log(`Processing batch ${i + 1}/${totalBatches}`);
 
@@ -35,7 +52,7 @@ const uploadDevice = async (devicesFromXL, batchSize = 100, user) => {
           try {
             const result = await prisma.device.upsert({
               where: {
-                imeinumber: String(device.imeinumber),
+                imeinumber: device.imeinumber
               },
               update: {
                 snamqtturl: device.snamqtturl ?? undefined,
@@ -43,19 +60,17 @@ const uploadDevice = async (devicesFromXL, batchSize = 100, user) => {
                 snamqttpassword: device.snamqttpassword ?? undefined,
                 snamqttpubtopicdata: device.snamqttpubtopicdata ?? undefined,
                 snamqttsubtopiccmd: device.snamqttsubtopiccmd ?? undefined,
-                snamqttsubtopiccmdresponse:
-                  device.snamqttsubtopiccmdresponse ?? undefined,
+                snamqttsubtopiccmdresponse: device.snamqttsubtopiccmdresponse ?? undefined
               },
               create: {
-                imeinumber: String(device.imeinumber),
+                imeinumber: device.imeinumber,
                 snamqtturl: device.snamqtturl ?? undefined,
                 snamqttusername: device.snamqttusername ?? undefined,
                 snamqttpassword: device.snamqttpassword ?? undefined,
                 snamqttpubtopicdata: device.snamqttpubtopicdata ?? undefined,
                 snamqttsubtopiccmd: device.snamqttsubtopiccmd ?? undefined,
-                snamqttsubtopiccmdresponse:
-                  device.snamqttsubtopiccmdresponse ?? undefined,
-              },
+                snamqttsubtopiccmdresponse: device.snamqttsubtopiccmdresponse ?? undefined
+              }
             });
             return result;
           } catch (err) {
@@ -85,29 +100,14 @@ const uploadDevice = async (devicesFromXL, batchSize = 100, user) => {
       }
     }
 
-    const notification = await createNotification({
-      user: user,
-      eventType: "crud",
-      operation: "sna mapping upload",
-      title: "Mapping SNA Upload Completed",
-      message: `Mapping SNA upload updated ${totalUpdated} devices`,
-    });
-
     return {
-      totalProcessed: validDevices.length,
+      totalProcessed: devicesTransformed.length,
       totalUpdated,
       totalCreated,
-      notification,
       batchResults: results,
     };
   } catch (error) {
-    await createNotification({
-      user: user,
-      eventType: "crud",
-      operation: "upload",
-      title: "Mapping SNA Upload Failed",
-      message: `Error - ${error.message}`,
-    });
+    console.error("Error uploading device:", error);
     throw error;
   }
 };

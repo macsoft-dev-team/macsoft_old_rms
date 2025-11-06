@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
+ 
 import {
   Search,
   Bell,
@@ -19,21 +19,19 @@ import { NavLink } from 'react-router-dom';
 import Input from './ui/input';
 import Overlay from './Overlay';
 import { Button } from './ui/button';
-import { useNotification } from '../hooks/useNotifications';
 
 const Header = () => {
   const dispatch = useDispatch();
   const { sidebarCollapsed } = useSelector((state) => state.ui);
   const { theme, setTheme } = useTheme();
   const { user } = useSelector((state) => state.auth);
-  const { notifications, fetchNotifications, updateNotification } = useNotification();
+  
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showAccountDialog, setShowAccountDialog] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [hasRefetched, setHasRefetched] = useState(false);
 
+  // Form state for account settings
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -44,19 +42,35 @@ const Header = () => {
   const userMenuRef = useRef(null);
   const notificationRef = useRef(null);
 
+  // Mock notifications data
+  const notifications = [
+    {
+      id: 1,
+      title: 'Device Alert',
+      message: 'Device MAC-001 has reported a fault',
+      time: '2 minutes ago',
+      unread: true,
+      type: 'warning',
+    },
+    {
+      id: 2,
+      title: 'System Update',
+      message: 'Maintenance scheduled for tonight',
+      time: '1 hour ago',
+      unread: true,
+      type: 'info',
+    },
+    {
+      id: 3,
+      title: 'New User',
+      message: 'John Doe has been added to the system',
+      time: '3 hours ago',
+      unread: false,
+      type: 'success',
+    },
+  ];
 
-
-  useEffect(() => {
-    fetchNotifications({ skip: 0, take: 0 });
-    setHasRefetched(true);
-  }, [user]);
-
-  useEffect(() => {
-    if (notifications) {
-      const count = notifications.filter(n => n.recipients?.some(r => !r.readAt)).length;
-      setUnreadCount(count);
-    }
-  }, [notifications]);
+  const unreadCount = notifications.filter(n => n.unread).length;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -129,25 +143,11 @@ const Header = () => {
     }
   };
 
-
-
-  const formatNotificationTime = (timestamp) => {
-    if (!timestamp) return '';
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffInMinutes = Math.floor((now - date) / (1000 * 60));
-
-    if (diffInMinutes < 1) return 'Just now';
-    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
-    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
-    return date.toLocaleDateString();
-  };
-
-
   return (
     <header
-      className={`fixed top-0 right-0 z-40 bg-white border-b border-gray-200 shadow-sm transition-all duration-300 dark:bg-gray-900 dark:border-gray-700 ${sidebarCollapsed ? 'md:left-16' : 'md:left-64'
-        } left-0`}
+      className={`fixed top-0 right-0 z-40 bg-white border-b border-gray-200 shadow-sm transition-all duration-300 dark:bg-gray-900 dark:border-gray-700 ${
+        sidebarCollapsed ? 'md:left-16' : 'md:left-64'
+      } left-0`}
     >
       <div className="flex items-center justify-between h-16 px-6">
         {/* Left Section */}
@@ -159,6 +159,19 @@ const Header = () => {
             <Menu className="w-5 h-5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors" />
           </button>
 
+          {/* Search Bar 
+          <form onSubmit={handleSearch} className="relative">
+            <div className="flex items-center">
+              <Search className="absolute left-3 w-5 h-5 text-gray-400 dark:text-gray-500" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search devices, logs, customers..."
+                className="pl-10 pr-4 py-2 w-64 lg:w-80 text-sm bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+              />
+            </div>
+          </form>*/}
         </div>
 
         {/* Right Section */}
@@ -180,14 +193,14 @@ const Header = () => {
           <div className="relative" ref={notificationRef}>
             <button
               onClick={() => setShowNotifications(!showNotifications)}
-              className="relative cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-700"
+              className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-700"
             >
               <Bell className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-             {/*  {hasRefetched && unreadCount > 0 && (
+              {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                   {unreadCount}
                 </span>
-              )} */}
+              )}
             </button>
 
             {/* Notifications Dropdown */}
@@ -197,34 +210,35 @@ const Header = () => {
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h3>
                 </div>
                 <div className="max-h-80 overflow-y-auto">
-                  {notifications && notifications.length > 0 ? (
-                    notifications.map((notification) => {
-                      return (
-                        <div
-                          key={notification.id}
-                          className="p-4 border-b border-gray-100 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
-                        >
-                          <div className="flex items-start space-x-3">
-                            <span className="text-lg">
-                              {getNotificationIcon(notification.type)}
-                            </span>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                {notification.title}
-                              </p>
-                              <p className="text-sm text-gray-600 mt-1 dark:text-gray-300">
-                                {notification.message}
-                              </p>
-                              <div className="flex items-center justify-between mt-2">
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                  {formatNotificationTime(notification.createdAt)}
-                                </p>
-                              </div>
-                            </div>
+                  {notifications.length > 0 ? (
+                    notifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer dark:border-gray-600 dark:hover:bg-gray-700 ${
+                          notification.unread ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                        }`}
+                      >
+                        <div className="flex items-start space-x-3">
+                          <span className="text-lg">
+                            {getNotificationIcon(notification.type)}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 dark:text-white">
+                              {notification.title}
+                            </p>
+                            <p className="text-sm text-gray-600 mt-1 dark:text-gray-300">
+                              {notification.message}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-2 dark:text-gray-400">
+                              {notification.time}
+                            </p>
                           </div>
+                          {notification.unread && (
+                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          )}
                         </div>
-                      );
-                    })
+                      </div>
+                    ))
                   ) : (
                     <div className="p-4 text-center text-gray-500 dark:text-gray-400">
                       No notifications
@@ -232,15 +246,13 @@ const Header = () => {
                   )}
                 </div>
                 <div className="p-3 border-t border-gray-200 dark:border-gray-600">
-                  <NavLink to="/notifications">
-                    <button className="w-full cursor-pointer text-center text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                      View all notifications
-                    </button>
-                  </NavLink>
+                  <button className="w-full text-center text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                    View all notifications
+                  </button>
                 </div>
               </div>
             )}
-          </div>
+          </div> 
           {/* User Menu */}
           <div className="relative" ref={userMenuRef}>
             <button
@@ -310,48 +322,48 @@ const Header = () => {
       {/* Account Settings Dialog */}
       <div  >
         {showAccountDialog && (
-          <Overlay open={showAccountDialog} onClose={() => setShowAccountDialog(false)} title="Account Settings">
+          <Overlay  open={showAccountDialog} onClose={() => setShowAccountDialog(false)} title="Account Settings">
             <form onSubmit={handleAccountUpdate}>
               <div className="space-y-4">
                 <Input
                   label="Name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleFormChange}
-                  required
-                />
-                <Input
-                  label="Email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleFormChange}
-                  required
-                />
-                <Input
-                  label="Password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleFormChange}
-                />
-                <Input
-                  label="Confirm Password"
-                  name="confirmPassword"
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={handleFormChange}
-                />
-              </div>
+                      name="name"
+                      value={formData.name}
+                      onChange={handleFormChange}
+                      required
+                    />
+                    <Input
+                      label="Email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleFormChange}
+                      required
+                    />
+                    <Input
+                      label="Password"
+                      name="password"
+                      type="password"
+                      value={formData.password}
+                      onChange={handleFormChange}
+                    />
+                    <Input
+                      label="Confirm Password"
+                      name="confirmPassword"
+                      type="password"
+                      value={formData.confirmPassword}
+                      onChange={handleFormChange}
+                    />
+                  </div>
               <Button
-                type="submit"
-                className="px-4 my-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors"
-              >
-                Save Changes
-              </Button>
+                       type="submit"
+                      className="px-4 my-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors"
+                    >
+                      Save Changes
+                    </Button>
 
-            </form>
-
+                </form>
+             
           </Overlay>
         )}
       </div>
