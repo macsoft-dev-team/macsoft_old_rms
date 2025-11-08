@@ -3,16 +3,27 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:listener": "node src/device_listener.js",
+    "run:publisher": "node src/sna_publisher.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
   },
-  "keywords": [],
+  "keywords": [
+    "rms",
+    "mqtt",
+    "sna",
+    "device-sync"
+  ],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Background jobs for RMS SNA MQTT credential synchronization",
   "devDependencies": {
     "prisma": "^6.19.0"
   },
   "dependencies": {
-    "@prisma/client": "^6.19.0"
+    "@prisma/client": "^6.19.0",
+    "dotenv": "^16.3.1",
+    "mqtt": "^5.3.4"
   }
 }

@@ -1,0 +1,12 @@
+# Example crontab configuration for SNA Publisher
+# Edit with: crontab -e
+
+# Run SNA Publisher every minute
+* * * * * cd /home/raja/workspace/macsoft-rms/rms-jobs && /usr/bin/node src/sna_publisher.js >> /var/log/rms-sna-publisher.log 2>&1
+
+# Alternative: Run every 5 minutes
+# */5 * * * * cd /home/raja/workspace/macsoft-rms/rms-jobs && /usr/bin/node src/sna_publisher.js >> /var/log/rms-sna-publisher.log 2>&1
+
+# Alternative: Run every 30 seconds (requires running twice per minute)
+# * * * * * cd /home/raja/workspace/macsoft-rms/rms-jobs && /usr/bin/node src/sna_publisher.js >> /var/log/rms-sna-publisher.log 2>&1
+# * * * * * sleep 30 && cd /home/raja/workspace/macsoft-rms/rms-jobs && /usr/bin/node src/sna_publisher.js >> /var/log/rms-sna-publisher.log 2>&1
