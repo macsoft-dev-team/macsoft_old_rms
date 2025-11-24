@@ -24,14 +24,13 @@ const getDeviceLogs = async (skip, take, fromDate, toDate, imeinumber, tablename
   const model = prisma[tablename];
   if (!model) throw new Error(`Model for table ${tablename} not found`);
 
-  const [rows, count] = await Promise.all([
-    model.findMany({
-      where,
-      orderBy: { timestamp: 'desc' },
-      ...paginationParams,
-    }),
-    model.count({ where }),
-  ]);
+  const rows = await model.findMany({
+    where,
+    orderBy: { timestamp: 'desc' },
+    ...paginationParams,
+  });
+  
+  const count = await model.count({ where });
 
   return { rows, count };
 };

@@ -2,7 +2,7 @@ const mqtt = require('mqtt');
 const { PrismaClient } = require('@prisma/client');
 const moment = require('moment');
 const momentTz = require('moment-timezone'); // Add this line
-const DATETIMEFORMAT = 'YYYY-MM-DD HH:mm:ss'; // Adjust format as needed
+const DATETIMEFORMAT = 'DD/MM/YYYY HH:mm:ss'; // Adjust format as needed
 
 const prisma = new PrismaClient();
 const client = mqtt.connect(`${process.env.RMS_MQTT_HOST}:${process.env.RMS_MQTT_PORT}`, {
