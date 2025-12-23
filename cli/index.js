@@ -47,12 +47,12 @@ client.on('message', async (topic, message) => {
       parsedData = JSON.parse(messageStr);
 
       // Find tablename by topic
-      const tablename = client.devicesMap[topic].tablename;
-      const imeinumber = client.devicesMap[topic].imeinumber;
-      
+      const tablename = client.devicesMap.hasOwnProperty(topic) ? client.devicesMap.has[topic].tablename : undefined;
+      const imeinumber = client.devicesMap.hasOwnProperty(topic) ? client.devicesMap.has[topic].imeinumber : undefined;
+
       if (tablename !== undefined && parsedData.TIM !== undefined) {
         // const timestamp =  moment(parsedData.TIM, DATETIMEFORMAT).add(5, 'hours').add(30, 'minutes').toDate();
-        const timestamp =  moment(parsedData.TIM, DATETIMEFORMAT).toDate();
+        const timestamp = moment(parsedData.TIM, DATETIMEFORMAT).toDate();
         // Compose deviceData for Prisma
         const deviceData = {
           imeinumber: imeinumber,
