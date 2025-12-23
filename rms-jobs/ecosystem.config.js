@@ -13,7 +13,7 @@ module.exports = {
         "DATABASE_URL": "mysql://root:Welcome123!@localhost:3306/rms",
         "PORT": 4003,
         "JWT_SECRET_KEY": "mqtt-secret",
-        "MQTT_HOST": "mqtt://mqtt.macsoftautomations.in",
+        "MQTT_HOST": "mqtt.macsoftautomations.in",
         "MQTT_PORT": 1883,
         "MQTT_USERNAME": "admin",
         "MQTT_PASSWORD": "admin",
