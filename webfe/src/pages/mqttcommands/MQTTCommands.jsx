@@ -42,6 +42,7 @@ const MQTTCommands = () => {
               deviceName={device.username}
               device={device}
               status={device.status}
+              isCommandSelectionNeeded
             />
           ) : (
             <div className="text-center py-4 min-h-96 ">

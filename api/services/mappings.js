@@ -51,8 +51,8 @@ const getAllDevices = async (skip, take, filter, user) => {
       snamqtturl: true,
       snamqttusername: true,
       snamqttpassword: true,
-      snamqttpubTopicData: true,
-      snamqttsubTopicCmd: true,
+      snamqttpubtopicdata: true,
+      snamqttsubtopiccmd: true,
     };
     const count = await prisma.device.count({ where: params.where });
     const devices = await prisma.device.findMany(params);

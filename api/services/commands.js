@@ -17,7 +17,7 @@ const getAllCommandsByDeviceId = async (skip, take, filter, deviceId) => {
   const commands = await prisma.command.findMany({
     where: params.where,
     ...params,
-    orderBy: { createdAt: "asc" },
+    orderBy: { createdAt: "desc" },
     include: { device: true },
   });
 
@@ -34,16 +34,22 @@ const createCommand = async (commandData, user) => {
       where: { imeinumber: command.imeinumber },
     });
     console.log(_device);
-    const mqtt_server = `mqtt://mqtt.macsoftautomations.in`;
+ /*    const mqtt_server = `${process.env.MQTT_BROKER_URL}`;
     const creds = {
-      username: "admin",
-      password: "admin",
-      clientId: "mqttadmin",
-    };
+      username: process.env.MQTT_USERNAME,
+      password: process.env.MQTT_PASSWORD,
+    }; */
+     const mqtt_server = `mqtt://mqtt.macsoftautomations.in`;
+     const creds = {
+       username: "admin",
+       password: "admin",
+       clientId: "mqttadmin",
+     };
     const client = mqtt.connect(mqtt_server, creds);
     console.log(client);
-    client.on('connect', () => {
-      client.publish(`device/${_device.imeinumber}/cmd`, JSON.stringify(command));
+    let _payload = JSON.stringify(command.payload);
+    client.on("connect", () => {
+      client.publish(`device/${_device.imeinumber}/cmd`, _payload);
     });
 
     return command;
