@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 const uploadDevice = async (devicesFromXL, batchSize = 100) => {
   try {
     let CATCH_COUNT = 1000;
-    let PREFIX_TABLE_NAME = "devicelog_";
+    let PREFIX_TABLE_NAME = "deviceLog_";
 
     const totalDevicesCount = await prisma.device.count();
     const _tableNames = new Set();
