@@ -16,7 +16,7 @@ const DeviceConnectionInfo = ({ device }) => {
     macsoftmqttpubtopicdata: device.macsoftmqttpubtopicdata,
     macsoftmqttpubtopiccmd: device.macsoftmqttpubtopiccmd,
     macsoftmqttsubtopiccmd: device.macsoftmqttsubtopiccmd,
-    macsoftmqttsubtopiccmdresponse: device.macsoftmqttsubtopiccmdresponse,
+  /*   macsoftmqttsubtopiccmdresponse: device.macsoftmqttsubtopiccmdresponse, */
     serialNumber: device.serialNumber,
     // SNA MQTT fields
     snamqtturl: device.snamqtturl,
@@ -283,22 +283,23 @@ const DeviceConnectionInfo = ({ device }) => {
               field="macsoftmqttpubtopicdata"
               type="pub"
             />
-            <TopicCard 
+            {/* <TopicCard 
               icon={ArrowUpDown} 
               label="Publish Topic - Command Response" 
               topic={connectionInfo.macsoftmqttsubtopiccmdresponse} 
               field="macsoftmqttsubtopiccmdresponse"
               type="pub"
-            />
-          </div>
-          <div className="space-y-4">
-            <TopicCard 
-              icon={ArrowUpDown} 
-              label="Subscribe Topic - Commands" 
-              topic={connectionInfo.macsoftmqttsubtopiccmd} 
+            /> */}
+            <TopicCard
+              icon={ArrowUpDown}
+              label="Subscribe Topic - Commands"
+              topic={connectionInfo.macsoftmqttsubtopiccmd}
               field="macsoftmqttsubtopiccmd"
               type="sub"
             />
+          </div>
+          <div className="space-y-4">
+           
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
