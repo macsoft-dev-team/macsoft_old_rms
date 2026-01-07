@@ -1,18 +1,20 @@
-const mqtt = require('mqtt');
-const { PrismaClient } = require('@prisma/client');
-const moment = require('moment');
-const momentTz = require('moment-timezone'); // Add this line
-const DATETIMEFORMAT = 'DD/MM/YYYY HH:mm:ss'; // Adjust format as needed
+const mqtt = require("mqtt");
+const { PrismaClient } = require("@prisma/client");
+const moment = require("moment");
+const DATETIMEFORMAT = "DD/MM/YYYY HH:mm:ss";
 
 const prisma = new PrismaClient();
-const client = mqtt.connect(`${process.env.RMS_MQTT_HOST}:${process.env.RMS_MQTT_PORT}`, {
-  username: process.env.RMS_MQTT_USERNAME,
-  password: process.env.RMS_MQTT_PASSWORD,
-  clientId: `mqtt-logger-${Date.now()}`,
-});
+const client = mqtt.connect(
+  `${process.env.RMS_MQTT_HOST}:${process.env.RMS_MQTT_PORT}`,
+  {
+    username: process.env.RMS_MQTT_USERNAME,
+    password: process.env.RMS_MQTT_PASSWORD,
+    clientId: `mqtt-logger-${Date.now()}`,
+  }
+);
 
-client.on('connect', async () => {
-  console.log("Connected to MQTT broker");
+client.on("connect", async () => {
+  //console.log("Connected to MQTT broker");
   // Fetch all devices and store as { macsoftmqttpubtopicdata: { macsoftmqttsubtopiccmd, tablename } }
   const devicesList = await prisma.device.findMany();
   const devicesMap = {};
@@ -39,7 +41,9 @@ client.on('connect', async () => {
   client.devicesMap = devicesMap;
 });
 
-client.on('message', async (topic, message) => {
+client.on("message", async (topic, message) => {
+  // Log the data received
+  //console.log(`Data received on topic '${topic}':`, message.toString());
   try {
     const messageStr = message.toString().trim();
     let parsedData = {};
@@ -47,10 +51,20 @@ client.on('message', async (topic, message) => {
       parsedData = JSON.parse(messageStr);
 
       // Find tablename by topic
-      const tablename = client.devicesMap.hasOwnProperty(topic) ? client.devicesMap.has[topic].tablename : undefined;
-      const imeinumber = client.devicesMap.hasOwnProperty(topic) ? client.devicesMap.has[topic].imeinumber : undefined;
+      const tablename = client.devicesMap.hasOwnProperty(topic)
+        ? client.devicesMap[topic].tablename
+        : undefined;
+      const imeinumber = client.devicesMap.hasOwnProperty(topic)
+        ? client.devicesMap[topic].imeinumber
+        : undefined;
 
-      if (tablename !== undefined && parsedData.TIM !== undefined) {
+      // Convert tablename (e.g., 'devicelog_1') to Prisma model name ('deviceLog_1')
+      const prismaModelName =
+        tablename && /^devicelog_\d+$/i.test(tablename)
+          ? `deviceLog_${tablename.split("_")[1]}`
+          : tablename;
+
+      if (prismaModelName !== undefined && parsedData.TIM !== undefined) {
         // const timestamp =  moment(parsedData.TIM, DATETIMEFORMAT).add(5, 'hours').add(30, 'minutes').toDate();
         const timestamp = moment(parsedData.TIM, DATETIMEFORMAT).toDate();
         // Compose deviceData for Prisma
@@ -81,28 +95,25 @@ client.on('message', async (topic, message) => {
         };
 
         // Use Prisma model dynamically for insert
-        const model = prisma[tablename];
+        const model = prisma[prismaModelName];
         if (!model) {
-          console.error(`Prisma model for table ${tablename} not found`);
+          console.error(`Prisma model for table ${prismaModelName} not found`);
           return;
         }
         await model.create({ data: deviceData });
 
-        // update device model 
-        delete deviceData.imeinumber
+        // update device model
+        delete deviceData.imeinumber;
         await prisma.device.update({
           where: { imeinumber: imeinumber },
           data: deviceData,
         });
-
       }
-
     } catch (e) {
-      console.error('Failed to parse JSON:', e.message);
+      console.error("Failed to parse JSON:", e.message);
       return;
     }
-
   } catch (error) {
-    console.error('Error processing message:', error);
+    console.error("Error processing message:", error);
   }
 });
