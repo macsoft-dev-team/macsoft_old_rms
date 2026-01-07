@@ -34,24 +34,36 @@ const createCommand = async (commandData, user) => {
       where: { imeinumber: command.imeinumber },
     });
     console.log(_device);
- /*    const mqtt_server = `${process.env.MQTT_BROKER_URL}`;
+    /*     const mqtt_server = `${process.env.MQTT_BROKER_URL}`;
     const creds = {
       username: process.env.MQTT_USERNAME,
       password: process.env.MQTT_PASSWORD,
     }; */
-     const mqtt_server = `mqtt://mqtt.macsoftautomations.in`;
-     const creds = {
-       username: "admin",
-       password: "admin",
-       clientId: "mqttadmin",
-     };
+    const mqtt_server = `mqtt://mqtt.macsoftautomations.in`;
+    const creds = {
+      username: "admin",
+      password: "admin",
+      clientId: "mqttadmin",
+    };
     const client = mqtt.connect(mqtt_server, creds);
     console.log(client);
     let _payload = JSON.stringify(command.payload);
-    client.on("connect", () => {
-      client.publish(`device/${_device.imeinumber}/cmd`, _payload);
+    await new Promise((resolve, reject) => {
+      client.on("connect", () => {
+        client.publish(
+          `device/${_device.imeinumber}/cmd`,
+          _payload,
+          {
+            qos: 1,
+            retain: true,
+          },
+          (err) => {
+            client.end();
+            err ? reject(err) : resolve();
+          }
+        );
+      });
     });
-
     return command;
   } catch (error) {
     console.error("Error creating command:", error);
