@@ -25,8 +25,8 @@ const CommandButtons = () => {
     }
 
     let payload = '';
-    if (type === 'MOTOR_ON') payload = '{srun:1}';
-    else if (type === 'MOTOR_OFF') payload = '{srun:0}';
+    if (type === 'MOTOR_ON') payload = '"SRUN:1";';
+    else if (type === 'MOTOR_OFF') payload = '"SRUN:0";';
     else if (type === 'CUSTOM') payload = customPayload;
 
     if (type === 'CUSTOM' && !customPayload) {
@@ -116,7 +116,7 @@ const CommandButtons = () => {
             className="w-full min-h-80 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-2 text-sm font-mono text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={customPayload}
             onChange={e => setCustomPayload(e.target.value)}
-            placeholder={`{TIM:"03/07/2020 16:40:59",OPV:220.1,OPC:12.4,DCV:345.2,DCC:12.5,FRQ:123.1,PWR:3.5,FLC:1237,STS:2,TEP:12.2,FLW:32.5,CKW:123454,CWD:5433455,CHR:5434,TKW:43,TWD:433,THR:53,RSI:-101}`}
+            placeholder={`"SRUN:1";`}
           />
           <div className="flex gap-2 mt-2">
             <Button

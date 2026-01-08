@@ -48,8 +48,8 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
   }, [commands, isTyping]);
 
   const getPayloadByType = (type) => {
-    if (type === 'MOTOR_ON') return '{srun:1}';
-    if (type === 'MOTOR_OFF') return '{srun:0}';
+    if (type === 'MOTOR_ON') return '"SRUN:1";';
+    if (type === 'MOTOR_OFF') return '"SRUN:0";';
     return '';
   };
 
@@ -96,7 +96,7 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
       deviceId,
       imeinumber: device?.imeinumber || ''
     };
-
+    
     setCommand({
       id: Date.now(),
       ...commandData,
