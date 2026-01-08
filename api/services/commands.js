@@ -29,7 +29,6 @@ const createCommand = async (commandData, user) => {
     const _device = await prisma.device.findUnique({
       where: { imeinumber: commandData.imeinumber },
     });
-    console.log(_device);
     const mqtt_server = `${process.env.MQTT_BROKER_URL}`;
     const creds = {
       username: process.env.MQTT_USERNAME,
