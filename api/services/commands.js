@@ -29,17 +29,17 @@ const createCommand = async (commandData, user) => {
     const _device = await prisma.device.findUnique({
       where: { imeinumber: commandData.imeinumber },
     });
-    const mqtt_server = `${process.env.MQTT_BROKER_URL}`;
+  /*   const mqtt_server = `${process.env.MQTT_BROKER_URL}`;
     const creds = {
       username: process.env.MQTT_USERNAME,
       password: process.env.MQTT_PASSWORD,
-    };
-    /*    const mqtt_server = `mqtt://mqtt.macsoftautomations.in`;
+    }; */
+       const mqtt_server = `mqtt://mqtt.macsoftautomations.in`;
     const creds = {
       username: "admin",
       password: "admin",
       clientId: "mqttadmin",
-    }; */
+    };
     const client = mqtt.connect(mqtt_server, creds);
     let _payload = commandData.payload;
     await new Promise((resolve, reject) => {
