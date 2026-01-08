@@ -147,7 +147,7 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
             {formatStatus(status)}
           </Badge>
         </div>
-        <Button variant="outline" size="small" onClick={() => fetchCommands({ deviceId })}>
+        <Button variant="outline" size="small" onClick={() => fetchCommands({ deviceId , skip: null, take: null, filter: '' })} >
           <RefreshCw className={loading ? 'animate-spin' : ''} />
         </Button>
       </div>
@@ -156,6 +156,7 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         <AnimatePresence>
           {commands.map((cmd) => {
+            // Only RESPONSE is left, all others (including CUSTOM) are right
             const isResponse = cmd.type === 'RESPONSE';
             return (
               <motion.div
@@ -170,8 +171,8 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
                       : 'bg-slate-200 dark:bg-slate-700'
                     }`}
                 >
-                  <p className="text-sm uppercase tracking-wider">{cmd.type}</p>
-                  <p className="text-xs font-mono">
+                  <p className="text-sm uppercase tracking-wider border-b border-gray-300">{cmd.type}</p>
+                  <p className="text-xs font-mono py-1">
                     {cmd.payload ? cmd.payload : cmd.response}
                   </p>
                   <div className="flex justify-end items-center gap-1 text-xs">
