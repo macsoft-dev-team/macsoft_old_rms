@@ -155,23 +155,33 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         <AnimatePresence>
-          {commands.map((cmd) => (
-            <motion.div
-              key={cmd.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex justify-end"
-            >
-              <div className="bg-slate-200 dark:bg-slate-700 px-3 py-2 rounded-lg">
-                <p className="text-sm">{cmd.type}</p>
-                <p className="text-xs font-mono">{cmd.payload}</p>
-                <div className="flex justify-end items-center gap-1 text-xs">
-                  {moment(cmd.createdAt).format('LT')}
-                  {getStatusIcon(cmd.status)}
+          {commands.map((cmd) => {
+            const isResponse = cmd.type === 'RESPONSE';
+            return (
+              <motion.div
+                key={cmd.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex ${isResponse ? 'justify-start' : 'justify-end'}`}
+              >
+                <div
+                  className={`px-3 py-2 rounded-lg ${isResponse
+                      ? 'bg-blue-100 dark:bg-blue-800'
+                      : 'bg-slate-200 dark:bg-slate-700'
+                    }`}
+                >
+                  <p className="text-sm uppercase tracking-wider">{cmd.type}</p>
+                  <p className="text-xs font-mono">
+                    {cmd.payload ? cmd.payload : cmd.response}
+                  </p>
+                  <div className="flex justify-end items-center gap-1 text-xs">
+                    {moment(cmd.createdAt).format('LT')}
+                    {getStatusIcon(cmd.status)}
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </AnimatePresence>
 
         {isTyping && (
