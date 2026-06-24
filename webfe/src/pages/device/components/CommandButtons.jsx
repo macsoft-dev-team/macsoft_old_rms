@@ -110,10 +110,10 @@ const CommandButtons = () => {
     if (!device?.id) return;
     
     // Fetch immediately
-    fetchCommands({ deviceId: device.id, skip: 0, take: 50 });
+    fetchCommands({ deviceId: device.id, skip: null, take: null, filter: '' });
 
     const interval = setInterval(() => {
-      fetchCommands({ deviceId: device.id, skip: 0, take: 50 });
+      fetchCommands({ deviceId: device.id, skip: null, take: null, filter: '' });
     }, 3000);
 
     return () => clearInterval(interval);
