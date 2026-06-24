@@ -19,7 +19,7 @@ const ModbusTemplateModal = ({
   const isCreate = mode === 'create';
   const isView = mode === 'view';
 
-  const [jsonText, setJsonText] = useState('');
+  const [plainText, setPlainText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -37,6 +37,45 @@ const ModbusTemplateModal = ({
     }
   });
 
+  const getPlainText = (parameters) => {
+    if (!Array.isArray(parameters)) return '';
+    return parameters
+      .map((p) => {
+        const parameter = p.parameter || '';
+        const address = p.address || '';
+        const dataType = p.dataType || 'uint16';
+        return `${parameter},${address},${dataType}`;
+      })
+      .join('\n');
+  };
+
+  const parsePlainTextInput = (input) => {
+    if (!input) return [];
+    return input
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line)
+      .map((line) => {
+        const parts = line.split(',').map((s) => s.trim());
+        if (parts.length >= 2) {
+          return {
+            parameter: parts[0],
+            address: parts[1],
+            dataType: parts[2] || 'uint16',
+          };
+        }
+        if (parts.length === 1 && parts[0]) {
+          return {
+            parameter: parts[0],
+            address: '',
+            dataType: 'uint16',
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+  };
+
   useEffect(() => {
     if (open && !isSubmitting) {
       if (template && (isEdit || isView)) {
@@ -47,7 +86,7 @@ const ModbusTemplateModal = ({
         };
 
         reset(templateData);
-        setJsonText(JSON.stringify(templateData.parameters, null, 2));
+        setPlainText(getPlainText(templateData.parameters));
       } else if (isCreate) {
         const emptyTemplate = {
            name: '',
@@ -55,7 +94,7 @@ const ModbusTemplateModal = ({
           parameters: []
         };
         reset(emptyTemplate);
-        setJsonText('[]');
+        setPlainText('');
       }
     }
 
@@ -134,34 +173,37 @@ const ModbusTemplateModal = ({
               </div>
             </div>
             <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Modbus Mapping (JSON)</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Modbus Mapping</h3>
               {(isEdit || isCreate) ? (
-                <div>
-                  <textarea
-                    className="w-full min-h-80 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-2 text-sm font-mono text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={jsonText}
-                    onChange={(e) => {
-                      const textValue = e.target.value;
-                      setJsonText(textValue);
-
-                      // Try to parse and update form field
-                      try {
-                        const val = JSON.parse(textValue);
-                        if (Array.isArray(val)) {
-                          setValue('parameters', val);
-                        }
-                      } catch {
-                        // On parse error, just keep the text but don't update form field
-                      }
-                    }}
-                    placeholder='[{ "parameter": "", "address": "", "dataType": "uint16" }]'
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 block">
+                      Enter/Paste parameters (parameter,address,dataType)
+                    </label>
+                    <textarea
+                      className="w-full min-h-80 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-2 text-sm font-mono text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={plainText}
+                      onChange={(e) => {
+                        const textValue = e.target.value;
+                        setPlainText(textValue);
+                        const parsed = parsePlainTextInput(textValue);
+                        setValue('parameters', parsed);
+                      }}
+                      placeholder={"Speed,40001,uint16\nVoltage,40002,float"}
+                    />
+                  </div>
+                  <div className="max-h-80 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-md p-1">
+                    <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 block sticky top-0 bg-white dark:bg-gray-900 py-1">
+                      Table View (Preview)
+                    </label>
+                    <ParametersTable parameters={parsePlainTextInput(plainText)} />
+                  </div>
                 </div>
               ) : (
                 <ParametersTable parameters={template.parameters} />
               )}
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                {(isEdit || isCreate) ? 'Edit as JSON array. Example:' : 'Modbus mapping parameters.'} {(isEdit || isCreate) && <code>[&#123; "parameter": "Speed", "address": "40001", "dataType": "uint16" &#125;]</code>}
+                {(isEdit || isCreate) ? 'Format: parameter,address,dataType (e.g., Speed,40001,uint16). One per line.' : 'Modbus mapping parameters.'}
               </div>
             </div>
             {(isEdit || isCreate) && (
