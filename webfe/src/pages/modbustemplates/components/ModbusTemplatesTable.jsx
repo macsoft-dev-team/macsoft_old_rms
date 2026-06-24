@@ -4,6 +4,30 @@ import ModbusTemplateModal from './ModbusTemplateModal';
 import Pagination from '../../../components/Pagination';
 import useTemplate from '../../../hooks/useTemplate';
 
+const parseParameters = (str) => {
+  if (!str) return [];
+  if (typeof str !== 'string') {
+    if (Array.isArray(str)) return str;
+    return [];
+  }
+  const cleaned = str.trim().replace(/^\{/, '').replace(/;?\}$/, '');
+  if (!cleaned) return [];
+  return cleaned
+    .split(',')
+    .map(part => {
+      const unquoted = part.replace(/^"|"$/g, '').trim();
+      const colonIndex = unquoted.indexOf(':');
+      if (colonIndex !== -1) {
+        return {
+          address: unquoted.substring(0, colonIndex),
+          value: unquoted.substring(colonIndex + 1)
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+};
+
 const ModbusTemplatesTable = ({
   onView,
   onEdit,
@@ -42,7 +66,7 @@ const ModbusTemplatesTable = ({
               </td>
               <td className="px-8 py-3 whitespace-nowrap text-base text-gray-700 dark:text-blue-100">{template.driveCode || `DRCODE-${index + 1}`}</td>
               <td className="px-8 py-3 whitespace-nowrap text-base text-gray-700 dark:text-blue-100">
-                {Array.isArray(template.modbusMapping) ? template.modbusMapping.length : 0}
+                {parseParameters(template.parameters).length}
               </td>
               <td className="px-8 py-3 whitespace-nowrap text-base text-gray-700 dark:text-blue-100">
                 <div className="flex gap-2">
