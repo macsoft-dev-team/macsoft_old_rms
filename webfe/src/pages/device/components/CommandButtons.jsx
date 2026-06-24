@@ -25,8 +25,8 @@ const CommandButtons = () => {
     }
 
     let payload = '';
-    if (type === 'MOTOR_ON') payload = '"SRUN:1";';
-    else if (type === 'MOTOR_OFF') payload = '"SRUN:0";';
+    if (type === 'MOTOR_ON') payload = '{"SRUN:1"}';
+    else if (type === 'MOTOR_OFF') payload = '{"SRUN:0"}';
     else if (type === 'CUSTOM') payload = customPayload;
 
     if (type === 'CUSTOM' && !customPayload) {
