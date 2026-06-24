@@ -1,24 +1,24 @@
 import DeviceMetricCard from './DeviceMetricCard';
 import { deviceDashboardMetrics, deviceMetricsGrouped } from '../../../lib/constants/deviceDashboardMetrics';
 import NNewDeviceMetricCard from './newCard';
-import { formatStatus } from '../../../utils/statusUtils';
- 
+import { motorStatus } from '../../../utils/statusUtils';
+
 const MetricsGrid = ({ device }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     {deviceMetricsGrouped.map((group, idx) => (
-      <NNewDeviceMetricCard 
-        key={group.mainTitle + idx} 
+      <NNewDeviceMetricCard
+        key={group.mainTitle + idx}
         mainTitle={group.mainTitle}
         icon={group.icon}
         index={idx}
         pairs={group.pairs.map(pair => ({
           ...pair,
-          value: pair.key === 'status' ? formatStatus(device[pair.key]) : device[pair.key]
+          value: pair.key === 'status' ? motorStatus(device[pair.key]) : device[pair.key]
         }))}
       />
     ))}
 
- {/*    {deviceDashboardMetrics.map((metric, idx) => (
+    {/*    {deviceDashboardMetrics.map((metric, idx) => (
       <DeviceMetricCard
         key={metric.title + idx}
         icon={metric.icon}
@@ -32,4 +32,4 @@ const MetricsGrid = ({ device }) => (
 
 export default MetricsGrid;
 
- 
+
