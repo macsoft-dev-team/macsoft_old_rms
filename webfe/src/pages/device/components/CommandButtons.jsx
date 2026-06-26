@@ -41,18 +41,32 @@ const parseResponseText = (text) => {
   
   let cleaned = text.trim();
 
-  // Try parsing as JSON object first, in case the response is wrapped in a JSON packet
-  try {
-    const parsedObj = JSON.parse(cleaned);
-    if (parsedObj && typeof parsedObj === 'object') {
-      if (parsedObj.response !== undefined) {
-        cleaned = String(parsedObj.response).trim();
-      } else if (parsedObj.original !== undefined && parsedObj.response === 'Command received') {
-        cleaned = String(parsedObj.original).trim();
+  // Recursively unwrap/unescape JSON if it is a JSON string or a known wrapped object
+  let lastCleaned = '';
+  while (cleaned !== lastCleaned) {
+    lastCleaned = cleaned;
+    try {
+      const parsed = JSON.parse(cleaned);
+      if (parsed !== null && parsed !== undefined) {
+        if (typeof parsed === 'string') {
+          cleaned = parsed.trim();
+        } else if (typeof parsed === 'object') {
+          if (parsed.response !== undefined) {
+            cleaned = String(parsed.response).trim();
+          } else if (parsed.original !== undefined && parsed.response === 'Command received') {
+            cleaned = String(parsed.original).trim();
+          } else {
+            break;
+          }
+        } else {
+          break;
+        }
+      } else {
+        break;
       }
+    } catch (e) {
+      break; // Not a JSON string/object
     }
-  } catch (e) {
-    // Not a JSON object or parsing failed
   }
 
   // Strip common command response prefixes (like RESPONSE, OK, etc.)
@@ -66,6 +80,9 @@ const parseResponseText = (text) => {
   }
   cleaned = cleaned.replace(/^"|"$/g, '').trim();
 
+  // Strip escaped quotes if they are still present after partial manual parsing
+  cleaned = cleaned.replace(/^\\"+|\\"+$/g, '').trim();
+
   // Handle format like RVFD : 2 = 25 or MVFD : 2 = 25, 3 = 123
   if (cleaned.includes(':')) {
     const parts = cleaned.split(':');
@@ -77,6 +94,9 @@ const parseResponseText = (text) => {
         const value = kv[1]
           .replace(/\\n/g, '')
           .replace(/\\r/g, '')
+          .replace(/\\"/g, '')
+          .replace(/"/g, '')
+          .replace(/}/g, '')
           .replace(/[\r\n\t]+/g, '')
           .trim();
         return { address, value };
@@ -98,6 +118,9 @@ const parseResponseText = (text) => {
           value: parts[1]
             .replace(/\\n/g, '')
             .replace(/\\r/g, '')
+            .replace(/\\"/g, '')
+            .replace(/"/g, '')
+            .replace(/}/g, '')
             .replace(/[\r\n\t]+/g, '')
             .trim()
         };
@@ -504,6 +527,54 @@ const CommandButtons = () => {
     }
   };
 
+  const handleClearState = () => {
+    setParameters(prev => prev.map(p => ({
+      ...p,
+      readValue: '',
+      writeValue: '',
+      status: 'idle',
+      sentTime: null
+    })));
+    toast({
+      title: "State Cleared",
+      description: "Parameter read/write values and pending states have been cleared.",
+      variant: "success"
+    });
+  };
+
+  // Timeout pending states after 15 seconds
+  useEffect(() => {
+    const pendingParams = parameters.filter(p => p.status === 'pending');
+    if (pendingParams.length === 0) return;
+
+    const interval = setInterval(() => {
+      const now = Date.now();
+      let updated = false;
+      const newParameters = parameters.map(p => {
+        if (p.status === 'pending' && p.sentTime && now - p.sentTime > 15000) {
+          updated = true;
+          return {
+            ...p,
+            status: 'error',
+            sentTime: null
+          };
+        }
+        return p;
+      });
+
+      if (updated) {
+        setParameters(newParameters);
+        toast({
+          title: "Request Timeout",
+          description: "Device did not respond within 15 seconds.",
+          variant: "destructive"
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [parameters, toast]);
+
   return (
     <div className="space-y-6">
       {/* Existing command buttons interface */}
@@ -701,6 +772,14 @@ const CommandButtons = () => {
             </div>
 
             <div className="flex gap-3 justify-end pt-2">
+              <Button
+                variant="outline"
+                onClick={handleClearState}
+                disabled={parameters.length === 0}
+                className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20 border-red-200 dark:border-red-900"
+              >
+                Clear
+              </Button>
               <Button
                 variant="outline"
                 onClick={handleReadAll}
