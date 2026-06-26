@@ -6,5 +6,7 @@ const mappingController = require("../controllers/mappings");
 router.get("/", verifyToken, mappingController.getAllDevices);
 router.get("/:imeinumber", verifyToken, mappingController.getDeviceById);
 router.put("/:imeinumber", verifyToken, mappingController.updateDevice);
-    
+router.post("/", verifyToken, mappingController.createDeviceMapping);
+router.post("/:imeinumber/publish", verifyToken, mappingController.publishSnaDetails);
+
 module.exports = router;
