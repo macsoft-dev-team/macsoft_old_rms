@@ -71,6 +71,39 @@ export const uploadMapping = createAsyncThunk(
     }
   }
 );
+
+export const createMapping = createAsyncThunk(
+  "mappings/createMapping",
+  async (data, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await axios.post(
+        API_ENDPOINTS.mappings,
+        data,
+        { withCredentials: true }
+      );
+      dispatch(fetchMappings({ skip: 0, take: 10 }));
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
+  }
+);
+
+export const publishMapping = createAsyncThunk(
+  "mappings/publishMapping",
+  async (imeinumber, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${API_ENDPOINTS.mappings}/${imeinumber}/publish`,
+        {},
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
+  }
+);
  
 
 export const mappingsSlice = createSlice({
@@ -145,6 +178,28 @@ export const mappingsSlice = createSlice({
       .addCase(uploadMapping.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to upload mapping";
+      })
+      .addCase(createMapping.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createMapping.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(createMapping.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to create mapping";
+      })
+      .addCase(publishMapping.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(publishMapping.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(publishMapping.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to publish mapping";
       });
   },
 });

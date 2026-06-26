@@ -3,7 +3,10 @@ import {
   setFilter,
   uploadMapping,
   setMapping,
-  setMode
+  setMode,
+  createMapping,
+  updateMapping,
+  publishMapping
 } from "../lib/features/mappings";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback } from "react";
@@ -53,6 +56,21 @@ export const useMapping = () => {
     [dispatch]
   );
 
+  const createMappingCallback = useCallback(
+    (data) => dispatch(createMapping(data)),
+    [dispatch]
+  );
+
+  const updateMappingCallback = useCallback(
+    (mappingId, data) => dispatch(updateMapping({ mappingId, data })),
+    [dispatch]
+  );
+
+  const publishMappingCallback = useCallback(
+    (imeinumber) => dispatch(publishMapping(imeinumber)),
+    [dispatch]
+  );
+
   return {
     mappings,
     mode,
@@ -68,5 +86,8 @@ export const useMapping = () => {
     onPageChange,
     uploadMapping: uploadMappingCallback,
     setMode: setModeCallback,
+    createMapping: createMappingCallback,
+    updateMapping: updateMappingCallback,
+    publishMapping: publishMappingCallback,
   };
 };

@@ -20,14 +20,12 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
    const devicesTransformed = await Promise.all(
      validDevices.map(async (device) => ({
        imeinumber: String(device.imeinumber).trim(),
-       snamqtturl: `mqtt://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`,
-       snamqttusername: `device_${device.imeinumber}`,
-       snamqttclientid: `device_${device.imeinumber}`,
-       snamqttpassword: device.snamqttpassword
-         ? await bcrypt.hash(device.snamqttpassword, 10)
-         : null,
-       snamqttpubTopicData: device.snapubTopicData,
-       snamqttsubTopicCmd: device.snasubTopicCmd,
+       snamqtturl: device.snamqtturl ? String(device.snamqtturl).trim() : `mqtt://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`,
+       snamqttusername: device.snamqttusername ? String(device.snamqttusername).trim() : `device_${device.imeinumber}`,
+       snamqttpassword: device.snamqttpassword ? String(device.snamqttpassword).trim() : null,
+       snamqttpubtopicdata: device.snamqttpubtopicdata ? String(device.snamqttpubtopicdata).trim() : (device.snapubTopicData ? String(device.snapubTopicData).trim() : null),
+       snamqttsubtopiccmd: device.snamqttsubtopiccmd ? String(device.snamqttsubtopiccmd).trim() : (device.snasubTopicCmd ? String(device.snasubTopicCmd).trim() : null),
+       snamqttsubtopiccmdresponse: device.snamqttsubtopiccmdresponse ? String(device.snamqttsubtopiccmdresponse).trim() : null
      }))
    );
 
