@@ -17,7 +17,7 @@ const getAllCommandsByDeviceId = async (skip, take, filter, deviceId) => {
   const commands = await prisma.command.findMany({
     where: params.where,
     ...params,
-    orderBy: { createdAt: "asc" },
+    orderBy: { createdAt: "desc" },
     include: { device: true },
   });
 

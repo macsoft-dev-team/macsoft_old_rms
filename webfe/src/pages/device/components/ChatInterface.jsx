@@ -155,9 +155,11 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         <AnimatePresence>
-          {commands.map((cmd) => {
-            // Only RESPONSE is left, all others (including CUSTOM) are right
-            const isResponse = cmd.type === 'RESPONSE';
+          {[...commands]
+            .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+            .map((cmd) => {
+              // Only RESPONSE is left, all others (including CUSTOM) are right
+              const isResponse = cmd.type === 'RESPONSE';
             return (
               <motion.div
                 key={cmd.id}
