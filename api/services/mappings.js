@@ -123,7 +123,7 @@ const publishSnaDetails = async (imeinumber) => {
   // Construct payload
   const clientid = `d:${device.snamqttusername}`;
   const password = device.snamqttpassword || "";
-  const payload = `,"SCOM:${device.snamqtturl}","SUSR:${device.snamqttusername}","SCID:${clientid}","SPWD:${password}","SSPT:1"`;
+  const payload = `{"SCOM:${device.snamqtturl}","SUSR:${device.snamqttusername}","SCID:${clientid}","SPWD:${password}","SSPT:1"}`;
 
   const mqtt_server = process.env.MQTT_BROKER_URL || `mqtt://mqtt.macsoftautomations.in`;
   const creds = {
