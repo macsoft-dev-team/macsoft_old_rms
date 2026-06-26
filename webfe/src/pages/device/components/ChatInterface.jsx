@@ -35,7 +35,7 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
 
   const [selectedCommandType, setSelectedCommandType] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
 
   useEffect(() => {
     if (deviceId) {
@@ -44,7 +44,9 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
   }, [deviceId, fetchCommands]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   }, [commands, isTyping]);
 
   const getPayloadByType = (type) => {
@@ -153,7 +155,7 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4" ref={chatContainerRef}>
         <AnimatePresence>
           {[...commands]
             .sort((a, b) => {
@@ -196,8 +198,6 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
         {isTyping && (
           <div className="text-sm text-gray-500">Waiting for response...</div>
         )}
-
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Command Tabs */}

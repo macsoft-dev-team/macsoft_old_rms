@@ -75,8 +75,8 @@ model device {
   simnumber                      String?
   pcbsn                          String?
   timestamp                      DateTime? @db.Timestamp(0)
-  firmwareVersion                Float?
-  hardwareVersion                Float?
+  firmwareVersion                String?
+  hardwareVersion                String?
   driveCode                      Int?
   outputVoltage                  Float?
   outputCurrent                  Float?
@@ -147,8 +147,8 @@ model deviceHistory {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -176,8 +176,8 @@ model deviceLog_1 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -207,8 +207,8 @@ model deviceLog_2 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -238,8 +238,8 @@ model deviceLog_3 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -269,8 +269,8 @@ model deviceLog_4 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -300,8 +300,8 @@ model deviceLog_5 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -331,8 +331,8 @@ model deviceLog_6 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -362,8 +362,8 @@ model deviceLog_7 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -393,8 +393,8 @@ model deviceLog_8 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -424,8 +424,8 @@ model deviceLog_9 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -455,8 +455,8 @@ model deviceLog_10 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -486,8 +486,8 @@ model deviceLog_11 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -517,8 +517,8 @@ model deviceLog_12 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -548,8 +548,8 @@ model deviceLog_13 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -579,8 +579,8 @@ model deviceLog_14 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -610,8 +610,8 @@ model deviceLog_15 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -641,8 +641,8 @@ model deviceLog_16 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -672,8 +672,8 @@ model deviceLog_17 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -703,8 +703,8 @@ model deviceLog_18 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -734,8 +734,8 @@ model deviceLog_19 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -765,8 +765,8 @@ model deviceLog_20 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -796,8 +796,8 @@ model deviceLog_21 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -827,8 +827,8 @@ model deviceLog_22 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -858,8 +858,8 @@ model deviceLog_23 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -889,8 +889,8 @@ model deviceLog_24 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -920,8 +920,8 @@ model deviceLog_25 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -951,8 +951,8 @@ model deviceLog_26 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -982,8 +982,8 @@ model deviceLog_27 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -1013,8 +1013,8 @@ model deviceLog_28 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -1044,8 +1044,8 @@ model deviceLog_29 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -1075,8 +1075,8 @@ model deviceLog_30 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -1106,8 +1106,8 @@ model deviceLog_31 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -1137,8 +1137,8 @@ model deviceLog_32 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -1168,8 +1168,8 @@ model deviceLog_33 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -1199,8 +1199,8 @@ model deviceLog_34 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -1230,8 +1230,8 @@ model deviceLog_35 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -1261,8 +1261,8 @@ model deviceLog_36 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -1292,8 +1292,8 @@ model deviceLog_37 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -1323,8 +1323,8 @@ model deviceLog_38 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -1354,8 +1354,8 @@ model deviceLog_39 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?
@@ -1385,8 +1385,8 @@ model deviceLog_40 {
   id              Int      @id @default(autoincrement())
   imeinumber      String   @db.VarChar(32)
   timestamp       DateTime @db.Timestamp(0)
-  firmwareVersion Float?
-  hardwareVersion Float?
+  firmwareVersion String?
+  hardwareVersion String?
   driveCode       Int?
   outputVoltage   Float?
   outputCurrent   Float?

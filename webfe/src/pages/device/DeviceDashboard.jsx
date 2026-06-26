@@ -12,13 +12,13 @@ import HistoricalChart from './components/HistoricalChart';
 import CommandButtons from './components/CommandButtons';
 import DeviceConnectionInfo from './components/DeviceConnectionInfo';
 import DeviceLog from './components/DeviceLog';
- const DeviceDashboard = () => {
+const DeviceDashboard = () => {
   const { deviceId } = useParams();
-  const { device ,fetchDeviceById ,loading} = useDevice();
+  const { device, fetchDeviceById, loading } = useDevice();
 
- 
+
   const navigate = useNavigate();
-  useEffect(() => {   
+  useEffect(() => {
     if (deviceId) {
       fetchDeviceById(deviceId);
     }
@@ -33,7 +33,7 @@ import DeviceLog from './components/DeviceLog';
     );
   }
   if (!device && loading) {
-    return <LoadingSpinner/>
+    return <LoadingSpinner />
   }
 
   const hasAlerts = (device.data?.alarmCode ?? 0) !== 0 || (device.data?.faultCode ?? 0) !== 0;
@@ -53,7 +53,7 @@ import DeviceLog from './components/DeviceLog';
 
   return (
     <div className="space-y-6">
-       <DeviceHeader device={device} statusConfig={statusConfig} navigate={navigate} />
+      <DeviceHeader device={device} statusConfig={statusConfig} navigate={navigate} />
 
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList className="flex w-full lg:grid grid-cols-4 overflow-x-auto xl:overscroll-none scrollbar-hide">
@@ -64,10 +64,9 @@ import DeviceLog from './components/DeviceLog';
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-           <AlertBanner faultCode={device.data?.faultCode ?? 0} alarmCode={device.data?.alarmCode ?? 0} />
-           <MetricsGrid device={device} />
-           <HistoricalChart history={device.history} />
-           <DeviceMap 
+          <AlertBanner faultCode={device.data?.faultCode ?? 0} alarmCode={device.data?.alarmCode ?? 0} />
+          <MetricsGrid device={device} />
+          <DeviceMap
             status={device.status}
             latitude={device.lattitude}
             longitude={device.longitude}
@@ -81,7 +80,7 @@ import DeviceLog from './components/DeviceLog';
         <TabsContent value="commands">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <CommandButtons deviceId={device.id}
-              deviceName={device.name}  />
+              deviceName={device.name} />
             <div>
               <ChatInterface
                 deviceId={device.id}
