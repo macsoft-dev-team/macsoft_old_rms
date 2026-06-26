@@ -13,30 +13,50 @@ const client = mqtt.connect(
   }
 );
 
+// Messages can arrive before the initial device sync completes.
+client.devicesMap = {};
+
 client.on("connect", async () => {
   //console.log("Connected to MQTT broker");
   // Fetch all devices and store as { macsoftmqttpubtopicdata: { macsoftmqttpubtopiccmd, tablename } }
   const devicesList = await prisma.device.findMany();
   const devicesMap = {};
   devicesList.forEach((device) => {
-    devicesMap[device.macsoftmqttpubtopicdata] = {
-      macsoftmqttpubtopiccmd: device.macsoftmqttpubtopiccmd,
-      tablename: device.tablename,
-      imeinumber: device.imeinumber,
-    };
-    // Subscribe to both data and command topics
-    client.subscribe(
-      [device.macsoftmqttpubtopicdata, device.macsoftmqttpubtopiccmd],
-      (err) => {
-        if (err) {
-          console.error("Subscription error:", err);
-        } else {
-          console.log(
-            `Subscribed to topics: ${device.macsoftmqttpubtopicdata}, ${device.macsoftmqttpubtopiccmd}`
-          );
-        }
+    const dataTopic =
+      typeof device.macsoftmqttpubtopicdata === "string"
+        ? device.macsoftmqttpubtopicdata.trim()
+        : "";
+    const commandTopic =
+      typeof device.macsoftmqttpubtopiccmd === "string"
+        ? device.macsoftmqttpubtopiccmd.trim()
+        : "";
+    const topics = [dataTopic, commandTopic].filter(Boolean);
+
+    if (dataTopic) {
+      devicesMap[dataTopic] = {
+        macsoftmqttpubtopiccmd: commandTopic || null,
+        tablename: device.tablename,
+        imeinumber: device.imeinumber,
+      };
+    }
+
+    if (topics.length === 0) {
+      console.warn(
+        `Skipping MQTT subscription for device ${device.imeinumber}: no valid publish topics configured`
+      );
+      return;
+    }
+
+    client.subscribe(topics, (err) => {
+      if (err) {
+        console.error(
+          `Subscription error for device ${device.imeinumber}:`,
+          err
+        );
+      } else {
+        console.log(`Subscribed to topics: ${topics.join(", ")}`);
       }
-    );
+    });
   });
   client.devicesMap = devicesMap;
 });
@@ -84,11 +104,13 @@ client.on("message", async (topic, message) => {
 
   if (isJson) {
     // ...existing code for JSON handling...
-    const tablename = client.devicesMap.hasOwnProperty(topic)
-      ? client.devicesMap[topic].tablename
+    const devicesMap = client.devicesMap || {};
+    const hasTopic = Object.prototype.hasOwnProperty.call(devicesMap, topic);
+    const tablename = hasTopic
+      ? devicesMap[topic].tablename
       : undefined;
-    const imeinumber = client.devicesMap.hasOwnProperty(topic)
-      ? client.devicesMap[topic].imeinumber
+    const imeinumber = hasTopic
+      ? devicesMap[topic].imeinumber
       : undefined;
     const prismaModelName =
       tablename && /^devicelog_\d+$/i.test(tablename)
