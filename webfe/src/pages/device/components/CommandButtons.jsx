@@ -224,6 +224,7 @@ const CommandButtons = () => {
     const newParameters = parameters.map(param => {
       const match = latestValues[param.address];
       if (match) {
+        const isOk = match.value.toLowerCase().includes('ok');
         if (param.status === 'pending') {
           const matchTime = new Date(match.timestamp).getTime();
           const sentTime = param.sentTime || 0;
@@ -232,14 +233,14 @@ const CommandButtons = () => {
             updated = true;
             return {
               ...param,
-              readValue: match.value,
+              readValue: isOk ? (param.writeValue || param.readValue) : match.value,
               status: 'success',
               sentTime: null
             };
           }
         } else {
-          // If not pending, populate the box with the latest response value (e.g. on mount/load)
-          if (param.readValue !== match.value) {
+          // If not pending, populate the box with the latest response value if it's different and not a write confirmation
+          if (!isOk && param.readValue !== match.value) {
             updated = true;
             return {
               ...param,
@@ -390,7 +391,7 @@ const CommandButtons = () => {
 
     const commandData = {
       type: 'VFD_WRITE',
-      payload: `{"WVFD:${param.address}=${param.writeValue}"}`.toUpperCase(),
+      payload: `{"SVFD:${param.address}=${param.writeValue}"}`.toUpperCase(),
       deviceId: device.id,
       imeinumber: device.imeinumber || ''
     };
