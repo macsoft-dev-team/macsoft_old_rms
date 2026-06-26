@@ -546,8 +546,8 @@ const CommandButtons = () => {
               <table className="w-full text-sm">
                 <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                   <tr>
-                    <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Name</th>
                     <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Address</th>
+                    <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Value</th>
                     <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Read Value</th>
                     <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Write Value</th>
                     <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">Action</th>
@@ -556,8 +556,8 @@ const CommandButtons = () => {
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
                   {parameters.map((param, index) => (
                     <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                      <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{param.name}</td>
-                      <td className="px-4 py-3 font-mono text-gray-600 dark:text-gray-400">{param.address}</td>
+                      <td className="px-4 py-3 font-mono text-gray-900 dark:text-gray-100">{param.address}</td>
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{param.name}</td>
                       <td className="px-4 py-3">
                         <div className="relative flex items-center">
                           <input
