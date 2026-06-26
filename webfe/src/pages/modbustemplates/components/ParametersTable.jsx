@@ -46,10 +46,10 @@ const ParametersTable = ({ parameters = [] }) => {
         <thead className="bg-gray-50 dark:bg-gray-800">
           <tr>
             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              Address
+              Name
             </th>
             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              Value
+              Address
             </th>
           </tr>
         </thead>
