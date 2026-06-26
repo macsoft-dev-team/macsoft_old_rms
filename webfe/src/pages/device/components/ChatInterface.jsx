@@ -96,7 +96,7 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
       deviceId,
       imeinumber: device?.imeinumber || ''
     };
-    
+
     setCommand({
       id: Date.now(),
       ...commandData,
@@ -147,7 +147,7 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
             {formatStatus(status)}
           </Badge>
         </div>
-        <Button variant="outline" size="small" onClick={() => fetchCommands({ deviceId , skip: null, take: null, filter: '' })} >
+        <Button variant="outline" size="small" onClick={() => fetchCommands({ deviceId, skip: null, take: null, filter: '' })} >
           <RefreshCw className={loading ? 'animate-spin' : ''} />
         </Button>
       </div>
@@ -166,13 +166,13 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
                 className={`flex ${isResponse ? 'justify-start' : 'justify-end'}`}
               >
                 <div
-                  className={`px-3 py-2 rounded-lg ${isResponse
-                      ? 'bg-blue-100 dark:bg-blue-800'
-                      : 'bg-slate-200 dark:bg-slate-700'
+                  className={`px-3 py-2 rounded-lg max-w-lg ${isResponse
+                    ? 'bg-blue-100 dark:bg-blue-800'
+                    : 'bg-slate-200 dark:bg-slate-700'
                     }`}
                 >
                   <p className="text-sm uppercase tracking-wider border-b border-gray-300">{cmd.type}</p>
-                  <p className="text-xs font-mono py-1">
+                  <p class="text-xs font-mono py-1 break-all whitespace-pre-wrap">
                     {cmd.payload ? cmd.payload : cmd.response}
                   </p>
                   <div className="flex justify-end items-center gap-1 text-xs">
