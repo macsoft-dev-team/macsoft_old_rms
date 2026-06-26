@@ -80,15 +80,6 @@ const DeviceHeader = ({ device, navigate }) => {
               >
                 Device Monitor
               </motion.p>
-              
-              <div className="flex flex-wrap justify-center gap-2 mt-1 text-[11px] sm:text-xs">
-                <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 text-slate-600 dark:text-slate-300 font-medium shadow-sm">
-                  HW: <span className="ml-1 font-semibold text-indigo-600 dark:text-indigo-400">{device.hardwareVersion !== undefined && device.hardwareVersion !== null ? `v${device.hardwareVersion}` : 'N/A'}</span>
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 text-slate-600 dark:text-slate-300 font-medium shadow-sm">
-                  FW: <span className="ml-1 font-semibold text-indigo-600 dark:text-indigo-400">{device.firmwareVersion !== undefined && device.firmwareVersion !== null ? `v${device.firmwareVersion}` : 'N/A'}</span>
-                </span>
-              </div>
             </motion.div>
 
             {/* Status Indicator */}
@@ -139,6 +130,14 @@ const DeviceHeader = ({ device, navigate }) => {
               <div>
                 <div className='text-emerald-700 tracking-widest'>
                   IMEI : {device.imeinumber}
+                </div>
+                <div className="flex justify-end gap-1.5 my-1 text-[10px] sm:text-xs">
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 text-slate-600 dark:text-slate-300 font-medium shadow-sm">
+                    HW: <span className="ml-1 font-semibold text-indigo-600 dark:text-indigo-400">{device.hardwareVersion !== undefined && device.hardwareVersion !== null ? `v${device.hardwareVersion}` : 'N/A'}</span>
+                  </span>
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 text-slate-600 dark:text-slate-300 font-medium shadow-sm">
+                    FW: <span className="ml-1 font-semibold text-indigo-600 dark:text-indigo-400">{device.firmwareVersion !== undefined && device.firmwareVersion !== null ? `v${device.firmwareVersion}` : 'N/A'}</span>
+                  </span>
                 </div>
                 <p className="text-xs flex items-center justify-end gap-2 text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium leading-none">
                   <Clock className="w-3 h-3 text-gray-400" /> Last Update

@@ -36,8 +36,8 @@ export default function SnaMappingModal({ open, onOpenChange, mapping, onSave })
         }
     }, [open, mapping]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (e, shouldPublish = false) => {
+        if (e && e.preventDefault) e.preventDefault();
         if (!imeinumber.trim()) {
             setError("IMEI number is required");
             return;
@@ -53,7 +53,7 @@ export default function SnaMappingModal({ open, onOpenChange, mapping, onSave })
                 snamqttpubtopicdata: snamqttpubtopicdata.trim(),
                 snamqttsubtopiccmd: snamqttsubtopiccmd.trim(),
                 snamqttsubtopiccmdresponse: snamqttsubtopiccmd.trim() ? `${snamqttsubtopiccmd.trim()}/response` : ""
-            });
+            }, shouldPublish);
             onOpenChange(false);
         } catch (err) {
             setError(err.message || "Failed to save mapping");
@@ -72,7 +72,7 @@ export default function SnaMappingModal({ open, onOpenChange, mapping, onSave })
                     </DialogTitle>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit} className="space-y-5 py-4">
+                <form onSubmit={(e) => handleSubmit(e, false)} className="space-y-5 py-4">
                     {error && (
                         <div className="flex items-center space-x-2 p-3 text-sm text-red-600 bg-red-50 rounded dark:bg-red-950/30 dark:text-red-400 border border-red-200 dark:border-red-900/50">
                             <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -175,12 +175,23 @@ export default function SnaMappingModal({ open, onOpenChange, mapping, onSave })
                             Cancel
                         </Button>
                         <Button
-                            type="submit"
+                            type="button"
+                            onClick={(e) => handleSubmit(e, false)}
                             disabled={isSubmitting}
                             className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white min-w-[100px]"
                         >
                             {isSubmitting ? "Saving..." : "Save"}
                         </Button>
+                        {isEdit && (
+                            <Button
+                                type="button"
+                                onClick={(e) => handleSubmit(e, true)}
+                                disabled={isSubmitting}
+                                className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white min-w-[130px]"
+                            >
+                                {isSubmitting ? "Saving & Publishing..." : "Save & Publish"}
+                            </Button>
+                        )}
                     </DialogFooter>
                 </form>
             </DialogContent>

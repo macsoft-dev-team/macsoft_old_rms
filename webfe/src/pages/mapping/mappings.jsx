@@ -70,7 +70,7 @@ export default function Mappings() {
         }
     };
 
-    const handleSaveMapping = async (data) => {
+    const handleSaveMapping = async (data, shouldPublish = false) => {
         try {
             if (selectedMapping) {
                 // Edit mode
@@ -88,6 +88,22 @@ export default function Mappings() {
                     description: "SNA mapping created successfully",
                     variant: "success"
                 });
+            }
+            if (shouldPublish) {
+                try {
+                    await publishMapping(data.imeinumber);
+                    addToast({
+                        title: "Success",
+                        description: `SNA mapping details published to device ${data.imeinumber} successfully.`,
+                        variant: "success"
+                    });
+                } catch (publishErr) {
+                    addToast({
+                        title: "Publish Failed",
+                        description: publishErr.message || "Failed to publish SNA mapping details",
+                        variant: "destructive"
+                    });
+                }
             }
             fetchMappings({ skip: currentPage, take: 10, filter });
         } catch (err) {
@@ -193,16 +209,6 @@ export default function Mappings() {
                                                 >
                                                     <Edit2 className="w-3.5 h-3.5 mr-1" />
                                                     Edit
-                                                </Button>
-                                                <Button 
-                                                    variant="success" 
-                                                    size="sm" 
-                                                    onClick={() => handlePublishClick(item.imeinumber)} 
-                                                    disabled={publishingImei === item.imeinumber || !item.snamqtturl}
-                                                    className="h-8 px-2 text-xs border border-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 animate-none"
-                                                >
-                                                    <Send className="w-3.5 h-3.5 mr-1" />
-                                                    {publishingImei === item.imeinumber ? "Publishing..." : "Publish"}
                                                 </Button>
                                             </div>
                                         </td>
