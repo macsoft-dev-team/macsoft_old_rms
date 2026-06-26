@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../../components/ui/dialog';
 import { Button } from '../../../components/ui/button';
-import { Upload, FileText, X, CheckCircle, AlertCircle, FileSpreadsheet, Info } from 'lucide-react';
+import { Upload, FileText, X, CheckCircle, AlertCircle, FileSpreadsheet, Info, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 const EnhancedUploadModal = ({ open, onOpenChange, uploadDevice }) => {
@@ -77,6 +77,22 @@ const EnhancedUploadModal = ({ open, onOpenChange, uploadDevice }) => {
         return interval;
     };
 
+    const [uploadResult, setUploadResult] = useState(null);
+
+    const downloadFailureReport = (failed) => {
+        const header = 'IMEI Number,Reason';
+        const rows = failed.map(f => `${f.imeinumber},"${f.reason}"`);
+        const csv = [header, ...rows].join('\n');
+        const url = window.URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `failed_devices_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+    };
+
     const handleSubmit = async () => {
         if (!selectedFile) {
             setUploadStatus('error');
@@ -87,30 +103,60 @@ const EnhancedUploadModal = ({ open, onOpenChange, uploadDevice }) => {
         setIsSubmitting(true);
         setUploadStatus(null);
         setUploadProgress(0);
+        setUploadResult(null);
 
-        // Start progress simulation
         const progressInterval = simulateProgress();
 
         try {
             const formData = new FormData();
             formData.append('device', selectedFile);
-            
-             await uploadDevice(formData);
-            
-             clearInterval(progressInterval);
-            setUploadProgress(100);
-            
-            setUploadStatus('success');
-            setUploadMessage('Devices uploaded successfully! Processing data...');
-            
-             setTimeout(() => {
-                setSelectedFile(null);
-                setUploadStatus(null);
-                setUploadMessage('');
+
+            const result = await uploadDevice(formData);
+
+            clearInterval(progressInterval);
+
+            // Rejected action (IMEI validation errors from controller)
+            if (result?.error) {
+                const payload = result.payload;
+                if (payload?.invalidImeis?.length) {
+                    setUploadResult({ failed: payload.invalidImeis });
+                    setUploadStatus('error');
+                    setUploadMessage(`${payload.invalidImeis.length} row(s) have invalid IMEI numbers. Fix and re-upload.`);
+                } else {
+                    setUploadStatus('error');
+                    setUploadMessage(payload?.message || payload?.error || 'Upload failed. Please try again.');
+                }
                 setUploadProgress(0);
-                onOpenChange(false);
-            }, 3000);
-            
+                return;
+            }
+
+            // Successful response — may still have per-device failures
+            const data = result?.payload?.data || result?.data;
+            setUploadResult(data);
+            setUploadProgress(100);
+
+            const created = data?.totalCreated ?? 0;
+            const failed = data?.failed ?? [];
+
+            if (failed.length > 0 && created === 0) {
+                setUploadStatus('error');
+                setUploadMessage(`All ${failed.length} device(s) failed to import. Download the report for details.`);
+            } else if (failed.length > 0) {
+                setUploadStatus('partial');
+                setUploadMessage(`${created} device(s) imported successfully. ${failed.length} failed — download report for details.`);
+            } else {
+                setUploadStatus('success');
+                setUploadMessage(`${created} device(s) imported successfully!`);
+                setTimeout(() => {
+                    setSelectedFile(null);
+                    setUploadStatus(null);
+                    setUploadMessage('');
+                    setUploadProgress(0);
+                    setUploadResult(null);
+                    onOpenChange(false);
+                }, 3000);
+            }
+
         } catch (error) {
             clearInterval(progressInterval);
             setUploadStatus('error');
@@ -127,6 +173,7 @@ const EnhancedUploadModal = ({ open, onOpenChange, uploadDevice }) => {
             setUploadStatus(null);
             setUploadMessage('');
             setUploadProgress(0);
+            setUploadResult(null);
             setIsDragOver(false);
             onOpenChange(false);
         }
@@ -137,6 +184,7 @@ const EnhancedUploadModal = ({ open, onOpenChange, uploadDevice }) => {
         setUploadStatus(null);
         setUploadMessage('');
         setUploadProgress(0);
+        setUploadResult(null);
     };
 
     const formatFileSize = (bytes) => {
@@ -298,6 +346,8 @@ const EnhancedUploadModal = ({ open, onOpenChange, uploadDevice }) => {
                                         ? 'bg-green-50 border border-green-200 dark:bg-green-900/20 dark:border-green-800'
                                         : uploadStatus === 'error'
                                         ? 'bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-800'
+                                        : uploadStatus === 'partial'
+                                        ? 'bg-yellow-50 border border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800'
                                         : 'bg-blue-50 border border-blue-200 dark:bg-blue-900/20 dark:border-blue-800'
                                 }`}
                             >
@@ -308,6 +358,9 @@ const EnhancedUploadModal = ({ open, onOpenChange, uploadDevice }) => {
                                     {uploadStatus === 'error' && (
                                         <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
                                     )}
+                                    {uploadStatus === 'partial' && (
+                                        <AlertCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                                    )}
                                 </div>
                                 <div className="flex-1">
                                     <p className={`text-sm font-medium ${
@@ -315,7 +368,7 @@ const EnhancedUploadModal = ({ open, onOpenChange, uploadDevice }) => {
                                             ? 'text-green-800 dark:text-green-400'
                                             : uploadStatus === 'error'
                                             ? 'text-red-800 dark:text-red-400'
-                                            : 'text-blue-800 dark:text-blue-400'
+                                            : 'text-yellow-800 dark:text-yellow-400'
                                     }`}>
                                         {uploadMessage}
                                     </p>
@@ -323,6 +376,16 @@ const EnhancedUploadModal = ({ open, onOpenChange, uploadDevice }) => {
                                         <p className="text-xs text-green-600 dark:text-green-500 mt-1">
                                             You can close this dialog or it will close automatically.
                                         </p>
+                                    )}
+                                    {(uploadStatus === 'error' || uploadStatus === 'partial') &&
+                                        uploadResult?.failed?.length > 0 && (
+                                        <button
+                                            onClick={() => downloadFailureReport(uploadResult.failed)}
+                                            className="mt-2 flex items-center gap-1 text-xs font-semibold underline text-red-700 dark:text-red-400 hover:text-red-900"
+                                        >
+                                            <Download className="w-3 h-3" />
+                                            Download failure report ({uploadResult.failed.length} device{uploadResult.failed.length !== 1 ? 's' : ''})
+                                        </button>
                                     )}
                                 </div>
                             </motion.div>
@@ -362,7 +425,9 @@ const EnhancedUploadModal = ({ open, onOpenChange, uploadDevice }) => {
                         disabled={!selectedFile || isSubmitting || uploadStatus === 'success'}
                         className={`min-w-[120px] ${
                             uploadStatus === 'success' 
-                                ? 'bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600' 
+                                ? 'bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600'
+                                : uploadStatus === 'partial'
+                                ? 'bg-yellow-600 hover:bg-yellow-700 dark:bg-yellow-700 dark:hover:bg-yellow-600'
                                 : 'dark:bg-blue-700 dark:hover:bg-blue-600'
                         }`}
                     >

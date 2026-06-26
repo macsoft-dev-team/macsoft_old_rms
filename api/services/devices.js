@@ -1,28 +1,92 @@
 // Device Service
 const { PrismaClient } = require("@prisma/client");
+const axios = require("axios");
 const prisma = new PrismaClient();
+
+const EMQX_API_URL = process.env.EMQX_API_URL || "http://localhost:18083/api/v5";
+const EMQX_API_KEY = process.env.EMQX_API_KEY;
+const EMQX_API_SECRET = process.env.EMQX_API_SECRET;
+
+const emqxClient = axios.create({
+  baseURL: EMQX_API_URL,
+  auth: {
+    username: EMQX_API_KEY,
+    password: EMQX_API_SECRET,
+  },
+  timeout: 5000,
+});
+
+const fetchConnectedEmqxClientIds = async () => {
+  if (!EMQX_API_KEY || !EMQX_API_SECRET) {
+    return null;
+  }
+
+  try {
+    const response = await emqxClient.get("/clients", {
+      params: {
+        fields: "clientid,username",
+      },
+    });
+    const payload = response.data;
+    const clients = Array.isArray(payload?.data)
+      ? payload.data
+      : Array.isArray(payload)
+      ? payload
+      : [];
+
+    return new Set(
+      clients
+        .map((client) => client.clientid || client.client_id || client.id)
+        .filter(Boolean)
+    );
+  } catch (error) {
+    console.error(
+      "Error fetching EMQX clients:",
+      error.response?.data || error.message
+    );
+    return null;
+  }
+};
+
+const mapDeviceConnectionStatuses = (devices, connectedClientIds) => {
+  if (!connectedClientIds) {
+    return devices;
+  }
+
+  return devices.map((device) => ({
+    ...device,
+    status: connectedClientIds.has(device.macsoftmqttclientid) ? 1 : 0,
+  }));
+};
+
+const getStatus = (_status) => {
+  switch (_status) {
+    case "OFFLINE":
+      return 0;
+    case "ONLINE":
+      return 1;
+    case "FAULT":
+      return 2;
+    default:
+      return null;
+  }
+};
 
 const getAllDevices = async (skip, take, filter, user) => {
   try {
     const { role, customerId } = user;
 
+    const page = parseInt(skip) || 1;
+    const limit = take ? parseInt(take) : undefined;
+    const offset = (page - 1) * (limit || 0);
+    const connectedClientIds = await fetchConnectedEmqxClientIds();
+    const shouldApplyLiveStatusFilter = Boolean(filter?.status && connectedClientIds);
+
     const params = {};
     // Ensure skip is a non-negative integer
-    if (skip) params.skip = (parseInt(skip) - 1) * parseInt(take) || 0;
-    if (take) params.take = parseInt(take);
+    if (!shouldApplyLiveStatusFilter && skip) params.skip = offset;
+    if (!shouldApplyLiveStatusFilter && limit) params.take = limit;
 
-    const getStatus = (_status) => {
-      switch (_status) {
-        case "OFFLINE":
-          return 0;
-        case "ONLINE":
-          return 1;
-        case "FAULT":
-          return 2;
-        default:
-          return null;
-      }
-    };
     // Build where clause
     let where = {};
     if (filter) {
@@ -30,11 +94,11 @@ const getAllDevices = async (skip, take, filter, user) => {
         filter.search && {
           OR: [
             { imeinumber: { contains: filter.search } },
-            { username: { contains: filter.search } },
             { simnumber: { contains: filter.search } },
           ],
         },
-        filter.status && { status: getStatus(filter.status) },
+        filter.status &&
+          !shouldApplyLiveStatusFilter && { status: getStatus(filter.status) },
         filter.manufacturer && { customerId: filter.manufacturer || 0 },
       ].filter(Boolean);
     }
@@ -46,9 +110,30 @@ const getAllDevices = async (skip, take, filter, user) => {
 
     params.where = where;
 
-    const count = await prisma.device.count({ where: params.where });
+    const count = shouldApplyLiveStatusFilter
+      ? undefined
+      : await prisma.device.count({ where: params.where });
     const devices = await prisma.device.findMany(params);
-    return { devices, count };
+    let devicesWithConnectionStatus = mapDeviceConnectionStatuses(
+      devices,
+      connectedClientIds
+    );
+
+    if (shouldApplyLiveStatusFilter) {
+      const status = getStatus(filter.status);
+      devicesWithConnectionStatus = devicesWithConnectionStatus.filter(
+        (device) => device.status === status
+      );
+
+      return {
+        devices: limit
+          ? devicesWithConnectionStatus.slice(offset, offset + limit)
+          : devicesWithConnectionStatus,
+        count: devicesWithConnectionStatus.length,
+      };
+    }
+
+    return { devices: devicesWithConnectionStatus, count };
   } catch (error) {
     console.error("Error fetching devices:", error);
     throw new Error("Could not fetch devices");
@@ -86,6 +171,44 @@ const getDeviceByImei = async (imeinumber) => {
         macsoftmqttpubtopiccmd: true,
       },
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     return device;
   } catch (error) {
     console.error("Error fetching device by IMEI:", error);

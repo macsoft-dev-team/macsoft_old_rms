@@ -36,7 +36,7 @@ export const deviceLogTableConfig = {
       columns: [
         { key: 'todayKWH', label: 'Energy', unit: 'kWh', width: 'min-w-[80px]' },
         { key: 'todayFlow', label: 'Flow', unit: 'L', width: 'min-w-[80px]' },
-        { key: 'todayHrs', label: 'Runtime', unit: 'h', width: 'min-w-[80px]' }
+        { key: 'todayHours', label: 'Runtime', unit: 'h', width: 'min-w-[80px]' }
       ]
     },
     {

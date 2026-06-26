@@ -1,0 +1,42 @@
+[
+  {
+    "id": "b1a7e2e0-1c2d-4e3f-9a1b-1a2b3c4d5e6f",
+    "email": "macsoft.admin@macsoft.com",
+    "password": "$2b$10$WphrJRsF//bjbO3k5XL11uhe9eDq274.0sGjcxd5F1sItsyNwXIA2",
+    "name": "Macsoft Admin",
+    "role": "MACSOFT_ADMIN",
+    "customerId": null
+  },
+  {
+    "id": "c2b8f3f1-2d3e-5f4a-8b2c-2b3c4d5e6f7a",
+    "email": "customer.admin@macsoft.com",
+    "password": "$2b$10$WphrJRsF//bjbO3k5XL11uhe9eDq274.0sGjcxd5F1sItsyNwXIA2",
+    "name": "Customer Admin",
+    "role": "CUSTOMER_ADMIN",
+    "customerId": "a1b2c3d4-1111-2222-3333-444455556666"
+  },
+  {
+    "id": "d3c9g4g2-3e4f-6g5b-9c3d-3c4d5e6f7a8b",
+    "email": "macsoft.user@macsoft.com",
+    "password": "$2b$10$WphrJRsF//bjbO3k5XL11uhe9eDq274.0sGjcxd5F1sItsyNwXIA2",
+    "name": "Macsoft User",
+    "role": "MACSOFT_USER",
+    "customerId": null
+  },
+  {
+    "id": "e4d0h5h3-4f5g-7h6c-0d4e-4d5e6f7a8b9c",
+    "email": "customer.user@macsoft.com",
+    "password": "$2b$10$WphrJRsF//bjbO3k5XL11uhe9eDq274.0sGjcxd5F1sItsyNwXIA2",
+    "name": "Customer User",
+    "role": "CUSTOMER_USER",
+    "customerId": "a1b2c3d4-1111-2222-3333-444455556666"
+  },
+  {
+    "id": "f5e1i6i4-5g6h-8i7d-1e5f-5e6f7a8b9c0d",
+    "email": "end.user@macsoft.com",
+    "password": "$2b$10$WphrJRsF//bjbO3k5XL11uhe9eDq274.0sGjcxd5F1sItsyNwXIA2",
+    "name": "End User",
+    "role": "END_USER",
+    "customerId": "a1b2c3d4-1111-2222-3333-444455556666"
+  }
+]

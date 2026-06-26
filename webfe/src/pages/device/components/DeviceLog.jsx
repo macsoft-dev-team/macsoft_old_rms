@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 import { Button } from '../../../components/ui/button';
 import  Input  from '../../../components/ui/input';
 import { Calendar, Search, Download } from 'lucide-react';
@@ -8,6 +9,7 @@ import TitleHead from '../../../components/TitleHead';
 import { useToast } from '../../../hooks/use-toast';
 import { useDevice } from '../../../hooks/useDevice';
 import { deviceLogTableConfig, getColorConfig, getTotalColumns } from '../../../lib/constants/deviceLogTableConfig';
+import { API_ENDPOINTS } from '../../../lib/constants/api';
 
 const DeviceLog = ({ deviceId }) => {
   const { device, deviceLog, fetchDeviceLogs, onDeviceLogPageChange, setDeviceLogFilters } = useDevice();
@@ -123,12 +125,35 @@ const DeviceLog = ({ deviceId }) => {
     }
   };
 
-  const handleExport = () => {
-    toast({
-      title: "Export Feature",
-      description: "Export functionality will be implemented soon. Stay tuned for updates!",
-      variant: "info"
-    });
+  const handleExport = async () => {
+    if (!device || !device.imeinumber) {
+      toast({ title: "No Device", description: "Please select a device first.", variant: "destructive" });
+      return;
+    }
+    try {
+      const params = { tablename: device.tablename };
+      if (currentFilters.fromDate) params.fromDate = currentFilters.fromDate;
+      if (currentFilters.toDate) params.toDate = currentFilters.toDate;
+
+      const response = await axios.get(
+        `${API_ENDPOINTS.devices}/logs/${device.imeinumber}/export`,
+        { params, withCredentials: true, responseType: 'blob' }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'text/csv' }));
+      const link = document.createElement('a');
+      link.href = url;
+      const dateStr = new Date().toISOString().slice(0, 10);
+      link.setAttribute('download', `devicelog_${device.imeinumber}_${dateStr}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      toast({ title: "Export Successful", description: "Device logs exported to CSV.", variant: "success" });
+    } catch (error) {
+      toast({ title: "Export Failed", description: "Could not export device logs.", variant: "destructive" });
+    }
   };
 
   const formatValue = (value) => {

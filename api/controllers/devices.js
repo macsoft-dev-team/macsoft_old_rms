@@ -76,6 +76,20 @@ const getDeviceByImei = async (req, res) => {
 };
 
 
+const getDeviceByImeiNumber = async (req, res) => {
+  const { imeinumber } = req.params;
+  try {
+    const device = await deviceService.getDeviceByImei(imeinumber);
+    if (!device) {
+      return res.status(404).json({ error: "Device not found" });
+    }
+    res.status(200).json(device);
+  } catch (error) {
+    console.error("Error fetching device by IMEI:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 
 
 module.exports = {
@@ -84,5 +98,6 @@ module.exports = {
   createDevice,
   updateDevice,
   deleteDevice,
-  getDeviceByImei
+  getDeviceByImei,
+  getDeviceByImeiNumber
 };

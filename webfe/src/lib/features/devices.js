@@ -68,7 +68,7 @@ export const uploadDevice= createAsyncThunk(
       dispatch(fetchDevices({ skip: 0, take: 12 }));  
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
