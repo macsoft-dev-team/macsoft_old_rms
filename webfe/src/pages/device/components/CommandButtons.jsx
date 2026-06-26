@@ -40,6 +40,24 @@ const parseResponseText = (text) => {
   if (!text) return [];
   
   let cleaned = text.trim();
+
+  // Try parsing as JSON object first, in case the response is wrapped in a JSON packet
+  try {
+    const parsedObj = JSON.parse(cleaned);
+    if (parsedObj && typeof parsedObj === 'object') {
+      if (parsedObj.response !== undefined) {
+        cleaned = String(parsedObj.response).trim();
+      } else if (parsedObj.original !== undefined && parsedObj.response === 'Command received') {
+        cleaned = String(parsedObj.original).trim();
+      }
+    }
+  } catch (e) {
+    // Not a JSON object or parsing failed
+  }
+
+  // Strip common command response prefixes (like RESPONSE, OK, etc.)
+  cleaned = cleaned.replace(/^(RESPONSE|OK|INFO|DATA|CMD|CMDRESPONSE|ERROR)\s*:?\s*/i, '').trim();
+
   if (cleaned.startsWith('{')) {
     cleaned = cleaned.substring(1);
   }
@@ -55,17 +73,20 @@ const parseResponseText = (text) => {
     return payloadPart.split(',').map(item => {
       const kv = item.split('=');
       if (kv.length >= 2) {
-        return {
-          address: kv[0].trim(),
-          value: kv[1].replace(/[\r\n\t]+/g, '').trim()
-        };
+        const address = kv[0].trim();
+        const value = kv[1]
+          .replace(/\\n/g, '')
+          .replace(/\\r/g, '')
+          .replace(/[\r\n\t]+/g, '')
+          .trim();
+        return { address, value };
       }
       return null;
     }).filter(Boolean);
   }
 
   // Fallback to old format (line-by-line address, value)
-  return text
+  return cleaned
     .split(/\r?\n/)
     .map(line => line.trim())
     .filter(line => line)
@@ -74,7 +95,11 @@ const parseResponseText = (text) => {
       if (parts.length >= 2) {
         return {
           address: parts[0].trim(),
-          value: parts[1].replace(/[\r\n\t]+/g, '').trim()
+          value: parts[1]
+            .replace(/\\n/g, '')
+            .replace(/\\r/g, '')
+            .replace(/[\r\n\t]+/g, '')
+            .trim()
         };
       }
       return null;
@@ -176,13 +201,29 @@ const CommandButtons = () => {
     const newParameters = parameters.map(param => {
       const match = latestValues[param.address];
       if (match) {
-        if (param.readValue !== match.value || param.status === 'pending') {
-          updated = true;
-          return {
-            ...param,
-            readValue: match.value,
-            status: 'success'
-          };
+        if (param.status === 'pending') {
+          const matchTime = new Date(match.timestamp).getTime();
+          const sentTime = param.sentTime || 0;
+          // Only accept the response if it was received after the read/write request was sent
+          if (matchTime >= sentTime - 2000) {
+            updated = true;
+            return {
+              ...param,
+              readValue: match.value,
+              status: 'success',
+              sentTime: null
+            };
+          }
+        } else {
+          // If not pending, populate the box with the latest response value (e.g. on mount/load)
+          if (param.readValue !== match.value) {
+            updated = true;
+            return {
+              ...param,
+              readValue: match.value,
+              status: 'success'
+            };
+          }
         }
       }
       return param;
@@ -206,7 +247,7 @@ const CommandButtons = () => {
     let payload = '';
     if (type === 'MOTOR_ON') payload = '{"SRUN:1"}';
     else if (type === 'MOTOR_OFF') payload = '{"SRUN:0"}';
-    else if (type === 'CUSTOM') payload = customPayload;
+    else if (type === 'CUSTOM') payload = customPayload.toUpperCase();
 
     if (type === 'CUSTOM' && !customPayload) {
       toast({
@@ -260,15 +301,17 @@ const CommandButtons = () => {
   const handleSingleRead = (param, index) => {
     if (!device?.id) return;
     
+    const now = Date.now();
     setParameters(prev => {
       const updated = [...prev];
       updated[index].status = 'pending';
+      updated[index].sentTime = now;
       return updated;
     });
 
     const commandData = {
       type: 'VFD_READ',
-      payload: `{"RVFD:${param.address}"}`,
+      payload: `{"RVFD:${param.address}"}`.toUpperCase(),
       deviceId: device.id,
       imeinumber: device.imeinumber || ''
     };
@@ -292,6 +335,7 @@ const CommandButtons = () => {
       setParameters(prev => {
         const updated = [...prev];
         updated[index].status = 'error';
+        updated[index].sentTime = null;
         return updated;
       });
       toast({
@@ -313,15 +357,17 @@ const CommandButtons = () => {
       return;
     }
 
+    const now = Date.now();
     setParameters(prev => {
       const updated = [...prev];
       updated[index].status = 'pending';
+      updated[index].sentTime = now;
       return updated;
     });
 
     const commandData = {
       type: 'VFD_WRITE',
-      payload: `{"WVFD:${param.address}=${param.writeValue}"}`,
+      payload: `{"WVFD:${param.address}=${param.writeValue}"}`.toUpperCase(),
       deviceId: device.id,
       imeinumber: device.imeinumber || ''
     };
@@ -345,6 +391,7 @@ const CommandButtons = () => {
       setParameters(prev => {
         const updated = [...prev];
         updated[index].status = 'error';
+        updated[index].sentTime = null;
         return updated;
       });
       toast({
@@ -359,12 +406,13 @@ const CommandButtons = () => {
     if (!device?.id || parameters.length === 0) return;
 
     const addresses = parameters.map(p => p.address).join(',');
+    const now = Date.now();
     
-    setParameters(prev => prev.map(p => ({ ...p, status: 'pending' })));
+    setParameters(prev => prev.map(p => ({ ...p, status: 'pending', sentTime: now })));
 
     const commandData = {
       type: 'VFD_READ_ALL',
-      payload: `{"MVFD:${addresses}"}`,
+      payload: `{"MVFD:${addresses}"}`.toUpperCase(),
       deviceId: device.id,
       imeinumber: device.imeinumber || ''
     };
@@ -385,7 +433,7 @@ const CommandButtons = () => {
         variant: "success"
       });
     } catch (error) {
-      setParameters(prev => prev.map(p => ({ ...p, status: 'error' })));
+      setParameters(prev => prev.map(p => ({ ...p, status: 'error', sentTime: null })));
       toast({
         title: "Command Failed",
         description: "Failed to send bulk read command",
@@ -411,16 +459,17 @@ const CommandButtons = () => {
       .map(p => `${p.address}=${p.writeValue}`)
       .join(',');
 
+    const now = Date.now();
     setParameters(prev => prev.map(p => {
       if (p.writeValue !== '') {
-        return { ...p, status: 'pending' };
+        return { ...p, status: 'pending', sentTime: now };
       }
       return p;
     }));
 
     const commandData = {
       type: 'VFD_WRITE_ALL',
-      payload: `{"WVFD:${writePayload}"}`,
+      payload: `{"WVFD:${writePayload}"}`.toUpperCase(),
       deviceId: device.id,
       imeinumber: device.imeinumber || ''
     };
@@ -443,7 +492,7 @@ const CommandButtons = () => {
     } catch (error) {
       setParameters(prev => prev.map(p => {
         if (p.writeValue !== '') {
-          return { ...p, status: 'error' };
+          return { ...p, status: 'error', sentTime: null };
         }
         return p;
       }));

@@ -94,7 +94,7 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
 
     const commandData = {
       type: 'CUSTOM',
-      payload,
+      payload: payload.toUpperCase(),
       deviceId,
       imeinumber: device?.imeinumber || ''
     };
