@@ -38,6 +38,33 @@ const parseParameters = (str) => {
 
 const parseResponseText = (text) => {
   if (!text) return [];
+  
+  let cleaned = text.trim();
+  if (cleaned.startsWith('{')) {
+    cleaned = cleaned.substring(1);
+  }
+  if (cleaned.endsWith('}')) {
+    cleaned = cleaned.substring(0, cleaned.length - 1);
+  }
+  cleaned = cleaned.replace(/^"|"$/g, '').trim();
+
+  // Handle format like RVFD : 2 = 25 or MVFD : 2 = 25, 3 = 123
+  if (cleaned.includes(':')) {
+    const parts = cleaned.split(':');
+    const payloadPart = parts.slice(1).join(':').trim();
+    return payloadPart.split(',').map(item => {
+      const kv = item.split('=');
+      if (kv.length >= 2) {
+        return {
+          address: kv[0].trim(),
+          value: kv[1].replace(/[\r\n\t]+/g, '').trim()
+        };
+      }
+      return null;
+    }).filter(Boolean);
+  }
+
+  // Fallback to old format (line-by-line address, value)
   return text
     .split(/\r?\n/)
     .map(line => line.trim())
@@ -47,13 +74,14 @@ const parseResponseText = (text) => {
       if (parts.length >= 2) {
         return {
           address: parts[0].trim(),
-          value: parts[1].trim()
+          value: parts[1].replace(/[\r\n\t]+/g, '').trim()
         };
       }
       return null;
     })
     .filter(Boolean);
 };
+
 
 const CommandButtons = () => {
   const { commands, postCommand, setCommand, fetchCommands } = useCommand();
@@ -240,7 +268,7 @@ const CommandButtons = () => {
 
     const commandData = {
       type: 'VFD_READ',
-      payload: `rvfd:${param.address}`,
+      payload: `{"RVFD:${param.address}"}`,
       deviceId: device.id,
       imeinumber: device.imeinumber || ''
     };
@@ -293,7 +321,7 @@ const CommandButtons = () => {
 
     const commandData = {
       type: 'VFD_WRITE',
-      payload: `svfd:${param.address}=${param.writeValue}`,
+      payload: `{"WVFD:${param.address}=${param.writeValue}"}`,
       deviceId: device.id,
       imeinumber: device.imeinumber || ''
     };
@@ -336,7 +364,7 @@ const CommandButtons = () => {
 
     const commandData = {
       type: 'VFD_READ_ALL',
-      payload: `rvfd:${addresses};`,
+      payload: `{"MVFD:${addresses}"}`,
       deviceId: device.id,
       imeinumber: device.imeinumber || ''
     };
@@ -392,7 +420,7 @@ const CommandButtons = () => {
 
     const commandData = {
       type: 'VFD_WRITE_ALL',
-      payload: `wvfd:${writePayload};`,
+      payload: `{"WVFD:${writePayload}"}`,
       deviceId: device.id,
       imeinumber: device.imeinumber || ''
     };
