@@ -381,14 +381,6 @@ const CommandButtons = () => {
       return;
     }
 
-    const now = Date.now();
-    setParameters(prev => {
-      const updated = [...prev];
-      updated[index].status = 'pending';
-      updated[index].sentTime = now;
-      return updated;
-    });
-
     const commandData = {
       type: 'VFD_WRITE',
       payload: `{"SVFD:${param.address}=${param.writeValue}"}`.toUpperCase(),
@@ -412,12 +404,6 @@ const CommandButtons = () => {
         variant: "success"
       });
     } catch (error) {
-      setParameters(prev => {
-        const updated = [...prev];
-        updated[index].status = 'error';
-        updated[index].sentTime = null;
-        return updated;
-      });
       toast({
         title: "Command Failed",
         description: "Failed to send write command",
@@ -483,14 +469,6 @@ const CommandButtons = () => {
       .map(p => `${p.address}=${p.writeValue}`)
       .join(',');
 
-    const now = Date.now();
-    setParameters(prev => prev.map(p => {
-      if (p.writeValue !== '') {
-        return { ...p, status: 'pending', sentTime: now };
-      }
-      return p;
-    }));
-
     const commandData = {
       type: 'VFD_WRITE_ALL',
       payload: `{"WVFD:${writePayload}"}`.toUpperCase(),
@@ -514,12 +492,6 @@ const CommandButtons = () => {
         variant: "success"
       });
     } catch (error) {
-      setParameters(prev => prev.map(p => {
-        if (p.writeValue !== '') {
-          return { ...p, status: 'error', sentTime: null };
-        }
-        return p;
-      }));
       toast({
         title: "Command Failed",
         description: "Failed to send bulk write command",
