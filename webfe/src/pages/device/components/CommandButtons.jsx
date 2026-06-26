@@ -139,6 +139,7 @@ const CommandButtons = () => {
 
   const [customPayload, setCustomPayload] = useState('');
   const [showCustom, setShowCustom] = useState(false);
+  const [telemetryInterval, setTelemetryInterval] = useState('1');
 
   const [parameters, setParameters] = useState([]);
   const [selectedTemplateId, setSelectedTemplateId] = useState('');
@@ -500,6 +501,48 @@ const CommandButtons = () => {
     }
   };
 
+  const handleSendTelemetryInterval = () => {
+    if (!device?.id) return;
+    if (!telemetryInterval || isNaN(telemetryInterval) || parseInt(telemetryInterval) <= 0) {
+      toast({
+        title: "Invalid Interval",
+        description: "Please enter a valid interval in minutes",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const commandData = {
+      type: 'TELEMETRY_INTERVAL',
+      payload: `{"SMIT:${telemetryInterval}"}`.toUpperCase(),
+      deviceId: device.id,
+      imeinumber: device.imeinumber || ''
+    };
+
+    setCommand({
+      id: Date.now(),
+      ...commandData,
+      createdAt: new Date().toISOString(),
+      response: "",
+      status: "pending"
+    });
+
+    try {
+      postCommand(commandData);
+      toast({
+        title: "Telemetry Interval Sent",
+        description: `Interval of ${telemetryInterval} minute(s) sent successfully`,
+        variant: "success"
+      });
+    } catch (error) {
+      toast({
+        title: "Command Failed",
+        description: "Failed to send telemetry interval command",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleClearState = () => {
     setParameters(prev => prev.map(p => ({
       ...p,
@@ -622,6 +665,31 @@ const CommandButtons = () => {
                 }}
               >
                 Cancel
+              </Button>
+            </div>
+          </div>
+        )}
+        {device.id && (
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+              Telemetry Data Interval (Minutes)
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                min="1"
+                className="flex-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 px-3 py-1.5 text-sm font-medium text-gray-805 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={telemetryInterval}
+                onChange={(e) => setTelemetryInterval(e.target.value)}
+                placeholder="e.g. 1"
+              />
+              <Button
+                onClick={handleSendTelemetryInterval}
+                disabled={!telemetryInterval}
+                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+              >
+                <Send className="w-4 h-4" />
+                Set Interval
               </Button>
             </div>
           </div>
