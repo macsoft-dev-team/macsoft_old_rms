@@ -80,16 +80,15 @@ const DeviceHeader = ({ device, navigate }) => {
               >
                 Device Monitor
               </motion.p>
-              {/*    <motion.h1 
-                className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white bg-clip-text text-transparent leading-tight truncate"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.4 }}
-              >
-                {device.imeinumber}
-              </motion.h1>
-               */}
-
+              
+              <div className="flex flex-wrap justify-center gap-2 mt-1 text-[11px] sm:text-xs">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 text-slate-600 dark:text-slate-300 font-medium shadow-sm">
+                  HW: <span className="ml-1 font-semibold text-indigo-600 dark:text-indigo-400">{device.hardwareVersion !== undefined && device.hardwareVersion !== null ? `v${device.hardwareVersion}` : 'N/A'}</span>
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 text-slate-600 dark:text-slate-300 font-medium shadow-sm">
+                  FW: <span className="ml-1 font-semibold text-indigo-600 dark:text-indigo-400">{device.firmwareVersion !== undefined && device.firmwareVersion !== null ? `v${device.firmwareVersion}` : 'N/A'}</span>
+                </span>
+              </div>
             </motion.div>
 
             {/* Status Indicator */}

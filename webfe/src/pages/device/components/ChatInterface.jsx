@@ -156,7 +156,13 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         <AnimatePresence>
           {[...commands]
-            .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+            .sort((a, b) => {
+              const timeA = a.createdAt ? moment(a.createdAt).valueOf() : 0;
+              const timeB = b.createdAt ? moment(b.createdAt).valueOf() : 0;
+              const valA = isNaN(timeA) ? 0 : timeA;
+              const valB = isNaN(timeB) ? 0 : timeB;
+              return valA - valB;
+            })
             .map((cmd) => {
               // Only RESPONSE is left, all others (including CUSTOM) are right
               const isResponse = cmd.type === 'RESPONSE';

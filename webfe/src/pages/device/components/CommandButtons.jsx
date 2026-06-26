@@ -124,7 +124,13 @@ const CommandButtons = () => {
     if (!commands || commands.length === 0 || parameters.length === 0) return;
 
     const latestValues = {};
-    const sortedCommands = [...commands].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    const sortedCommands = [...commands].sort((a, b) => {
+      const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      const valA = isNaN(timeA) ? 0 : timeA;
+      const valB = isNaN(timeB) ? 0 : timeB;
+      return valA - valB;
+    });
 
     sortedCommands.forEach(cmd => {
       if (cmd.type === 'RESPONSE' && cmd.response) {

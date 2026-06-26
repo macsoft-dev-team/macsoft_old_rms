@@ -96,11 +96,16 @@ client.on("message", async (topic, message) => {
         : tablename;
     if (prismaModelName !== undefined && parsedData.TIM !== undefined) {
       const timestamp = moment(parsedData.TIM, DATETIMEFORMAT).toDate();
+      const rawFWV = parsedData.FWV !== undefined && parsedData.FWV !== null ? parseFloat(parsedData.FWV) : NaN;
+      const rawHWV = parsedData.HWV !== undefined && parsedData.HWV !== null ? parseFloat(parsedData.HWV) : NaN;
+      const firmwareVersion = !isNaN(rawFWV) ? rawFWV : null;
+      const hardwareVersion = !isNaN(rawHWV) ? rawHWV : null;
+
       const deviceData = {
         imeinumber: imeinumber,
         timestamp: timestamp,
-        firmwareVersion: parsedData.FWV ? parseFloat(parsedData.FWV) : null,
-        hardwareVersion: parsedData.HWV ? parseFloat(parsedData.HWV) : null,
+        firmwareVersion: firmwareVersion,
+        hardwareVersion: hardwareVersion,
         driveCode: parsedData.DRC ? parseInt(parsedData.DRC) : null,
         outputVoltage: parsedData.OPV ? parseFloat(parsedData.OPV) : null,
         outputCurrent: parsedData.OPC ? parseFloat(parsedData.OPC) : null,
@@ -127,10 +132,17 @@ client.on("message", async (topic, message) => {
         return;
       }
       await model.create({ data: deviceData });
-      delete deviceData.imeinumber;
+      const updateData = { ...deviceData };
+      delete updateData.imeinumber;
+      if (parsedData.FWV === undefined || isNaN(rawFWV)) {
+        delete updateData.firmwareVersion;
+      }
+      if (parsedData.HWV === undefined || isNaN(rawHWV)) {
+        delete updateData.hardwareVersion;
+      }
       await prisma.device.update({
         where: { imeinumber: imeinumber },
-        data: deviceData,
+        data: updateData,
       });
     }
   } else {
