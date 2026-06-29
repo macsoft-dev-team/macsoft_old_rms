@@ -172,6 +172,7 @@ export default function Mappings() {
                             <th className="p-3 border-r border-slate-200 dark:border-slate-600 text-left">Host</th>
                             <th className="p-3 border-r border-slate-200 dark:border-slate-600 text-left">Port</th>
                             <th className="p-3 border-r border-slate-200 dark:border-slate-600 text-left">Username</th>
+                            <th className="p-3 border-r border-slate-200 dark:border-slate-600 text-left">Client ID</th>
                             <th className="p-3 border-r border-slate-200 dark:border-slate-600 text-left">Password</th>
                             <th className="p-3 border-r border-slate-200 dark:border-slate-600 text-left">Pub Topic Data</th>
                             <th className="p-3 border-r border-slate-200 dark:border-slate-600 text-left">subtopic</th>
@@ -181,11 +182,11 @@ export default function Mappings() {
                     <tbody>
                         {loading ? (
                             <tr>
-                                <td colSpan={8} className="p-6 text-center text-gray-500 dark:text-gray-300">Loading...</td>
+                                <td colSpan={9} className="p-6 text-center text-gray-500 dark:text-gray-300">Loading...</td>
                             </tr>
                         ) : safeMap.length === 0 ? (
                             <tr>
-                                <td colSpan={8} className="p-6 text-center text-gray-500 dark:text-gray-300">No data found</td>
+                                <td colSpan={9} className="p-6 text-center text-gray-500 dark:text-gray-300">No data found</td>
                             </tr>
                         ) : (
                             safeMap.map((item, i) => {
@@ -196,6 +197,7 @@ export default function Mappings() {
                                         <td className="p-3 text-slate-900 dark:text-slate-100">{host}</td>
                                         <td className="p-3 text-slate-900 dark:text-slate-100">{port}</td>
                                         <td className="p-3 text-slate-900 dark:text-slate-100">{item.snamqttusername || "--"}</td>
+                                        <td className="p-3 text-slate-900 dark:text-slate-100">{item.snamqttclientid || "--"}</td>
                                         <td className="p-3 text-slate-900 dark:text-slate-100 font-mono text-xs">{item.snamqttpassword ? "••••••••" : "--"}</td>
                                         <td className="p-3 text-slate-900 dark:text-slate-100 text-xs">{item.snamqttpubtopicdata || "--"}</td>
                                         <td className="p-3 text-slate-900 dark:text-slate-100 text-xs">{item.snamqttsubtopiccmd || "--"}</td>

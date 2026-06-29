@@ -31,12 +31,12 @@ const getAllDevices = async (skip, take, filter, user) => {
         filter.search && {
           OR: [
             { imeinumber: { contains: filter.search } },
-            { snausername: { contains: filter.search } },
+            { snamqttusername: { contains: filter.search } },
             { simnumber: { contains: filter.search } },
           ],
         },
         filter.status && { status: getStatus(filter.status) },
-        filter.manufacturer && { customerId: filter.manufacturer || 0 },
+        filter.manufacturer && { customerId: filter.manufacturer },
       ].filter(Boolean);
     }
 
@@ -50,6 +50,7 @@ const getAllDevices = async (skip, take, filter, user) => {
       id: true,
       imeinumber: true,
       snamqtturl: true,
+      snamqttclientid: true,
       snamqttusername: true,
       snamqttpassword: true,
       snamqttpubtopicdata: true,
@@ -71,6 +72,7 @@ const getDeviceById = async (imeinumber) => {
       id: true,
       imeinumber: true,
       snamqtturl: true,
+      snamqttclientid: true,
       snamqttusername: true,
       snamqttpassword: true,
       snamqttpubtopicdata: true,
@@ -84,11 +86,12 @@ const updateDevice = async (imeinumber, data) => {
 };
 
 const createDeviceMapping = async (data) => {
-  const { imeinumber, snamqtturl, snamqttusername, snamqttpassword, snamqttpubtopicdata, snamqttsubtopiccmd, snamqttsubtopiccmdresponse } = data;
+  const { imeinumber, snamqtturl, snamqttclientid, snamqttusername, snamqttpassword, snamqttpubtopicdata, snamqttsubtopiccmd, snamqttsubtopiccmdresponse } = data;
   return prisma.device.upsert({
     where: { imeinumber },
     update: {
       snamqtturl,
+      snamqttclientid,
       snamqttusername,
       snamqttpassword,
       snamqttpubtopicdata,
@@ -98,6 +101,7 @@ const createDeviceMapping = async (data) => {
     create: {
       imeinumber,
       snamqtturl,
+      snamqttclientid,
       snamqttusername,
       snamqttpassword,
       snamqttpubtopicdata,
@@ -121,7 +125,7 @@ const publishSnaDetails = async (imeinumber) => {
   }
 
   // Construct payload
-  const clientid = `d:${device.snamqttusername}`;
+  const clientid = device.snamqttclientid || `d:${device.snamqttusername}`;
   const password = device.snamqttpassword || "";
   const payload = `{"SCOM:${device.snamqtturl}","SUSR:${device.snamqttusername}","SCID:${clientid}","SPWD:${password}","SSPT:1"}`;
 

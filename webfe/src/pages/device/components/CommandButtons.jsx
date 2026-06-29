@@ -82,6 +82,36 @@ const parseResponseText = (text) => {
     .filter(Boolean);
 };
 
+const normalizeAddress = (addr) => {
+  if (addr === null || addr === undefined) return '';
+  let str = String(addr).trim().toLowerCase();
+  
+  // Remove starting 0x or 0X
+  if (str.startsWith('0x')) {
+    const val = parseInt(str.substring(2), 16);
+    return isNaN(val) ? str : String(val);
+  }
+  
+  // Remove ending h or H (e.g. "7bh" -> "7b")
+  if (str.endsWith('h') && str.length > 1) {
+    const val = parseInt(str.slice(0, -1), 16);
+    return isNaN(val) ? str : String(val);
+  }
+  
+  // If it contains letters a-f (but only valid hex characters), parse it as hex
+  if (/^[0-9a-f]+$/.test(str) && /[a-f]/.test(str)) {
+    const val = parseInt(str, 16);
+    return isNaN(val) ? str : String(val);
+  }
+  
+  // If it's a decimal number, parse it to remove leading zeros, etc.
+  if (/^\d+$/.test(str)) {
+    return String(parseInt(str, 10));
+  }
+  
+  return str;
+};
+
 
 const CommandButtons = () => {
   const { commands, postCommand, setCommand, fetchCommands } = useCommand();
@@ -133,9 +163,11 @@ const CommandButtons = () => {
     }
   };
 
-  // Poll commands every 3 seconds while active
+  // Poll commands while there are pending parameters
+  const hasPending = parameters.some(p => p.status === 'pending');
   useEffect(() => {
     if (!device?.id) return;
+    if (!hasPending) return;
     
     // Fetch immediately
     fetchCommands({ deviceId: device.id, skip: null, take: null, filter: '' });
@@ -145,7 +177,30 @@ const CommandButtons = () => {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [device?.id, fetchCommands]);
+  }, [device?.id, fetchCommands, hasPending]);
+
+  // Manage timeout for pending parameters (timeout after 15 seconds)
+  useEffect(() => {
+    const pendingParams = parameters.filter(p => p.status === 'pending');
+    if (pendingParams.length === 0) return;
+
+    const timer = setInterval(() => {
+      const now = Date.now();
+      let updated = false;
+      const nextParams = parameters.map(p => {
+        if (p.status === 'pending' && p.pendingSince && now - p.pendingSince > 15000) {
+          updated = true;
+          return { ...p, status: 'idle' };
+        }
+        return p;
+      });
+      if (updated) {
+        setParameters(nextParams);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [parameters]);
 
   // Match command responses with parameters
   useEffect(() => {
@@ -164,7 +219,8 @@ const CommandButtons = () => {
       if (cmd.type === 'RESPONSE' && cmd.response) {
         const parsed = parseResponseText(cmd.response);
         parsed.forEach(({ address, value }) => {
-          latestValues[address] = {
+          const normAddr = normalizeAddress(address);
+          latestValues[normAddr] = {
             value,
             timestamp: cmd.createdAt
           };
@@ -174,7 +230,8 @@ const CommandButtons = () => {
 
     let updated = false;
     const newParameters = parameters.map(param => {
-      const match = latestValues[param.address];
+      const normParamAddr = normalizeAddress(param.address);
+      const match = latestValues[normParamAddr];
       if (match) {
         if (param.readValue !== match.value || param.status === 'pending') {
           updated = true;
@@ -263,6 +320,7 @@ const CommandButtons = () => {
     setParameters(prev => {
       const updated = [...prev];
       updated[index].status = 'pending';
+      updated[index].pendingSince = Date.now();
       return updated;
     });
 
@@ -316,6 +374,7 @@ const CommandButtons = () => {
     setParameters(prev => {
       const updated = [...prev];
       updated[index].status = 'pending';
+      updated[index].pendingSince = Date.now();
       return updated;
     });
 
@@ -360,7 +419,8 @@ const CommandButtons = () => {
 
     const addresses = parameters.map(p => p.address).join(',');
     
-    setParameters(prev => prev.map(p => ({ ...p, status: 'pending' })));
+    const now = Date.now();
+    setParameters(prev => prev.map(p => ({ ...p, status: 'pending', pendingSince: now })));
 
     const commandData = {
       type: 'VFD_READ_ALL',
@@ -411,9 +471,10 @@ const CommandButtons = () => {
       .map(p => `${p.address}=${p.writeValue}`)
       .join(',');
 
+    const now = Date.now();
     setParameters(prev => prev.map(p => {
       if (p.writeValue !== '') {
-        return { ...p, status: 'pending' };
+        return { ...p, status: 'pending', pendingSince: now };
       }
       return p;
     }));
@@ -453,6 +514,14 @@ const CommandButtons = () => {
         variant: "destructive"
       });
     }
+  const handleManualRefresh = () => {
+    if (!device?.id) return;
+    fetchCommands({ deviceId: device.id, skip: null, take: null, filter: '' });
+    toast({
+      title: "Parameters Refreshed",
+      description: "VFD parameters loaded with latest responses",
+      variant: "success"
+    });
   };
 
   return (
@@ -551,21 +620,33 @@ const CommandButtons = () => {
               Read or write configuration parameters of the VFD.
             </p>
           </div>
-          {templates && templates.length > 0 && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Template:</span>
-              <select
-                className="rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 px-3 py-1.5 text-sm font-medium text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={selectedTemplateId}
-                onChange={handleTemplateChange}
-                disabled={!device.id}
-              >
-                {templates.map(t => (
-                  <option key={t.id} value={t.id}>{t.name}</option>
-                ))}
-              </select>
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleManualRefresh}
+              disabled={!device.id}
+              className="flex items-center gap-1.5 h-9 dark:border-gray-600 dark:text-gray-300"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Refresh Values</span>
+            </Button>
+            {templates && templates.length > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Template:</span>
+                <select
+                  className="rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 px-3 py-1.5 text-sm font-medium text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={selectedTemplateId}
+                  onChange={handleTemplateChange}
+                  disabled={!device.id}
+                >
+                  {templates.map(t => (
+                    <option key={t.id} value={t.id}>{t.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
         </div>
 
         {device.id ? (

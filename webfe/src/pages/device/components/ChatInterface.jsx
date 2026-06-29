@@ -36,6 +36,11 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
   const [selectedCommandType, setSelectedCommandType] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const chatContainerRef = useRef(null);
+  const hasInitialScrolled = useRef(false);
+
+  useEffect(() => {
+    hasInitialScrolled.current = false;
+  }, [deviceId]);
 
   useEffect(() => {
     if (deviceId) {
@@ -44,8 +49,15 @@ const ChatInterface = ({ deviceId, deviceName, status, isCommandSelectionNeeded 
   }, [deviceId, fetchCommands]);
 
   useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    const container = chatContainerRef.current;
+    if (container) {
+      const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
+      if (!hasInitialScrolled.current || isNearBottom) {
+        container.scrollTop = container.scrollHeight;
+        if (commands && commands.length > 0) {
+          hasInitialScrolled.current = true;
+        }
+      }
     }
   }, [commands, isTyping]);
 

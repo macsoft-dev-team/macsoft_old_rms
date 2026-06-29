@@ -192,15 +192,7 @@ const Login = () => {
               </button>
             </div>
 
-            {/* Demo Credentials */}
-            <div className="mt-6 p-4 bg-blue-100/60 rounded-xl shadow-sm">
-              <h4 className="text-sm font-medium text-blue-900 mb-2">Demo Credentials:</h4>
-              <div className="text-sm text-blue-800 grid gap-1">
-                <strong>Macsoft</strong><p> macsoft.admin@macsoft.com</p>
-                <strong>Customer</strong>   <p>customer.admin@macsoft.com</p>
-                <strong>Password</strong><p> password</p>
-              </div>
-            </div>
+
           </form>
         </div>
       </motion.div>

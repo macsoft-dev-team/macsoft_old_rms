@@ -26,7 +26,7 @@ export const useMapping = () => {
 
   const onPageChange = useCallback(
     (skip) => {
-      dispatch(fetchMappings({ skip, take: 12, filter }));
+      dispatch(fetchMappings({ skip, take: 10, filter }));
     },
     [dispatch, filter]
   );
