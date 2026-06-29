@@ -64,7 +64,7 @@ export const uploadMapping = createAsyncThunk(
         formData,
         { withCredentials: true }
       );
-      dispatch(fetchMappings({ skip: 0, take: 12 }));
+      dispatch(fetchMappings({ skip: 0, take: 10 }));
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);

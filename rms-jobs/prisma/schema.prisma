@@ -65,6 +65,7 @@ model device {
   macsoftmqttpubtopiccmd         String?
   macsoftmqttsubtopiccmdresponse String?
   snamqtturl                     String?
+  snamqttclientid                String?
   snamqttusername                String?
   snamqttpassword                String?
   snamqttpubtopicdata            String?

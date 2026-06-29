@@ -8,6 +8,7 @@ export default function SnaMappingModal({ open, onOpenChange, mapping, onSave })
     const isEdit = !!mapping;
     const [imeinumber, setImeinumber] = useState("");
     const [snamqtturl, setSnamqtturl] = useState("");
+    const [snamqttclientid, setSnamqttclientid] = useState("");
     const [snamqttusername, setSnamqttusername] = useState("");
     const [snamqttpassword, setSnamqttpassword] = useState("");
     const [snamqttpubtopicdata, setSnamqttpubtopicdata] = useState("");
@@ -20,6 +21,7 @@ export default function SnaMappingModal({ open, onOpenChange, mapping, onSave })
             if (mapping) {
                 setImeinumber(mapping.imeinumber || "");
                 setSnamqtturl(mapping.snamqtturl || "");
+                setSnamqttclientid(mapping.snamqttclientid || "");
                 setSnamqttusername(mapping.snamqttusername || "");
                 setSnamqttpassword(mapping.snamqttpassword || "");
                 setSnamqttpubtopicdata(mapping.snamqttpubtopicdata || "");
@@ -27,6 +29,7 @@ export default function SnaMappingModal({ open, onOpenChange, mapping, onSave })
             } else {
                 setImeinumber("");
                 setSnamqtturl("");
+                setSnamqttclientid("");
                 setSnamqttusername("");
                 setSnamqttpassword("");
                 setSnamqttpubtopicdata("");
@@ -48,6 +51,7 @@ export default function SnaMappingModal({ open, onOpenChange, mapping, onSave })
             await onSave({
                 imeinumber: imeinumber.trim(),
                 snamqtturl: snamqtturl.trim(),
+                snamqttclientid: snamqttclientid.trim(),
                 snamqttusername: snamqttusername.trim(),
                 snamqttpassword: snamqttpassword.trim(),
                 snamqttpubtopicdata: snamqttpubtopicdata.trim(),
@@ -133,6 +137,17 @@ export default function SnaMappingModal({ open, onOpenChange, mapping, onSave })
                                 onChange={(e) => setSnamqttpassword(e.target.value)}
                                 type="text"
                                 placeholder="e.g. 8c57c689"
+                            />
+                        </div>
+
+                        <div className="space-y-1 sm:col-span-2">
+                            <Input
+                                label="SNA Client ID"
+                                id="snamqttclientid"
+                                value={snamqttclientid}
+                                onChange={(e) => setSnamqttclientid(e.target.value)}
+                                placeholder="e.g. d:860710089519253$standalonesolarpump$28 (falls back to username default if empty)"
+                                className="font-sans"
                             />
                         </div>
 

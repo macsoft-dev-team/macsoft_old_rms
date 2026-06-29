@@ -21,6 +21,7 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
      validDevices.map(async (device) => ({
        imeinumber: String(device.imeinumber).trim(),
        snamqtturl: device.snamqtturl ? String(device.snamqtturl).trim() : `mqtt://${process.env.MQTT_HOST}:${process.env.MQTT_PORT}`,
+       snamqttclientid: device.snamqttclientid ? String(device.snamqttclientid).trim() : null,
        snamqttusername: device.snamqttusername ? String(device.snamqttusername).trim() : `device_${device.imeinumber}`,
        snamqttpassword: device.snamqttpassword ? String(device.snamqttpassword).trim() : null,
        snamqttpubtopicdata: device.snamqttpubtopicdata ? String(device.snamqttpubtopicdata).trim() : (device.snapubTopicData ? String(device.snapubTopicData).trim() : null),
@@ -54,6 +55,7 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
               },
               update: {
                 snamqtturl: device.snamqtturl ?? undefined,
+                snamqttclientid: device.snamqttclientid ?? undefined,
                 snamqttusername: device.snamqttusername ?? undefined,
                 snamqttpassword: device.snamqttpassword ?? undefined,
                 snamqttpubtopicdata: device.snamqttpubtopicdata ?? undefined,
@@ -63,6 +65,7 @@ const uploadDevice = async (devicesFromXL, batchSize = 100) => {
               create: {
                 imeinumber: device.imeinumber,
                 snamqtturl: device.snamqtturl ?? undefined,
+                snamqttclientid: device.snamqttclientid ?? undefined,
                 snamqttusername: device.snamqttusername ?? undefined,
                 snamqttpassword: device.snamqttpassword ?? undefined,
                 snamqttpubtopicdata: device.snamqttpubtopicdata ?? undefined,
