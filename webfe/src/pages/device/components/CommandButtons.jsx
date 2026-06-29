@@ -228,21 +228,20 @@ const CommandButtons = () => {
     return () => clearInterval(interval);
   }, [device?.id, fetchCommands, hasPending]);
 
-  // Timeout pending states after 15 seconds
+  // Show toast to manually refresh if response is not received after 15 seconds
   useEffect(() => {
-    const pendingParams = parameters.filter(p => p.status === 'pending');
+    const pendingParams = parameters.filter(p => p.status === 'pending' && !p.toastShown);
     if (pendingParams.length === 0) return;
 
     const interval = setInterval(() => {
       const now = Date.now();
       let updated = false;
       const newParameters = parameters.map(p => {
-        if (p.status === 'pending' && p.sentTime && now - p.sentTime > 15000) {
+        if (p.status === 'pending' && p.sentTime && now - p.sentTime > 15000 && !p.toastShown) {
           updated = true;
           return {
             ...p,
-            status: 'error',
-            sentTime: null
+            toastShown: true
           };
         }
         return p;
@@ -251,9 +250,9 @@ const CommandButtons = () => {
       if (updated) {
         setParameters(newParameters);
         toast({
-          title: "Request Timeout",
-          description: "Device did not respond within 15 seconds.",
-          variant: "destructive"
+          title: "Response Pending",
+          description: "Response not received yet. Please manually refresh if needed.",
+          variant: "warning"
         });
       }
     }, 1000);
@@ -339,7 +338,7 @@ const CommandButtons = () => {
     let payload = '';
     if (type === 'MOTOR_ON') payload = '{"SRUN:1"}';
     else if (type === 'MOTOR_OFF') payload = '{"SRUN:0"}';
-    else if (type === 'CUSTOM') payload = customPayload.toUpperCase();
+    else if (type === 'CUSTOM') payload = customPayload;
 
     if (type === 'CUSTOM' && !customPayload) {
       toast({
@@ -398,6 +397,7 @@ const CommandButtons = () => {
       const updated = [...prev];
       updated[index].status = 'pending';
       updated[index].sentTime = now;
+      updated[index].toastShown = false;
       return updated;
     });
 
@@ -454,6 +454,7 @@ const CommandButtons = () => {
       const updated = [...prev];
       updated[index].status = 'pending';
       updated[index].sentTime = now;
+      updated[index].toastShown = false;
       return updated;
     });
 
@@ -500,7 +501,7 @@ const CommandButtons = () => {
     const addresses = parameters.map(p => p.address).join(',');
     const now = Date.now();
 
-    setParameters(prev => prev.map(p => ({ ...p, status: 'pending', sentTime: now })));
+    setParameters(prev => prev.map(p => ({ ...p, status: 'pending', sentTime: now, toastShown: false })));
 
     const commandData = {
       type: 'VFD_READ_ALL',
@@ -554,7 +555,7 @@ const CommandButtons = () => {
     const now = Date.now();
     setParameters(prev => prev.map(p => {
       if (p.writeValue !== '') {
-        return { ...p, status: 'pending', sentTime: now };
+        return { ...p, status: 'pending', sentTime: now, toastShown: false };
       }
       return p;
     }));
@@ -654,7 +655,8 @@ const CommandButtons = () => {
       readValue: '',
       writeValue: '',
       status: 'idle',
-      sentTime: null
+      sentTime: null,
+      toastShown: false
     })));
     toast({
       title: "State Cleared",
@@ -793,7 +795,6 @@ const CommandButtons = () => {
               className="flex items-center gap-1.5 h-9 dark:border-gray-600 dark:text-gray-300"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span>Refresh Values</span>
             </Button>
             {templates && templates.length > 0 && (
               <div className="flex items-center gap-2">
