@@ -40,6 +40,38 @@ const parseResponseText = (text) => {
   if (!text) return [];
   
   let cleaned = text.trim();
+
+  // Recursively unwrap/unescape JSON if it is a JSON string or a known wrapped object
+  let lastCleaned = '';
+  while (cleaned !== lastCleaned) {
+    lastCleaned = cleaned;
+    try {
+      const parsed = JSON.parse(cleaned);
+      if (parsed !== null && parsed !== undefined) {
+        if (typeof parsed === 'string') {
+          cleaned = parsed.trim();
+        } else if (typeof parsed === 'object') {
+          if (parsed.response !== undefined) {
+            cleaned = String(parsed.response).trim();
+          } else if (parsed.original !== undefined && parsed.response === 'Command received') {
+            cleaned = String(parsed.original).trim();
+          } else {
+            break;
+          }
+        } else {
+          break;
+        }
+      } else {
+        break;
+      }
+    } catch (e) {
+      break; // Not a JSON string/object
+    }
+  }
+
+  // Strip common command response prefixes (like RESPONSE, OK, etc.)
+  cleaned = cleaned.replace(/^(RESPONSE|OK|INFO|DATA|CMD|CMDRESPONSE|ERROR)\s*:?\s*/i, '').trim();
+
   if (cleaned.startsWith('{')) {
     cleaned = cleaned.substring(1);
   }
@@ -48,6 +80,9 @@ const parseResponseText = (text) => {
   }
   cleaned = cleaned.replace(/^"|"$/g, '').trim();
 
+  // Strip escaped quotes if they are still present after partial manual parsing
+  cleaned = cleaned.replace(/^\\"+|\\"+$/g, '').trim();
+
   // Handle format like RVFD : 2 = 25 or MVFD : 2 = 25, 3 = 123
   if (cleaned.includes(':')) {
     const parts = cleaned.split(':');
@@ -55,17 +90,23 @@ const parseResponseText = (text) => {
     return payloadPart.split(',').map(item => {
       const kv = item.split('=');
       if (kv.length >= 2) {
-        return {
-          address: kv[0].trim(),
-          value: kv[1].replace(/[\r\n\t]+/g, '').trim()
-        };
+        const address = kv[0].trim();
+        const value = kv[1]
+          .replace(/\\n/g, '')
+          .replace(/\\r/g, '')
+          .replace(/\\"/g, '')
+          .replace(/"/g, '')
+          .replace(/}/g, '')
+          .replace(/[\r\n\t]+/g, '')
+          .trim();
+        return { address, value };
       }
       return null;
     }).filter(Boolean);
   }
 
   // Fallback to old format (line-by-line address, value)
-  return text
+  return cleaned
     .split(/\r?\n/)
     .map(line => line.trim())
     .filter(line => line)
@@ -74,7 +115,14 @@ const parseResponseText = (text) => {
       if (parts.length >= 2) {
         return {
           address: parts[0].trim(),
-          value: parts[1].replace(/[\r\n\t]+/g, '').trim()
+          value: parts[1]
+            .replace(/\\n/g, '')
+            .replace(/\\r/g, '')
+            .replace(/\\"/g, '')
+            .replace(/"/g, '')
+            .replace(/}/g, '')
+            .replace(/[\r\n\t]+/g, '')
+            .trim()
         };
       }
       return null;
@@ -121,6 +169,7 @@ const CommandButtons = () => {
 
   const [customPayload, setCustomPayload] = useState('');
   const [showCustom, setShowCustom] = useState(false);
+  const [telemetryInterval, setTelemetryInterval] = useState('1');
 
   const [parameters, setParameters] = useState([]);
   const [selectedTemplateId, setSelectedTemplateId] = useState('');
@@ -233,13 +282,30 @@ const CommandButtons = () => {
       const normParamAddr = normalizeAddress(param.address);
       const match = latestValues[normParamAddr];
       if (match) {
-        if (param.readValue !== match.value || param.status === 'pending') {
-          updated = true;
-          return {
-            ...param,
-            readValue: match.value,
-            status: 'success'
-          };
+        const isOk = match.value.toLowerCase().includes('ok');
+        if (param.status === 'pending') {
+          const matchTime = new Date(match.timestamp).getTime();
+          const sentTime = param.sentTime || 0;
+          // Only accept the response if it was received after the read/write request was sent
+          if (matchTime >= sentTime - 2000) {
+            updated = true;
+            return {
+              ...param,
+              readValue: isOk ? (param.writeValue || param.readValue) : match.value,
+              status: 'success',
+              sentTime: null
+            };
+          }
+        } else {
+          // If not pending, populate the box with the latest response value if it's different and not a write confirmation
+          if (!isOk && param.readValue !== match.value) {
+            updated = true;
+            return {
+              ...param,
+              readValue: match.value,
+              status: 'success'
+            };
+          }
         }
       }
       return param;
@@ -263,7 +329,7 @@ const CommandButtons = () => {
     let payload = '';
     if (type === 'MOTOR_ON') payload = '{"SRUN:1"}';
     else if (type === 'MOTOR_OFF') payload = '{"SRUN:0"}';
-    else if (type === 'CUSTOM') payload = customPayload;
+    else if (type === 'CUSTOM') payload = customPayload.toUpperCase();
 
     if (type === 'CUSTOM' && !customPayload) {
       toast({
@@ -317,6 +383,7 @@ const CommandButtons = () => {
   const handleSingleRead = (param, index) => {
     if (!device?.id) return;
     
+    const now = Date.now();
     setParameters(prev => {
       const updated = [...prev];
       updated[index].status = 'pending';
@@ -326,7 +393,7 @@ const CommandButtons = () => {
 
     const commandData = {
       type: 'VFD_READ',
-      payload: `{"RVFD:${param.address}"}`,
+      payload: `{"RVFD:${param.address}"}`.toUpperCase(),
       deviceId: device.id,
       imeinumber: device.imeinumber || ''
     };
@@ -350,6 +417,7 @@ const CommandButtons = () => {
       setParameters(prev => {
         const updated = [...prev];
         updated[index].status = 'error';
+        updated[index].sentTime = null;
         return updated;
       });
       toast({
@@ -380,7 +448,7 @@ const CommandButtons = () => {
 
     const commandData = {
       type: 'VFD_WRITE',
-      payload: `{"WVFD:${param.address}=${param.writeValue}"}`,
+      payload: `{"SVFD:${param.address}=${param.writeValue}"}`.toUpperCase(),
       deviceId: device.id,
       imeinumber: device.imeinumber || ''
     };
@@ -401,11 +469,6 @@ const CommandButtons = () => {
         variant: "success"
       });
     } catch (error) {
-      setParameters(prev => {
-        const updated = [...prev];
-        updated[index].status = 'error';
-        return updated;
-      });
       toast({
         title: "Command Failed",
         description: "Failed to send write command",
@@ -418,13 +481,14 @@ const CommandButtons = () => {
     if (!device?.id || parameters.length === 0) return;
 
     const addresses = parameters.map(p => p.address).join(',');
+    const now = Date.now();
     
     const now = Date.now();
     setParameters(prev => prev.map(p => ({ ...p, status: 'pending', pendingSince: now })));
 
     const commandData = {
       type: 'VFD_READ_ALL',
-      payload: `{"MVFD:${addresses}"}`,
+      payload: `{"MVFD:${addresses}"}`.toUpperCase(),
       deviceId: device.id,
       imeinumber: device.imeinumber || ''
     };
@@ -445,7 +509,7 @@ const CommandButtons = () => {
         variant: "success"
       });
     } catch (error) {
-      setParameters(prev => prev.map(p => ({ ...p, status: 'error' })));
+      setParameters(prev => prev.map(p => ({ ...p, status: 'error', sentTime: null })));
       toast({
         title: "Command Failed",
         description: "Failed to send bulk read command",
@@ -481,7 +545,7 @@ const CommandButtons = () => {
 
     const commandData = {
       type: 'VFD_WRITE_ALL',
-      payload: `{"WVFD:${writePayload}"}`,
+      payload: `{"WVFD:${writePayload}"}`.toUpperCase(),
       deviceId: device.id,
       imeinumber: device.imeinumber || ''
     };
@@ -502,12 +566,6 @@ const CommandButtons = () => {
         variant: "success"
       });
     } catch (error) {
-      setParameters(prev => prev.map(p => {
-        if (p.writeValue !== '') {
-          return { ...p, status: 'error' };
-        }
-        return p;
-      }));
       toast({
         title: "Command Failed",
         description: "Failed to send bulk write command",
@@ -523,6 +581,96 @@ const CommandButtons = () => {
       variant: "success"
     });
   };
+
+  const handleSendTelemetryInterval = () => {
+    if (!device?.id) return;
+    if (!telemetryInterval || isNaN(telemetryInterval) || parseInt(telemetryInterval) <= 0) {
+      toast({
+        title: "Invalid Interval",
+        description: "Please enter a valid interval in minutes",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const commandData = {
+      type: 'TELEMETRY_INTERVAL',
+      payload: `{"SMIT:${telemetryInterval}"}`.toUpperCase(),
+      deviceId: device.id,
+      imeinumber: device.imeinumber || ''
+    };
+
+    setCommand({
+      id: Date.now(),
+      ...commandData,
+      createdAt: new Date().toISOString(),
+      response: "",
+      status: "pending"
+    });
+
+    try {
+      postCommand(commandData);
+      toast({
+        title: "Telemetry Interval Sent",
+        description: `Interval of ${telemetryInterval} minute(s) sent successfully`,
+        variant: "success"
+      });
+    } catch (error) {
+      toast({
+        title: "Command Failed",
+        description: "Failed to send telemetry interval command",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleClearState = () => {
+    setParameters(prev => prev.map(p => ({
+      ...p,
+      readValue: '',
+      writeValue: '',
+      status: 'idle',
+      sentTime: null
+    })));
+    toast({
+      title: "State Cleared",
+      description: "Parameter read/write values and pending states have been cleared.",
+      variant: "success"
+    });
+  };
+
+  // Timeout pending states after 15 seconds
+  useEffect(() => {
+    const pendingParams = parameters.filter(p => p.status === 'pending');
+    if (pendingParams.length === 0) return;
+
+    const interval = setInterval(() => {
+      const now = Date.now();
+      let updated = false;
+      const newParameters = parameters.map(p => {
+        if (p.status === 'pending' && p.sentTime && now - p.sentTime > 15000) {
+          updated = true;
+          return {
+            ...p,
+            status: 'error',
+            sentTime: null
+          };
+        }
+        return p;
+      });
+
+      if (updated) {
+        setParameters(newParameters);
+        toast({
+          title: "Request Timeout",
+          description: "Device did not respond within 15 seconds.",
+          variant: "destructive"
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [parameters, toast]);
 
   return (
     <div className="space-y-6">
@@ -598,6 +746,31 @@ const CommandButtons = () => {
                 }}
               >
                 Cancel
+              </Button>
+            </div>
+          </div>
+        )}
+        {device.id && (
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+              Telemetry Data Interval (Minutes)
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                min="1"
+                className="flex-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 px-3 py-1.5 text-sm font-medium text-gray-805 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={telemetryInterval}
+                onChange={(e) => setTelemetryInterval(e.target.value)}
+                placeholder="e.g. 1"
+              />
+              <Button
+                onClick={handleSendTelemetryInterval}
+                disabled={!telemetryInterval}
+                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+              >
+                <Send className="w-4 h-4" />
+                Set Interval
               </Button>
             </div>
           </div>
@@ -733,6 +906,14 @@ const CommandButtons = () => {
             </div>
 
             <div className="flex gap-3 justify-end pt-2">
+              <Button
+                variant="outline"
+                onClick={handleClearState}
+                disabled={parameters.length === 0}
+                className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20 border-red-200 dark:border-red-900"
+              >
+                Clear
+              </Button>
               <Button
                 variant="outline"
                 onClick={handleReadAll}

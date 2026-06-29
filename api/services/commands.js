@@ -6,8 +6,16 @@ const getAllCommandsByDeviceId = async (skip, take, filter, deviceId) => {
   const params = {
     where: {},
   };
-  if (skip) params.skip = (parseInt(skip) - 1) * parseInt(take) || 0;
-  if (take) params.take = parseInt(take);
+  const parsedTake = parseInt(take);
+  const parsedSkip = parseInt(skip);
+
+  if (!isNaN(parsedTake)) {
+    params.take = parsedTake;
+  }
+  if (!isNaN(parsedSkip)) {
+    params.skip = (parsedSkip - 1) * (isNaN(parsedTake) ? 10 : parsedTake) || 0;
+  }
+
   if (deviceId) {
     params.where.deviceId = deviceId;
   }
