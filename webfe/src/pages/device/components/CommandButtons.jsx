@@ -38,7 +38,7 @@ const parseParameters = (str) => {
 
 const parseResponseText = (text) => {
   if (!text) return [];
-  
+
   let cleaned = text.trim();
 
   // Recursively unwrap/unescape JSON if it is a JSON string or a known wrapped object
@@ -133,30 +133,30 @@ const parseResponseText = (text) => {
 const normalizeAddress = (addr) => {
   if (addr === null || addr === undefined) return '';
   let str = String(addr).trim().toLowerCase();
-  
+
   // Remove starting 0x or 0X
   if (str.startsWith('0x')) {
     const val = parseInt(str.substring(2), 16);
     return isNaN(val) ? str : String(val);
   }
-  
+
   // Remove ending h or H (e.g. "7bh" -> "7b")
   if (str.endsWith('h') && str.length > 1) {
     const val = parseInt(str.slice(0, -1), 16);
     return isNaN(val) ? str : String(val);
   }
-  
+
   // If it contains letters a-f (but only valid hex characters), parse it as hex
   if (/^[0-9a-f]+$/.test(str) && /[a-f]/.test(str)) {
     const val = parseInt(str, 16);
     return isNaN(val) ? str : String(val);
   }
-  
+
   // If it's a decimal number, parse it to remove leading zeros, etc.
   if (/^\d+$/.test(str)) {
     return String(parseInt(str, 10));
   }
-  
+
   return str;
 };
 
@@ -217,7 +217,7 @@ const CommandButtons = () => {
   useEffect(() => {
     if (!device?.id) return;
     if (!hasPending) return;
-    
+
     // Fetch immediately
     fetchCommands({ deviceId: device.id, skip: null, take: null, filter: '' });
 
@@ -228,28 +228,38 @@ const CommandButtons = () => {
     return () => clearInterval(interval);
   }, [device?.id, fetchCommands, hasPending]);
 
-  // Manage timeout for pending parameters (timeout after 15 seconds)
+  // Timeout pending states after 15 seconds
   useEffect(() => {
     const pendingParams = parameters.filter(p => p.status === 'pending');
     if (pendingParams.length === 0) return;
 
-    const timer = setInterval(() => {
+    const interval = setInterval(() => {
       const now = Date.now();
       let updated = false;
-      const nextParams = parameters.map(p => {
-        if (p.status === 'pending' && p.pendingSince && now - p.pendingSince > 15000) {
+      const newParameters = parameters.map(p => {
+        if (p.status === 'pending' && p.sentTime && now - p.sentTime > 15000) {
           updated = true;
-          return { ...p, status: 'idle' };
+          return {
+            ...p,
+            status: 'error',
+            sentTime: null
+          };
         }
         return p;
       });
+
       if (updated) {
-        setParameters(nextParams);
+        setParameters(newParameters);
+        toast({
+          title: "Request Timeout",
+          description: "Device did not respond within 15 seconds.",
+          variant: "destructive"
+        });
       }
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [parameters]);
+    return () => clearInterval(interval);
+  }, [parameters, toast]);
 
   // Match command responses with parameters
   useEffect(() => {
@@ -382,12 +392,12 @@ const CommandButtons = () => {
 
   const handleSingleRead = (param, index) => {
     if (!device?.id) return;
-    
+
     const now = Date.now();
     setParameters(prev => {
       const updated = [...prev];
       updated[index].status = 'pending';
-      updated[index].pendingSince = Date.now();
+      updated[index].sentTime = now;
       return updated;
     });
 
@@ -439,10 +449,11 @@ const CommandButtons = () => {
       return;
     }
 
+    const now = Date.now();
     setParameters(prev => {
       const updated = [...prev];
       updated[index].status = 'pending';
-      updated[index].pendingSince = Date.now();
+      updated[index].sentTime = now;
       return updated;
     });
 
@@ -469,6 +480,12 @@ const CommandButtons = () => {
         variant: "success"
       });
     } catch (error) {
+      setParameters(prev => {
+        const updated = [...prev];
+        updated[index].status = 'error';
+        updated[index].sentTime = null;
+        return updated;
+      });
       toast({
         title: "Command Failed",
         description: "Failed to send write command",
@@ -482,9 +499,8 @@ const CommandButtons = () => {
 
     const addresses = parameters.map(p => p.address).join(',');
     const now = Date.now();
-    
-    const now = Date.now();
-    setParameters(prev => prev.map(p => ({ ...p, status: 'pending', pendingSince: now })));
+
+    setParameters(prev => prev.map(p => ({ ...p, status: 'pending', sentTime: now })));
 
     const commandData = {
       type: 'VFD_READ_ALL',
@@ -538,7 +554,7 @@ const CommandButtons = () => {
     const now = Date.now();
     setParameters(prev => prev.map(p => {
       if (p.writeValue !== '') {
-        return { ...p, status: 'pending', pendingSince: now };
+        return { ...p, status: 'pending', sentTime: now };
       }
       return p;
     }));
@@ -566,12 +582,20 @@ const CommandButtons = () => {
         variant: "success"
       });
     } catch (error) {
+      setParameters(prev => prev.map(p => {
+        if (p.writeValue !== '') {
+          return { ...p, status: 'error', sentTime: null };
+        }
+        return p;
+      }));
       toast({
         title: "Command Failed",
         description: "Failed to send bulk write command",
         variant: "destructive"
       });
     }
+  };
+
   const handleManualRefresh = () => {
     if (!device?.id) return;
     fetchCommands({ deviceId: device.id, skip: null, take: null, filter: '' });
@@ -638,39 +662,6 @@ const CommandButtons = () => {
       variant: "success"
     });
   };
-
-  // Timeout pending states after 15 seconds
-  useEffect(() => {
-    const pendingParams = parameters.filter(p => p.status === 'pending');
-    if (pendingParams.length === 0) return;
-
-    const interval = setInterval(() => {
-      const now = Date.now();
-      let updated = false;
-      const newParameters = parameters.map(p => {
-        if (p.status === 'pending' && p.sentTime && now - p.sentTime > 15000) {
-          updated = true;
-          return {
-            ...p,
-            status: 'error',
-            sentTime: null
-          };
-        }
-        return p;
-      });
-
-      if (updated) {
-        setParameters(newParameters);
-        toast({
-          title: "Request Timeout",
-          description: "Device did not respond within 15 seconds.",
-          variant: "destructive"
-        });
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [parameters, toast]);
 
   return (
     <div className="space-y-6">
@@ -845,13 +836,12 @@ const CommandButtons = () => {
                           <input
                             type="text"
                             readOnly
-                            className={`w-full rounded border px-3 py-1.5 text-sm focus:outline-none dark:bg-gray-950 dark:text-gray-100 font-mono ${
-                              param.status === 'success'
-                                ? 'border-green-500 bg-green-50/10 dark:bg-green-950/20 text-green-700 dark:text-green-400'
-                                : param.status === 'error'
+                            className={`w-full rounded border px-3 py-1.5 text-sm focus:outline-none dark:bg-gray-950 dark:text-gray-100 font-mono ${param.status === 'success'
+                              ? 'border-green-500 bg-green-50/10 dark:bg-green-950/20 text-green-700 dark:text-green-400'
+                              : param.status === 'error'
                                 ? 'border-red-500 bg-red-50/10 dark:bg-red-950/20 text-red-700 dark:text-red-400'
                                 : 'border-gray-300 dark:border-gray-700'
-                            }`}
+                              }`}
                             value={param.readValue || ''}
                             placeholder="Not Read"
                           />
